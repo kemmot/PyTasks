@@ -2,6 +2,7 @@
 
 import sys
 
-print(sys.argv)
+import commandlineparser as cli
 
-print('tasks')
+args = cli.CommandLineParser().parse(sys.argv)
+print('add item: {}'.format(' '.join(args.name)))
