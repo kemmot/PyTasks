@@ -20,7 +20,7 @@ class AddTaskCommand:
         self._name = value
 
     def execute(self):
-        with open(filename, 'w+') as file
+        with open(self.filename, 'w+') as file:
             file.write(self.name)
         print('add item: {}'.format(' '.join(self.name)))
 
