@@ -1,10 +1,20 @@
+'''
+A module providing task commands.
+'''
+
 class AddTaskCommand:
+    '''
+    A command that will add a task.
+    '''
     def __init__(self):
         self._filename = ''
         self._name = ''
 
     @property
     def filename(self):
+        '''
+        The filename to write the task to.
+        '''
         return self._filename
 
     @filename.setter
@@ -13,6 +23,9 @@ class AddTaskCommand:
 
     @property
     def name(self):
+        '''
+        The name of the task to add.
+        '''
         return self._name
 
     @name.setter
@@ -20,8 +33,9 @@ class AddTaskCommand:
         self._name = value
 
     def execute(self):
+        '''
+        Executes the logic of this command.
+        '''
         with open(self.filename, 'w+') as file:
             file.write(self.name)
         print('add item: {}'.format(' '.join(self.name)))
-
-
