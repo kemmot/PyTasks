@@ -4,13 +4,14 @@
 The main module for the tasks program.
 '''
 
+import os
 import sys
 
 import commandlineparser as cli
 import commands as commands
 
 
-FILENAME = '~/tasks.txt'
+FILENAME = os.path.expanduser('~/tasks.txt')
 
 args = cli.CommandLineParser().parse(sys.argv[1:])
 
