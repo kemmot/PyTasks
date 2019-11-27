@@ -36,6 +36,5 @@ class AddTaskCommand:
         '''
         Executes the logic of this command.
         '''
-        with open(self.filename, 'w+') as file:
-            file.write(self.name)
-        print('add item: {}'.format(' '.join(self.name)))
+        with open(self.filename, 'a+') as file:
+            file.write(self.name + '\n')
