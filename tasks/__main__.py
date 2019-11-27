@@ -16,5 +16,5 @@ args = cli.CommandLineParser().parse(sys.argv[1:])
 
 command = commands.AddTaskCommand()
 command.filename = FILENAME
-command.name = args.name
+command.name = ' '.join(args.name)
 command.execute()
