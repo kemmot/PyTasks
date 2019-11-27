@@ -7,8 +7,8 @@ The main module for the tasks program.
 import os
 import sys
 
+import commands
 import commandlineparser as cli
-import commands as commands
 
 
 FILENAME = os.path.expanduser('~/tasks.txt')
