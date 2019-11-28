@@ -7,6 +7,7 @@ The main module for the tasks program.
 import logging
 import os
 import sys
+import uuid
 
 import commands
 import commandlineparser as cli

@@ -5,6 +5,7 @@ A module providing task commands.
 import entities
 import formatters
 import logging
+import uuid
 
 
 class CommandFactory:
@@ -15,6 +16,7 @@ class CommandFactory:
         command = None
         if args.command == 'add':
             task = entities.Task()
+            task.id = uuid.uuid4()
             task.name = ' '.join(args.name)
             
             formatter = formatters.TaskWarriorFormatter()

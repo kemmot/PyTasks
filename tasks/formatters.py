@@ -10,5 +10,8 @@ class TaskWarriorFormatter:
         '''
         Formats the task.
         '''
-        output = '[description:"{}"]'.format(task.name)
+        output = '['
+        output += 'description:"{}"'.format(task.name)
+        output += ' uuid:"{}"'.format(task.id)
+        output += ']'
         return output

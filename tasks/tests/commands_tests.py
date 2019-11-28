@@ -1,6 +1,7 @@
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock
+import uuid
 
 import commands
 import formatters
@@ -27,6 +28,7 @@ class CommandFactoryTests(unittest.TestCase):
 
         self.assertIsInstance(command, commands.AddTaskCommand)
         self.assertEqual(command.filename, filename)
+        self.assertIsInstance(command.task.id, uuid.UUID)
         self.assertEqual(command.task.name, ' '.join(args.name))
 
 
