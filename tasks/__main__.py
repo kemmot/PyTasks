@@ -7,7 +7,6 @@ The main module for the tasks program.
 import logging
 import os
 import sys
-import uuid
 
 import commands
 import commandlineparser as cli
@@ -17,9 +16,7 @@ FORMAT = '%(message)s'
 logging.basicConfig(format=FORMAT, level='INFO')
 
 FILENAME = os.path.expanduser('~/tasks.txt')
-
-args = cli.CommandLineParser().parse(sys.argv[1:])
-
-command_factory = commands.CommandFactory(FILENAME)
-command = command_factory.get_command(args)
-command.execute()
+ARGS = cli.CommandLineParser().parse(sys.argv[1:])
+COMMAND_FACTORY = commands.CommandFactory(FILENAME)
+COMMAND = COMMAND_FACTORY.get_command(ARGS)
+COMMAND.execute()

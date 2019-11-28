@@ -2,24 +2,25 @@
 A module providing task commands.
 '''
 
-import entities
-import formatters
 import logging
 import uuid
+
+import entities
+import formatters
 
 
 class CommandFactory:
     def __init__(self, filename):
         self._filename = filename
-    
+
     def get_command(self, args):
         command = None
         if args.command == 'add':
             task = entities.Task()
-            task.id = uuid.uuid4()
+            task.id_number = uuid.uuid4()
             task.name = ' '.join(args.name)
             task.status = 'pending'
-            
+
             formatter = formatters.TaskWarriorFormatter()
 
             command = AddTaskCommand(formatter)

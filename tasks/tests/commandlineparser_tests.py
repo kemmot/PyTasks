@@ -10,5 +10,5 @@ class CommandLineParserTests(unittest.TestCase):
         args.append('arg2')
         args.append('arg3')
         result = cli.CommandLineParser().parse(args)
-        result.name = 'arg2 arg3'
-
+        self.assertEqual(result.command, 'add')
+        self.assertEqual(result.name, ['arg2', 'arg3'])

@@ -13,6 +13,6 @@ class TaskWarriorFormatter:
         output = '['
         output += 'description:"{}"'.format(task.name)
         output += ' status:"{}"'.format(task.status)
-        output += ' uuid:"{}"'.format(task.id)
+        output += ' uuid:"{}"'.format(task.id_number)
         output += ']'
         return output

@@ -7,20 +7,20 @@ class Task:
     A class for encapsulating task details.
     '''
     def __init__(self):
-        self._id = ''
+        self._id_number = ''
         self._name = ''
         self._status = ''
 
     @property
-    def id(self):
+    def id_number(self):
         '''
         The id of the task.
         '''
-        return self._id
+        return self._id_number
 
-    @id.setter
-    def id(self, value):
-        self._id = value
+    @id_number.setter
+    def id_number(self, value):
+        self._id_number = value
 
     @property
     def name(self):

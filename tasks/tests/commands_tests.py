@@ -14,13 +14,13 @@ class CommandFactoryTests(unittest.TestCase):
         args.command = 'unknown'
         factory = commands.CommandFactory('filename')
         with self.assertRaises(Exception):
-            command = factory.get_command(args)
+            factory.get_command(args)
 
 
     def test_get_add_command(self):
         args = mock.Mock()
         args.command = 'add'
-        args.name = ['first','task']
+        args.name = ['first', 'task']
 
         filename = 'filename'
         factory = commands.CommandFactory(filename)
@@ -28,7 +28,7 @@ class CommandFactoryTests(unittest.TestCase):
 
         self.assertIsInstance(command, commands.AddTaskCommand)
         self.assertEqual(command.filename, filename)
-        self.assertIsInstance(command.task.id, uuid.UUID)
+        self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, ' '.join(args.name))
 
@@ -40,19 +40,18 @@ class AddTaskCommandTests(unittest.TestCase):
         formatter = formatters.TaskWarriorFormatter()
         formatter.format = MagicMock(return_value=expected_output)
 
-        task1 = entities.Task()
-        task1.name = 'test name'
+        task = entities.Task()
+        task.name = 'test name'
 
         test_path = 'test path'
-        m = mock.mock_open()
+        mock_open = mock.mock_open()
         location = 'commands.open'
-        with mock.patch(location, m) as mock_open:
+        with mock.patch(location, mock_open):
             command = commands.AddTaskCommand(formatter)
             command.filename = test_path
-            command.task = task1
+            command.task = task
             command.execute()
-        m.assert_called_once_with(test_path, 'a+')
-        handle = m()
+        mock_open.assert_called_once_with(test_path, 'a+')
+        handle = mock_open()
         handle.write.assert_called_once_with(expected_output + '\n')
         handle.__exit__.assert_called()
-
