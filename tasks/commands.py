@@ -2,12 +2,14 @@
 A module providing task commands.
 '''
 
+import logging
 
 class AddTaskCommand:
     '''
     A command that will add a task.
     '''
     def __init__(self):
+        self._logger = logging.getLogger(__class__.__name__)
         self._filename = ''
         self._name = ''
 
@@ -39,6 +41,7 @@ class AddTaskCommand:
         '''
         with open(self.filename, 'a+') as file:
             file.write(self._format_task() + '\n')
+        self._logger.info('Created task')
 
     def _format_task(self):
         output = '[description:"{}"]'.format(self.name)
