@@ -2,7 +2,29 @@
 A module providing task commands.
 '''
 
+import entities
+import formatters
 import logging
+
+
+class CommandFactory:
+    def __init__(self, filename):
+        self._filename = filename
+    
+    def get_command(self, args):
+        command = None
+        if args.command == 'add':
+            task = entities.Task()
+            task.name = ' '.join(args.name)
+            
+            formatter = formatters.TaskWarriorFormatter()
+
+            command = AddTaskCommand(formatter)
+            command.filename = self._filename
+            command.task = task
+        else:
+            raise Exception('Command not recognised: [{}]'.format(args.command))
+        return command
 
 
 class AddTaskCommand:

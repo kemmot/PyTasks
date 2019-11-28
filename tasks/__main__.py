@@ -10,8 +10,6 @@ import sys
 
 import commands
 import commandlineparser as cli
-import formatters
-import entities
 
 
 FORMAT = '%(message)s'
@@ -21,15 +19,6 @@ FILENAME = os.path.expanduser('~/tasks.txt')
 
 args = cli.CommandLineParser().parse(sys.argv[1:])
 
-if args.command == 'add':
-    task = entities.Task()
-    task.name = ' '.join(args.name)
-    
-    formatter = formatters.TaskWarriorFormatter()
-
-    command = commands.AddTaskCommand(formatter)
-    command.filename = FILENAME
-    command.task = task
-    command.execute()
-else:
-    print('no command found')
+command_factory = commands.CommandFactory(FILENAME)
+command = command_factory.get_command(args)
+command.execute()
