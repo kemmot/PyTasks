@@ -15,7 +15,10 @@ FILENAME = os.path.expanduser('~/tasks.txt')
 
 args = cli.CommandLineParser().parse(sys.argv[1:])
 
-command = commands.AddTaskCommand()
-command.filename = FILENAME
-command.name = ' '.join(args.name)
-command.execute()
+if args.command == 'add':
+    command = commands.AddTaskCommand()
+    command.filename = FILENAME
+    command.name = ' '.join(args.name)
+    command.execute()
+else:
+    print('no command found')
