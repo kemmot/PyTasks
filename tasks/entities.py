@@ -9,6 +9,7 @@ class Task:
     def __init__(self):
         self._id = ''
         self._name = ''
+        self._status = ''
 
     @property
     def id(self):
@@ -31,3 +32,14 @@ class Task:
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def status(self):
+        '''
+        The status of the task.
+        '''
+        return self._status
+
+    @status.setter
+    def status(self, value):
+        self._status = value

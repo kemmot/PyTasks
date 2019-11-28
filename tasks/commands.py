@@ -18,6 +18,7 @@ class CommandFactory:
             task = entities.Task()
             task.id = uuid.uuid4()
             task.name = ' '.join(args.name)
+            task.status = 'pending'
             
             formatter = formatters.TaskWarriorFormatter()
 

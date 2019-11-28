@@ -29,6 +29,7 @@ class CommandFactoryTests(unittest.TestCase):
         self.assertIsInstance(command, commands.AddTaskCommand)
         self.assertEqual(command.filename, filename)
         self.assertIsInstance(command.task.id, uuid.UUID)
+        self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, ' '.join(args.name))
 
 
