@@ -2,6 +2,7 @@
 A module providing task commands.
 '''
 
+
 class AddTaskCommand:
     '''
     A command that will add a task.
@@ -37,4 +38,8 @@ class AddTaskCommand:
         Executes the logic of this command.
         '''
         with open(self.filename, 'a+') as file:
-            file.write(self.name + '\n')
+            file.write(self._format_task() + '\n')
+
+    def _format_task(self):
+        output = '[description:"{}"]'.format(self.name)
+        return output
