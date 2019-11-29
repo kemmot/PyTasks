@@ -28,6 +28,7 @@ class CommandFactory:
             command.task = task
         elif args.command == 'list':
             command = ListTaskCommand()
+            command.filename = self._filename
         else:
             raise Exception('Command not recognised: [{}]'.format(args.command))
 
@@ -79,6 +80,21 @@ class AddTaskCommand:
 class ListTaskCommand:
     def __init__(self):
         self._logger = logging.getLogger(__class__.__name__)
+        self._filename = ''
+
+    @property
+    def filename(self):
+        '''
+        The name of the file to write the task to.
+        '''
+        return self._filename
+
+    @filename.setter
+    def filename(self, value):
+        self._filename = value
 
     def execute(self):
-        self._logger.info('List executed')
+        with open(self.filename, 'r') as file:
+            for line in file.readlines():
+                line = line.strip()
+                print(line)
