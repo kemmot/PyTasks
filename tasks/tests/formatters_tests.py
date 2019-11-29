@@ -25,3 +25,19 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         actual = formatter.format(task)
 
         self.assertEqual(expected, actual)
+
+    def test_parse_parses_details(self):
+        line = '['
+        line += 'description:"new"'
+        line += ' entry:"1575063536"'
+        line += ' status:"pending"'
+        line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
+        line += ']'
+        formatter = formatters.TaskWarriorFormatter()
+        task = formatter.parse(line)
+        self.assertIsNotNone(task)
+        self.assertIsInstance(task, entities.Task)
+        self.assertEqual(task.name, 'new')
+        self.assertEqual(task.status, 'pending')
+        self.assertEqual(task.created, '1575063536')
+        self.assertEqual(task.id_number, '43462153-2313-4fc0-b1a4-f6c4b1501d8f')

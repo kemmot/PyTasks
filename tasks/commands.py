@@ -29,7 +29,8 @@ class CommandFactory:
             command.filename = self._filename
             command.task = task
         elif args.command == 'list':
-            command = ListTaskCommand()
+            formatter = formatters.TaskWarriorFormatter()
+            command = ListTaskCommand(formatter)
             command.filename = self._filename
         else:
             raise Exception('Command not recognised: [{}]'.format(args.command))
@@ -98,6 +99,10 @@ class ListTaskCommand(CommandBase):
     A command that will list tasks.
     '''
 
+    def __init__(self, formatter):
+        super().__init__()
+        self._formatter = formatter
+
     def execute(self):
         '''
         Executes the logic of this command.
@@ -105,4 +110,10 @@ class ListTaskCommand(CommandBase):
         with open(self.filename, 'r') as file:
             for line in file.readlines():
                 line = line.strip()
-                print(line)
+                task = self._formatter.parse(line)
+                format_string = 'name: {}, status: {}, created: {}, id: {}'
+                print(format_string.format( \
+                        task.name, \
+                        task.status, \
+                        task.created, \
+                        task.id_number))
