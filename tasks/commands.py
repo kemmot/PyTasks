@@ -26,8 +26,11 @@ class CommandFactory:
             command = AddTaskCommand(formatter)
             command.filename = self._filename
             command.task = task
+        elif args.command == 'list':
+            command = ListTaskCommand()
         else:
             raise Exception('Command not recognised: [{}]'.format(args.command))
+
         return command
 
 
@@ -71,3 +74,11 @@ class AddTaskCommand:
             formatted_task = self._formatter.format(self.task)
             file.write(formatted_task + '\n')
         self._logger.info('Created task')
+
+
+class ListTaskCommand:
+    def __init__(self):
+        self._logger = logging.getLogger(__class__.__name__)
+
+    def execute(self):
+        self._logger.info('List executed')

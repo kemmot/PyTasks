@@ -16,7 +16,6 @@ class CommandFactoryTests(unittest.TestCase):
         with self.assertRaises(Exception):
             factory.get_command(args)
 
-
     def test_get_add_command(self):
         args = mock.Mock()
         args.command = 'add'
@@ -31,6 +30,16 @@ class CommandFactoryTests(unittest.TestCase):
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, ' '.join(args.name))
+
+    def test_get_list_command(self):
+        args = mock.Mock()
+        args.command = 'list'
+
+        filename = 'filename'
+        factory = commands.CommandFactory(filename)
+        command = factory.get_command(args)
+
+        self.assertIsInstance(command, commands.ListTaskCommand)
 
 
 class AddTaskCommandTests(unittest.TestCase):
