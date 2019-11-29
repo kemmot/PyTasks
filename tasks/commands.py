@@ -35,15 +35,13 @@ class CommandFactory:
         return command
 
 
-class AddTaskCommand:
+class CommandBase:
     '''
-    A command that will add a task.
+    A base class providing functionality common to all commands.
     '''
-    def __init__(self, formatter):
+    def __init__(self):
         self._logger = logging.getLogger(__class__.__name__)
-        self._formatter = formatter
         self._filename = ''
-        self._task = None
 
     @property
     def filename(self):
@@ -55,6 +53,22 @@ class AddTaskCommand:
     @filename.setter
     def filename(self, value):
         self._filename = value
+
+    def execute(self):
+        '''
+        Executes the logic of this command.
+        '''
+        raise Exception('Execute not implemented in {}'.format(__class__.__name__))
+
+
+class AddTaskCommand(CommandBase):
+    '''
+    A command that will add a task.
+    '''
+    def __init__(self, formatter):
+        super().__init__()
+        self._formatter = formatter
+        self._task = None
 
     @property
     def task(self):
@@ -77,23 +91,15 @@ class AddTaskCommand:
         self._logger.info('Created task')
 
 
-class ListTaskCommand:
-    def __init__(self):
-        self._logger = logging.getLogger(__class__.__name__)
-        self._filename = ''
-
-    @property
-    def filename(self):
-        '''
-        The name of the file to write the task to.
-        '''
-        return self._filename
-
-    @filename.setter
-    def filename(self, value):
-        self._filename = value
+class ListTaskCommand(CommandBase):
+    '''
+    A command that will list tasks.
+    '''
 
     def execute(self):
+        '''
+        Executes the logic of this command.
+        '''
         with open(self.filename, 'r') as file:
             for line in file.readlines():
                 line = line.strip()
