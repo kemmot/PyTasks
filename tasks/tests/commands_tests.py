@@ -43,6 +43,18 @@ class CommandFactoryTests(unittest.TestCase):
         self.assertEqual(command.filename, filename)
 
 
+class CommandBaseTests(unittest.TestCase):
+    def test_filename_sets_field(self):
+        command = commands.CommandBase()
+        command.filename = 'test'
+        self.assertEqual(command.filename, 'test')
+
+    def test_execute_errors(self):
+        command = commands.CommandBase()
+        with self.assertRaises(Exception):
+            command.execute()
+
+
 class AddTaskCommandTests(unittest.TestCase):
     def test_execute_writes_to_file(self):
         expected_output = 'testing 1 2 3'

@@ -2,6 +2,7 @@
 A module providing task commands.
 '''
 
+import datetime
 import logging
 import uuid
 
@@ -17,6 +18,7 @@ class CommandFactory:
         command = None
         if args.command == 'add':
             task = entities.Task()
+            task.created = datetime.datetime.now()
             task.id_number = uuid.uuid4()
             task.name = ' '.join(args.name)
             task.status = 'pending'

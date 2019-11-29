@@ -2,11 +2,13 @@
 Module for task related entity classes.
 '''
 
+
 class Task:
     '''
     A class for encapsulating task details.
     '''
     def __init__(self):
+        self._created = ''
         self._id_number = ''
         self._name = ''
         self._status = ''
@@ -21,6 +23,17 @@ class Task:
     @id_number.setter
     def id_number(self, value):
         self._id_number = value
+
+    @property
+    def created(self):
+        '''
+        The time the task was created.
+        '''
+        return self._created
+
+    @created.setter
+    def created(self, value):
+        self._created = value
 
     @property
     def name(self):

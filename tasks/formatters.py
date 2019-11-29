@@ -12,6 +12,7 @@ class TaskWarriorFormatter:
         '''
         output = '['
         output += 'description:"{}"'.format(task.name)
+        output += ' entry:"{}"'.format(task.created.strftime('%s'))
         output += ' status:"{}"'.format(task.status)
         output += ' uuid:"{}"'.format(task.id_number)
         output += ']'
