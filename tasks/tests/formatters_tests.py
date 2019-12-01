@@ -34,9 +34,10 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
         line += ']'
         formatter = formatters.TaskWarriorFormatter()
-        task = formatter.parse(line)
+        task = formatter.parse(1, line)
         self.assertIsNotNone(task)
         self.assertIsInstance(task, entities.Task)
+        self.assertEqual(task.index, 1)
         self.assertEqual(task.name, 'new')
         self.assertEqual(task.status, 'pending')
         self.assertEqual(task.created, '1575063536')

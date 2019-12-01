@@ -10,6 +10,7 @@ class Task:
     def __init__(self):
         self._created = ''
         self._id_number = ''
+        self._index = -1
         self._name = ''
         self._status = ''
 
@@ -23,6 +24,17 @@ class Task:
     @id_number.setter
     def id_number(self, value):
         self._id_number = value
+
+    @property
+    def index(self):
+        '''
+        The task index.
+        '''
+        return self._index
+
+    @index.setter
+    def index(self, value):
+        self._index = value
 
     @property
     def created(self):

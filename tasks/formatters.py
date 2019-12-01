@@ -23,11 +23,12 @@ class TaskWarriorFormatter:
         output += ']'
         return output
 
-    def parse(self, line):
+    def parse(self, line_number, line):
         '''
         Parses a task.
         '''
         task = entities.Task()
+        task.index = line_number
         pattern = '(?P<name>\\w[^:]+):"(?P<value>[^"]+)"'
         for match in re.finditer(pattern, line):
             key = match.group('name')

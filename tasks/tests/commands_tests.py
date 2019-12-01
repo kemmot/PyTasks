@@ -125,7 +125,7 @@ class ListTaskCommandTests(unittest.TestCase):
             with mock.patch('commands.print', mock_print):
                 command.execute()
 
-        formatter.parse.assert_called_once_with('task 1')
+        formatter.parse.assert_called_once_with(1, 'task 1')
         #calls = [mock.call('task 1'), mock.call('task 2')]
         #mock_print.assert_has_calls(calls)
         mock_print.assert_called()

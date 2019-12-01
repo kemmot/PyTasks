@@ -108,13 +108,15 @@ class ListTaskCommand(CommandBase):
         Executes the logic of this command.
         '''
         with open(self.filename, 'r') as file:
+            print('ID   Status  Description')
+            print('------------------------')
+            line_number = 1
             for line in file.readlines():
                 line = line.strip()
-                task = self._formatter.parse(line)
-                print('ID   Status  Description')
-                print('------------------------')
+                task = self._formatter.parse(line_number, line)
                 format_string = '{} {} {}'
                 print(format_string.format( \
-                        str(task.id_number)[0:4], \
+                        task.index, \
                         task.status, \
                         task.name))
+                line_number += 1
