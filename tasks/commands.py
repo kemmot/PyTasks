@@ -111,9 +111,10 @@ class ListTaskCommand(CommandBase):
             for line in file.readlines():
                 line = line.strip()
                 task = self._formatter.parse(line)
-                format_string = 'name: {}, status: {}, created: {}, id: {}'
+                print('ID   Status  Description')
+                print('------------------------')
+                format_string = '{} {} {}'
                 print(format_string.format( \
-                        task.name, \
+                        str(task.id_number)[0:4], \
                         task.status, \
-                        task.created, \
-                        task.id_number))
+                        task.name))
