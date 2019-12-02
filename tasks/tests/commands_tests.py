@@ -20,12 +20,12 @@ class CommandFactoryTests(unittest.TestCase):
         args.command = 'add'
         args.name = ['first', 'task']
 
-        filename = 'filename'
-        factory = commands.CommandFactory(filename)
+        storage = mock.Mock()
+        factory = commands.CommandFactory(storage)
         command = factory.get_command(args)
 
         self.assertIsInstance(command, commands.AddTaskCommand)
-        self.assertEqual(command.filename, filename)
+        self.assertEqual(command.storage, storage)
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, ' '.join(args.name))
@@ -34,79 +34,50 @@ class CommandFactoryTests(unittest.TestCase):
         args = mock.Mock()
         args.command = 'list'
 
-        filename = 'filename'
-        factory = commands.CommandFactory(filename)
+        storage = mock.Mock()
+        factory = commands.CommandFactory(storage)
         command = factory.get_command(args)
 
         self.assertIsInstance(command, commands.ListTaskCommand)
-        self.assertEqual(command.filename, filename)
+        self.assertEqual(command.storage, storage)
 
 
 class CommandBaseTests(unittest.TestCase):
-    def test_filename_sets_field(self):
-        command = commands.CommandBase()
-        command.filename = 'test'
-        self.assertEqual(command.filename, 'test')
-
     def test_execute_errors(self):
-        command = commands.CommandBase()
+        storage = mock.MagicMock()
+        command = commands.CommandBase(storage)
         with self.assertRaises(Exception):
             command.execute()
 
 
 class AddTaskCommandTests(unittest.TestCase):
-    def test_execute_writes_to_file(self):
-        expected_output = 'testing 1 2 3'
-
-        formatter = mock.MagicMock()
-        formatter.format = MagicMock(return_value=expected_output)
+    def test_execute_calls_write_on_storage(self):
+        storage = mock.MagicMock()
+        storage.write = MagicMock()
 
         task = entities.Task()
         task.name = 'test name'
 
-        test_path = 'test path'
-        mock_open = mock.mock_open()
-        location = 'commands.open'
-        with mock.patch(location, mock_open):
-            command = commands.AddTaskCommand(formatter)
-            command.filename = test_path
-            command.task = task
-            command.execute()
-        mock_open.assert_called_once_with(test_path, 'a+')
-        handle = mock_open()
-        handle.write.assert_called_once_with(expected_output + '\n')
-        handle.__exit__.assert_called()
+        command = commands.AddTaskCommand(storage)
+        command.task = task
+        command.execute()
+
+        storage.write.assert_called_once_with(task)
 
 
 class ListTaskCommandTests(unittest.TestCase):
-    def test_execute_opens_and_closes_file(self):
-        test_path = 'test path'
+    def test_execute_calls_read_all_on_storage(self):
+        tasks = []
+        tasks.append(mock.MagicMock())
+        tasks.append(mock.MagicMock())
 
-        formatter = mock.MagicMock()
-        formatter.format = MagicMock(return_value='test 1')
-        command = commands.ListTaskCommand(formatter)
-        command.filename = test_path
+        storage = mock.MagicMock()
+        storage.read_all = MagicMock(return_value=tasks)
 
-        mock_open = mock.mock_open()
-        location = 'commands.open'
-        with mock.patch(location, mock_open):
-            command.execute()
+        command = commands.ListTaskCommand(storage)
+        command.execute()
 
-        mock_open.assert_called_once_with(test_path, 'r')
-        mock_open().__exit__.assert_called()
-
-    def test_execute_reads_file(self):
-        formatter = mock.MagicMock()
-        formatter.format = MagicMock(return_value='test 1')
-        command = commands.ListTaskCommand(formatter)
-        command.filename = 'test path'
-
-        mock_open = mock.mock_open()
-        location = 'commands.open'
-        with mock.patch(location, mock_open):
-            command.execute()
-
-        mock_open().readlines.assert_called_once()
+        storage.read_all.assert_called_once()
 
     def test_execute_prints_content(self):
         task = mock.MagicMock()
@@ -115,17 +86,16 @@ class ListTaskCommandTests(unittest.TestCase):
         task.id_number = 0
         task.created = ''
 
-        formatter = mock.MagicMock()
-        formatter.parse = MagicMock(return_value=task)
-        command = commands.ListTaskCommand(formatter)
+        tasks = []
+        tasks.append(task)
 
-        mock_open = mock.mock_open(read_data='task 1\n')
+        storage = mock.MagicMock()
+        storage.read_all = MagicMock(return_value=tasks)
+
+        command = commands.ListTaskCommand(storage)
+
         mock_print = mock.MagicMock()
-        with mock.patch('commands.open', mock_open):
-            with mock.patch('commands.print', mock_print):
-                command.execute()
+        with mock.patch('commands.print', mock_print):
+            command.execute()
 
-        formatter.parse.assert_called_once_with(1, 'task 1')
-        #calls = [mock.call('task 1'), mock.call('task 2')]
-        #mock_print.assert_has_calls(calls)
         mock_print.assert_called()

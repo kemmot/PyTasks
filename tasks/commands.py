@@ -7,12 +7,11 @@ import logging
 import uuid
 
 import entities
-import formatters
 
 
 class CommandFactory:
-    def __init__(self, filename):
-        self._filename = filename
+    def __init__(self, storage):
+        self._storage = storage
 
     def get_command(self, args):
         command = None
@@ -23,15 +22,10 @@ class CommandFactory:
             task.name = ' '.join(args.name)
             task.status = 'pending'
 
-            formatter = formatters.TaskWarriorFormatter()
-
-            command = AddTaskCommand(formatter)
-            command.filename = self._filename
+            command = AddTaskCommand(self._storage)
             command.task = task
         elif args.command == 'list':
-            formatter = formatters.TaskWarriorFormatter()
-            command = ListTaskCommand(formatter)
-            command.filename = self._filename
+            command = ListTaskCommand(self._storage)
         else:
             raise Exception('Command not recognised: [{}]'.format(args.command))
 
@@ -42,20 +36,20 @@ class CommandBase:
     '''
     A base class providing functionality common to all commands.
     '''
-    def __init__(self):
+    def __init__(self, storage):
         self._logger = logging.getLogger(__class__.__name__)
-        self._filename = ''
+        self._storage = storage
 
     @property
-    def filename(self):
+    def storage(self):
         '''
-        The name of the file to write the task to.
+        The storage to write the task to.
         '''
-        return self._filename
+        return self._storage
 
-    @filename.setter
-    def filename(self, value):
-        self._filename = value
+    @storage.setter
+    def storage(self, value):
+        self._storage = value
 
     def execute(self):
         '''
@@ -68,9 +62,8 @@ class AddTaskCommand(CommandBase):
     '''
     A command that will add a task.
     '''
-    def __init__(self, formatter):
-        super().__init__()
-        self._formatter = formatter
+    def __init__(self, storage):
+        super().__init__(storage)
         self._task = None
 
     @property
@@ -88,9 +81,7 @@ class AddTaskCommand(CommandBase):
         '''
         Executes the logic of this command.
         '''
-        with open(self.filename, 'a+') as file:
-            formatted_task = self._formatter.format(self.task)
-            file.write(formatted_task + '\n')
+        self._storage.write(self.task)
         self._logger.info('Created task')
 
 
@@ -99,24 +90,15 @@ class ListTaskCommand(CommandBase):
     A command that will list tasks.
     '''
 
-    def __init__(self, formatter):
-        super().__init__()
-        self._formatter = formatter
-
     def execute(self):
         '''
         Executes the logic of this command.
         '''
-        with open(self.filename, 'r') as file:
-            print('ID   Status  Description')
-            print('------------------------')
-            line_number = 1
-            for line in file.readlines():
-                line = line.strip()
-                task = self._formatter.parse(line_number, line)
-                format_string = '{} {} {}'
-                print(format_string.format( \
-                        task.index, \
-                        task.status, \
-                        task.name))
-                line_number += 1
+        print('ID   Status  Description')
+        print('------------------------')
+        for task in self.storage.read_all():
+            format_string = '{} {} {}'
+            print(format_string.format( \
+                    task.index, \
+                    task.status, \
+                    task.name))

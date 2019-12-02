@@ -2,14 +2,15 @@
 A module containing task formatter classes.
 '''
 
+import calendar
 import re
 
 import entities
 
 
-class TaskWarriorFormatter:
+class TaskWarriorPendingFormatter:
     '''
-    A formatter matching task warriors internal file format.
+    A formatter matching task warriors pending file format.
     '''
     def format(self, task):
         '''
@@ -17,7 +18,7 @@ class TaskWarriorFormatter:
         '''
         output = '['
         output += 'description:"{}"'.format(task.name)
-        output += ' entry:"{}"'.format(task.created.strftime('%s'))
+        output += ' entry:"{}"'.format(calendar.timegm(task.created.utctimetuple()))
         output += ' status:"{}"'.format(task.status)
         output += ' uuid:"{}"'.format(task.id_number)
         output += ']'
@@ -42,3 +43,25 @@ class TaskWarriorFormatter:
             elif key == 'uuid':
                 task.id_number = value
         return task
+
+
+class TaskWarriorPendingStorage:
+    def __init__(self, path, formatter=TaskWarriorPendingFormatter()):
+        self._path = path
+        self._formatter = formatter
+
+    def read_all(self):
+        tasks = []
+        with open(self._path, 'r') as file:
+            line_number = 1
+            for line in file.readlines():
+                line = line.strip()
+                task = self._formatter.parse(line_number, line)
+                tasks.append(task)
+                line_number += 1
+        return tasks
+
+    def write(self, task):
+        with open(self._path, 'a+') as file:
+            formatted_task = self._formatter.format(task)
+            file.write(formatted_task + '\n')
