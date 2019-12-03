@@ -11,25 +11,34 @@ import entities
 
 class CommandFactory:
     def __init__(self, storage):
+        self._commands = {}
         self._storage = storage
+        self._register_commands()
+    
+    def _register_commands(self):
+        self._register_command('add', AddTaskCommand(self._storage))
+        self._register_command('list', ListTaskCommand(self._storage))
+    
+    def _register_command(self, name, command):
+        self._commands[name] = command
 
     def get_command(self, args):
-        command = None
+        if not args.command in self._commands:
+            raise Exception('Command not recognised: [{}]'.format(args.command))
+
+        command = self._commands[args.command]
         if args.command == 'add':
             task = entities.Task()
             task.created = datetime.datetime.now()
             task.id_number = uuid.uuid4()
             task.name = ' '.join(args.name)
             task.status = 'pending'
-
-            command = AddTaskCommand(self._storage)
             command.task = task
-        elif args.command == 'list':
-            command = ListTaskCommand(self._storage)
-        else:
-            raise Exception('Command not recognised: [{}]'.format(args.command))
 
         return command
+    
+    def _populate_command(self, args, command):
+        pass
 
 
 class CommandBase:
