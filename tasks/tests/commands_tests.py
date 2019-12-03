@@ -8,38 +8,32 @@ import entities
 
 
 class CommandFactoryTests(unittest.TestCase):
-    def test_unknown_command(self):
+    def test_get_unknown_command(self):
         args = mock.Mock()
         args.command = 'unknown'
         factory = commands.CommandFactory('filename')
         with self.assertRaises(Exception):
             factory.get_command(args)
 
-    def test_get_add_command(self):
+    def test_get_known_command(self):
         args = mock.Mock()
         args.command = 'add'
-        args.name = ['first', 'task']
+
+        expected_command = mock.Mock()
+
+        parser = mock.Mock()
+        parser.get_name = mock.MagicMock(return_value=args.command)
+        parser.parse = mock.MagicMock(return_value=expected_command)
 
         storage = mock.Mock()
         factory = commands.CommandFactory(storage)
+        factory.register_parser(parser)
+        
         command = factory.get_command(args)
 
-        self.assertIsInstance(command, commands.AddTaskCommand)
-        self.assertEqual(command.storage, storage)
-        self.assertIsInstance(command.task.id_number, uuid.UUID)
-        self.assertEqual(command.task.status, 'pending')
-        self.assertEqual(command.task.name, ' '.join(args.name))
-
-    def test_get_list_command(self):
-        args = mock.Mock()
-        args.command = 'list'
-
-        storage = mock.Mock()
-        factory = commands.CommandFactory(storage)
-        command = factory.get_command(args)
-
-        self.assertIsInstance(command, commands.ListTaskCommand)
-        self.assertEqual(command.storage, storage)
+        self.assertEqual(command, expected_command)
+        parser.get_name.assert_called_once()
+        parser.parse.assert_called_once_with(storage, args)
 
 
 class CommandBaseTests(unittest.TestCase):
@@ -63,6 +57,22 @@ class AddTaskCommandTests(unittest.TestCase):
         command.execute()
 
         storage.write.assert_called_once_with(task)
+
+
+class AddTaskCommandParserTests(unittest.TestCase):
+    def test_parse_returns_correct_command(self):
+        args = mock.Mock()
+        args.command = 'add'
+        args.name = ['first', 'task']
+
+        storage = mock.Mock()
+        command = commands.AddTaskCommandParser().parse(storage, args)
+
+        self.assertIsInstance(command, commands.AddTaskCommand)
+        self.assertEqual(command.storage, storage)
+        self.assertIsInstance(command.task.id_number, uuid.UUID)
+        self.assertEqual(command.task.status, 'pending')
+        self.assertEqual(command.task.name, ' '.join(args.name))
 
 
 class ListTaskCommandTests(unittest.TestCase):
@@ -99,3 +109,15 @@ class ListTaskCommandTests(unittest.TestCase):
             command.execute()
 
         mock_print.assert_called()
+
+
+class ListTaskCommandParserTests(unittest.TestCase):
+    def test_get_list_command(self):
+        args = mock.Mock()
+        args.command = 'list'
+
+        storage = mock.Mock()
+        command = commands.ListTaskCommandParser().parse(storage, args)
+
+        self.assertIsInstance(command, commands.ListTaskCommand)
+        self.assertEqual(command.storage, storage)

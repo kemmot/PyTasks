@@ -11,34 +11,22 @@ import entities
 
 class CommandFactory:
     def __init__(self, storage):
-        self._commands = {}
+        self._parsers = {}
         self._storage = storage
-        self._register_commands()
-    
-    def _register_commands(self):
-        self._register_command('add', AddTaskCommand(self._storage))
-        self._register_command('list', ListTaskCommand(self._storage))
-    
-    def _register_command(self, name, command):
-        self._commands[name] = command
+
+    def register_known_parsers(self):
+        self.register_parser(AddTaskCommandParser())
+        self.register_parser(ListTaskCommandParser())
+
+    def register_parser(self, parser):
+        self._parsers[parser.get_name()] = parser
 
     def get_command(self, args):
-        if not args.command in self._commands:
+        if not args.command in self._parsers:
             raise Exception('Command not recognised: [{}]'.format(args.command))
 
-        command = self._commands[args.command]
-        if args.command == 'add':
-            task = entities.Task()
-            task.created = datetime.datetime.now()
-            task.id_number = uuid.uuid4()
-            task.name = ' '.join(args.name)
-            task.status = 'pending'
-            command.task = task
-
-        return command
-    
-    def _populate_command(self, args, command):
-        pass
+        parser = self._parsers[args.command]
+        return parser.parse(self._storage, args)
 
 
 class CommandBase:
@@ -94,6 +82,22 @@ class AddTaskCommand(CommandBase):
         self._logger.info('Created task')
 
 
+class AddTaskCommandParser:
+    def get_name(self):
+        return 'add'
+
+    def parse(self, storage, args):
+        task = entities.Task()
+        task.created = datetime.datetime.now()
+        task.id_number = uuid.uuid4()
+        task.name = ' '.join(args.name)
+        task.status = 'pending'
+
+        command = AddTaskCommand(storage)
+        command.task = task
+        return command
+
+
 class ListTaskCommand(CommandBase):
     '''
     A command that will list tasks.
@@ -111,3 +115,11 @@ class ListTaskCommand(CommandBase):
                     task.index, \
                     task.status, \
                     task.name))
+
+
+class ListTaskCommandParser:
+    def get_name(self):
+        return 'list'
+
+    def parse(self, storage, args):
+        return ListTaskCommand(storage)
