@@ -35,6 +35,14 @@ class CommandFactoryTests(unittest.TestCase):
         parser.get_name.assert_called_once()
         parser.parse.assert_called_once_with(storage, args)
 
+    def test_register_known_parsers_registers(self):
+        args = mock.Mock()
+        args.command = 'list'
+        storage = mock.Mock()
+        factory = commands.CommandFactory(storage)
+        factory.register_known_parsers()
+        command = factory.get_command(args)
+        self.assertIsInstance(command, commands.ListTaskCommand)
 
 class CommandBaseTests(unittest.TestCase):
     def test_execute_errors(self):
