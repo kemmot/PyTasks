@@ -15,8 +15,8 @@ class CommandFactory:
         self._storage = storage
 
     def register_known_parsers(self):
-        self.register_parser(AddTaskCommandParser())
-        self.register_parser(ListTaskCommandParser())
+        for cla in CommandParserBase.__subclasses__():
+            self.register_parser(cla())
 
     def register_parser(self, parser):
         self._parsers[parser.get_name()] = parser
@@ -55,6 +55,14 @@ class CommandBase:
         raise Exception('Execute not implemented in {}'.format(__class__.__name__))
 
 
+class CommandParserBase:
+    def get_name(self):
+        raise Exception('get_name not implemented in {}'.format(__class__.__name__))
+
+    def parse(self, storage, args):
+        raise Exception('parse not implemented in {}'.format(__class__.__name__))
+
+
 class AddTaskCommand(CommandBase):
     '''
     A command that will add a task.
@@ -82,7 +90,7 @@ class AddTaskCommand(CommandBase):
         self._logger.info('Created task')
 
 
-class AddTaskCommandParser:
+class AddTaskCommandParser(CommandParserBase):
     def get_name(self):
         return 'add'
 
@@ -117,7 +125,7 @@ class ListTaskCommand(CommandBase):
                     task.name))
 
 
-class ListTaskCommandParser:
+class ListTaskCommandParser(CommandParserBase):
     def get_name(self):
         return 'list'
 
