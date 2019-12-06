@@ -86,8 +86,10 @@ class AddTaskCommand(CommandBase):
         '''
         Executes the logic of this command.
         '''
+        existing_tasks = self._storage.read_all()
         self._storage.write(self.task)
-        self._logger.info('Created task')
+        self.task.index = len(existing_tasks) + 1
+        print('Task created: {}'.format(self.task.index))
 
 
 class AddTaskCommandParser(CommandParserBase):
