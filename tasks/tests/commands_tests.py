@@ -104,6 +104,30 @@ class AddTaskCommandParserTests(unittest.TestCase):
         self.assertEqual(command.task.name, ' '.join(args.name))
 
 
+class DoneCommandTests(unittest.TestCase):
+    def test_constructor_sets_properties(self):
+        storage = mock.Mock()
+        command = commands.DoneCommand(storage)
+        self.assertEqual(storage, command.storage)
+        self.assertEqual(-1, command.task_index)
+
+    def test_task_index_property_sets_value(self):
+        command = commands.DoneCommand(mock.Mock())
+        command.task_index = 5
+        self.assertEqual(5, command.task_index)
+
+    def test_execute_calls_delete_on_storage(self):
+        task = mock.Mock()
+        storage = mock.Mock()
+        storage.delete = mock.MagicMock()
+        storage.read = mock.MagicMock(return_value=task)
+        command = commands.DoneCommand(storage)
+        command.task_index = 3
+        command.execute()
+        storage.read.assert_called_once_with(3)
+        storage.delete.assert_called_once_with(task)
+
+
 class ListTaskCommandTests(unittest.TestCase):
     def test_execute_calls_read_all_on_storage(self):
         tasks = []
