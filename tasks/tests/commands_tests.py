@@ -52,6 +52,18 @@ class CommandBaseTests(unittest.TestCase):
             command.execute()
 
 
+class CommandParserBaseTests(unittest.TestCase):
+    def test_get_name_errors(self):
+        parser = commands.CommandParserBase()
+        with self.assertRaises(Exception):
+            parser.get_name()
+
+    def test_parse_errors(self):
+        parser = commands.CommandParserBase()
+        with self.assertRaises(Exception):
+            parser.parse(mock.Mock(), mock.Mock())
+
+
 class AddTaskCommandTests(unittest.TestCase):
     def test_execute_calls_write_on_storage(self):
         storage = mock.MagicMock()
@@ -126,6 +138,21 @@ class DoneCommandTests(unittest.TestCase):
         command.execute()
         storage.read.assert_called_once_with(3)
         storage.delete.assert_called_once_with(task)
+
+
+class DoneCommandParserTests(unittest.TestCase):
+    def test_get_name_returns_correct_value(self):
+        parser = commands.DoneCommandParser()
+        self.assertEqual('done', parser.get_name())
+
+    def test_parse_creates_correct_command(self):
+        args = mock.Mock()
+        args.filter = 2
+        storage = mock.Mock()
+        parser = commands.DoneCommandParser()
+        command = parser.parse(storage, args)
+        self.assertIsInstance(command, commands.DoneCommand)
+        self.assertEqual(2, command.task_index)
 
 
 class ListTaskCommandTests(unittest.TestCase):

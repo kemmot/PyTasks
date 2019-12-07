@@ -44,10 +44,6 @@ class CommandBase:
         '''
         return self._storage
 
-    @storage.setter
-    def storage(self, value):
-        self._storage = value
-
     def execute(self):
         '''
         Executes the logic of this command.
@@ -124,6 +120,16 @@ class DoneCommand(CommandBase):
     def execute(self):
         task = self.storage.read(self.task_index)
         self.storage.delete(task)
+
+
+class DoneCommandParser(CommandParserBase):
+    def get_name(self):
+        return 'done'
+
+    def parse(self, storage, args):
+        command = DoneCommand(storage)
+        command.task_index = args.filter
+        return command
 
 
 class ListTaskCommand(CommandBase):
