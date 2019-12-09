@@ -2,13 +2,15 @@
 Module for task related entity classes.
 '''
 
+import datetime
+
 
 class Task:
     '''
     A class for encapsulating task details.
     '''
     def __init__(self):
-        self._created = ''
+        self._created = datetime.datetime.now()
         self._id_number = ''
         self._index = -1
         self._name = ''

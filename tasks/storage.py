@@ -3,7 +3,9 @@ A module containing task formatter classes.
 '''
 
 import calendar
+import datetime
 import re
+import os
 
 import entities
 
@@ -37,7 +39,7 @@ class TaskWarriorPendingFormatter:
             if key == 'description':
                 task.name = value
             elif key == 'entry':
-                task.created = value
+                task.created = datetime.datetime.fromtimestamp(float(value)/1000.)
             elif key == 'status':
                 task.status = value
             elif key == 'uuid':
@@ -49,6 +51,16 @@ class TaskWarriorPendingStorage:
     def __init__(self, path, formatter=TaskWarriorPendingFormatter()):
         self._path = path
         self._formatter = formatter
+    
+    def delete(self, task):
+        tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
+        self.write_all(tasks_to_keep)
+
+    def read(self, filter):
+        results = [t for t in self.read_all() if t.index == filter]
+        if len(results) < 1:
+            raise IndexError('Task index not found: {}'.format(filter))
+        return results[0]     
 
     def read_all(self):
         tasks = []
@@ -62,6 +74,13 @@ class TaskWarriorPendingStorage:
         return tasks
 
     def write(self, task):
-        with open(self._path, 'a+') as file:
-            formatted_task = self._formatter.format(task)
-            file.write(formatted_task + '\n')
+        self.write_all([task])
+
+    def write_all(self, tasks):
+        temp_path = self._path + '.new'
+        with open(temp_path, 'w+') as file:
+            for task in tasks:
+                formatted_task = self._formatter.format(task)
+                file.write(formatted_task + '\n')
+        os.remove(self._path)
+        os.rename(temp_path, self._path)

@@ -44,7 +44,51 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.created, '1575063536')
         self.assertEqual(task.id_number, '43462153-2313-4fc0-b1a4-f6c4b1501d8f')
 
+
 class TaskWarriorPendingStorage(unittest.TestCase):
+    def test_delete_deletes_correct_task(self):
+        task1 = mock.Mock()
+        task1.task_index = 1
+        task2 = mock.Mock()
+        task2.task_index = 2
+        task3 = mock.Mock()
+        task3.task_index = 3
+
+        formatter = mock.Mock()
+        formatter.format = mock.Mock(return_value='')
+        formatter.parse = mock.Mock()
+        formatter.parse.side_effect = [task1, task2, task3]
+
+        target = storage.TaskWarriorPendingStorage('test path', formatter)
+
+        mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
+        with mock.patch('storage.open', mock_open):
+            result = target.delete(task2)
+        handle = mock_open()
+        calls = [mock.call(task1), mock.call(task3)]
+        self.assertEqual(calls, formatter.format.mock_calls)
+        handle.write.assert_called()
+        handle.__exit__.assert_called()
+
+    def test_read_returns_matching_task(self):
+        task1 = mock.Mock()
+        task1.index = 1
+        task2 = mock.Mock()
+        task2.index = 2
+        task3 = mock.Mock()
+        task3.index = 3
+
+        formatter = mock.Mock()
+        formatter.parse = mock.Mock()
+        formatter.parse.side_effect = [task1, task2, task3]
+
+        target = storage.TaskWarriorPendingStorage('test path', formatter)
+
+        mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
+        with mock.patch('storage.open', mock_open):
+            result = target.read(2)
+        self.assertEqual(task2, result)
+    
     def test_read_all_opens_and_closes_file(self):
         test_path = 'test path'
         target = storage.TaskWarriorPendingStorage(test_path)
