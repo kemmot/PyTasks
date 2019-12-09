@@ -25,6 +25,14 @@ class CommandLineParserTests(unittest.TestCase):
         result = cli.CommandLineParser().parse(args)
         self.assertEqual(result.name, ['arg2', 'arg3'])
 
+    def test_done_command_parses(self):
+        args = []
+        args.append('done')
+        args.append('5')
+        result = cli.CommandLineParser().parse(args)
+        self.assertEqual(result.command, 'done')
+        self.assertEqual(result.filter, 5)
+
     def test_list_command_parses(self):
         args = []
         args.append('list')
