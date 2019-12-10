@@ -51,36 +51,36 @@ class TaskWarriorPendingStorage:
     def __init__(self, path, formatter=TaskWarriorPendingFormatter()):
         self._path = path
         self._formatter = formatter
-    
+
     def delete(self, task):
         tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
-        self.write_all(tasks_to_keep)
+        self._write_all(tasks_to_keep)
 
-    def read(self, filter):
-        results = [t for t in self.read_all() if t.index == filter]
-        if len(results) < 1:
-            raise IndexError('Task index not found: {}'.format(filter))
-        return results[0]     
+    def read(self, task_index):
+        results = [t for t in self.read_all() if t.index == task_index]
+        if not results:
+            raise IndexError('Task index not found: {}'.format(task_index))
+        return results[0]
 
     def read_all(self):
         tasks = []
-        with open(self._path, 'r') as file:
-            line_number = 1
-            for line in file.readlines():
-                line = line.strip()
-                task = self._formatter.parse(line_number, line)
-                tasks.append(task)
-                line_number += 1
+        if os.path.isfile(self._path):
+            with open(self._path, 'r') as file:
+                line_number = 1
+                for line in file.readlines():
+                    line = line.strip()
+                    task = self._formatter.parse(line_number, line)
+                    tasks.append(task)
+                    line_number += 1
         return tasks
 
     def write(self, task):
-        self.write_all([task])
+        tasks = self.read_all()
+        tasks.append(task)
+        self._write_all(tasks)
 
-    def write_all(self, tasks):
-        temp_path = self._path + '.new'
-        with open(temp_path, 'w+') as file:
+    def _write_all(self, tasks):
+        with open(self._path, 'w+') as file:
             for task in tasks:
                 formatted_task = self._formatter.format(task)
                 file.write(formatted_task + '\n')
-        os.remove(self._path)
-        os.rename(temp_path, self._path)
