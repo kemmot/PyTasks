@@ -46,42 +46,33 @@ class TaskWarriorFormatterTests(unittest.TestCase):
 
 
 class TaskWarriorPendingStorage(unittest.TestCase):
+    def setUp(self):
+        self._formatter = mock.Mock()
+        self._formatter.parse = mock.Mock()
+
     def test_delete_deletes_correct_task(self):
-        task1 = mock.Mock()
-        task1.task_index = 1
-        task1.id_number = uuid.uuid4()
-        task2 = mock.Mock()
-        task2.task_index = 2
-        task2.id_number = uuid.uuid4()
-        task3 = mock.Mock()
-        task3.task_index = 3
-        task3.id_number = uuid.uuid4()
+        tasks = self._create_tasks(3)
 
-        formatter = mock.Mock()
-        formatter.format = mock.Mock(return_value='')
-        formatter.parse = mock.Mock()
-        formatter.parse.side_effect = [task1, task2, task3]
+        self._formatter.format = mock.Mock(return_value='')
+        self._formatter.parse.side_effect = tasks
 
-        target = storage.TaskWarriorPendingStorage('test path', formatter)
+        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
 
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
             mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
             with mock.patch('storage.open', mock_open):
-                target.delete(task2)
+                target.delete(tasks[1])
         handle = mock_open()
-        calls = [mock.call(task1), mock.call(task3)]
-        self.assertEqual(calls, formatter.format.mock_calls)
+        calls = [mock.call(tasks[0]), mock.call(tasks[2])]
+        self.assertEqual(calls, self._formatter.format.mock_calls)
         handle.write.assert_called()
         handle.__exit__.assert_called()
 
     def test_read_raises_when_no_matching_task(self):
-        task1 = mock.Mock()
-        task1.index = 1
-        formatter = mock.Mock()
-        formatter.parse = mock.Mock()
-        formatter.parse.side_effect = [task1]
-        target = storage.TaskWarriorPendingStorage('test path', formatter)
+        task1 = self._create_task()
+        self._formatter.parse.side_effect = [task1]
+        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
             mock_open = mock.mock_open(read_data='task1\n')
@@ -90,25 +81,15 @@ class TaskWarriorPendingStorage(unittest.TestCase):
                     target.read(2)
 
     def test_read_returns_matching_task(self):
-        task1 = mock.Mock()
-        task1.index = 1
-        task2 = mock.Mock()
-        task2.index = 2
-        task3 = mock.Mock()
-        task3.index = 3
-
-        formatter = mock.Mock()
-        formatter.parse = mock.Mock()
-        formatter.parse.side_effect = [task1, task2, task3]
-
-        target = storage.TaskWarriorPendingStorage('test path', formatter)
-
+        tasks = self._create_tasks(3)
+        self._formatter.parse.side_effect = tasks
+        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
             mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
             with mock.patch('storage.open', mock_open):
                 result = target.read(2)
-        self.assertEqual(task2, result)
+        self.assertEqual(tasks[1], result)
 
     def test_read_all_does_not_open_file_if_not_exists(self):
         target = storage.TaskWarriorPendingStorage('path')
@@ -142,12 +123,11 @@ class TaskWarriorPendingStorage(unittest.TestCase):
             mock_open().readlines.assert_called_once()
 
     def test_read_all_calls_parse(self):
-        task = mock.MagicMock()
+        task = self._create_task()
 
-        formatter = mock.MagicMock()
-        formatter.parse = mock.MagicMock(return_value=task)
+        self._formatter.parse = mock.MagicMock(return_value=task)
 
-        target = storage.TaskWarriorPendingStorage('test path', formatter)
+        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
 
         read_data = 'task1'
         mock_isfile = mock.Mock(return_value=True)
@@ -156,15 +136,14 @@ class TaskWarriorPendingStorage(unittest.TestCase):
             with mock.patch('storage.open', mock_open):
                 target.read_all()
 
-        formatter.parse.assert_called_once_with(1, read_data)
+        self._formatter.parse.assert_called_once_with(1, read_data)
 
     def test_read_all_returns_correct_values(self):
-        task = mock.MagicMock()
+        task = self._create_task()
 
-        formatter = mock.MagicMock()
-        formatter.parse = mock.MagicMock(return_value=task)
+        self._formatter.parse = mock.MagicMock(return_value=task)
 
-        target = storage.TaskWarriorPendingStorage('test path', formatter)
+        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
 
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
@@ -180,8 +159,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
     def test_write_writes_to_file(self):
         expected_output = 'testing 1 2 3'
 
-        formatter = mock.MagicMock()
-        formatter.format = mock.MagicMock(return_value=expected_output)
+        self._formatter.format = mock.MagicMock(return_value=expected_output)
 
         task = entities.Task()
         task.created = datetime.datetime.now()
@@ -191,9 +169,21 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         with mock.patch('os.path.isfile', mock_isfile):
             mock_open = mock.mock_open()
             with mock.patch('storage.open', mock_open):
-                target = storage.TaskWarriorPendingStorage(test_path, formatter)
+                target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
                 target.write(task)
         mock_open.assert_called_with(test_path, 'w+')
         handle = mock_open()
         handle.write.assert_called_once_with(expected_output + '\n')
         handle.__exit__.assert_called()
+
+    def _create_tasks(self, count):
+        tasks = []
+        for task_index in range(1, count+1):
+            tasks.append(self._create_task(task_index))
+        return tasks
+
+    def _create_task(self, task_index=1):
+        task = mock.Mock()
+        task.index = task_index
+        task.id_number = uuid.uuid4()
+        return task
