@@ -28,7 +28,7 @@ class CommandFactoryTests(unittest.TestCase):
         storage = mock.Mock()
         factory = commands.CommandFactory(storage)
         factory.register_parser(parser)
-        
+
         command = factory.get_command(args)
 
         self.assertEqual(command, expected_command)
@@ -77,11 +77,11 @@ class AddTaskCommandTests(unittest.TestCase):
         command.execute()
 
         storage.write.assert_called_once_with(task)
-    
+
     def test_execute_prints_task_id(self):
         existing_task_count = 3
         existing_tasks = []
-        for count in range(0, existing_task_count):
+        for _ in range(0, existing_task_count):
             existing_tasks.append(mock.Mock())
 
         storage = mock.MagicMock()
@@ -92,7 +92,7 @@ class AddTaskCommandTests(unittest.TestCase):
 
         command = commands.AddTaskCommand(storage)
         command.task = task
-        
+
         mock_print = mock.MagicMock()
         with mock.patch('commands.print', mock_print):
             command.execute()
