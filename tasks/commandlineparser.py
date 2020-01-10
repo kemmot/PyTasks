@@ -16,14 +16,14 @@ class CommandLineParser:
         parser = argparse.ArgumentParser(prog='tasks')
         subparsers = parser.add_subparsers( \
                 dest='command', \
-                help='available commands')
+                help='The available commands.')
 
-        add_parser = subparsers.add_parser('add', help='adds a task')
-        add_parser.add_argument('name', nargs='+', help='the item name')
+        add_parser = subparsers.add_parser('add', help='Adds a task.')
+        add_parser.add_argument('name', nargs='+', help='The name of the new item.')
 
-        add_parser = subparsers.add_parser('done', help='marks a task as complete')
-        add_parser.add_argument('filter', type=int, help='the task filter')
+        add_parser = subparsers.add_parser('done', help='Marks a task as complete.')
+        add_parser.add_argument('filter', type=int, help='The task filter.')
 
-        subparsers.add_parser('list', help='list tasks')
+        subparsers.add_parser('list', help='List existing tasks.')
 
         return parser.parse_args(args)
