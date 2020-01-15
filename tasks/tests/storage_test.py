@@ -50,7 +50,9 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         self._formatter = mock.Mock()
         self._formatter.parse = mock.Mock()
 
-    def test_delete_deletes_correct_task(self):
+    @mock.patch('storage.os.path')
+    @mock.patch('storage.os')
+    def test_delete_deletes_correct_task(self, mock_os, mock_path):
         tasks = self._create_tasks(3)
 
         self._formatter.format = mock.Mock(return_value='')
@@ -58,11 +60,10 @@ class TaskWarriorPendingStorage(unittest.TestCase):
 
         target = storage.TaskWarriorPendingStorage('test path', self._formatter)
 
-        mock_isfile = mock.Mock(return_value=True)
-        with mock.patch('os.path.isfile', mock_isfile):
-            mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
-            with mock.patch('storage.open', mock_open):
-                target.delete(tasks[1])
+        mock_path.isfile.return_value = True
+        mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
+        with mock.patch('storage.open', mock_open):
+            target.delete(tasks[1])
         handle = mock_open()
         calls = [mock.call(tasks[0]), mock.call(tasks[2])]
         self.assertEqual(calls, self._formatter.format.mock_calls)
@@ -156,7 +157,9 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         self.assertEqual(result[0], task)
         self.assertEqual(result[1], task)
 
-    def test_write_writes_to_file(self):
+    @mock.patch('storage.os.path')
+    @mock.patch('storage.os')
+    def test_write_writes_to_file(self, mock_os, mock_path):
         expected_output = 'testing 1 2 3'
 
         self._formatter.format = mock.MagicMock(return_value=expected_output)
@@ -165,16 +168,19 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         task.created = datetime.datetime.now()
 
         test_path = 'test path'
-        mock_isfile = mock.Mock(return_value=True)
-        with mock.patch('os.path.isfile', mock_isfile):
-            mock_open = mock.mock_open()
-            with mock.patch('storage.open', mock_open):
-                target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
-                target.write(task)
-        mock_open.assert_called_with(test_path, 'w+')
+        temp_path = 'test path.tmp'
+        mock_path.isfile.return_value = True
+        mock_open = mock.mock_open()
+        with mock.patch('storage.open', mock_open):
+            target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
+            target.write(task)
+        mock_path.isfile.assert_called_with(temp_path)
+        mock_os.remove.assert_called_with(temp_path)
+        mock_open.assert_called_with(temp_path, 'w+')
         handle = mock_open()
         handle.write.assert_called_once_with(expected_output + '\n')
         handle.__exit__.assert_called()
+        mock_os.rename.assert_called_with(temp_path, test_path)
 
     def _create_tasks(self, count):
         tasks = []
