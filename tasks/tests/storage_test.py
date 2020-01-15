@@ -174,8 +174,13 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         with mock.patch('storage.open', mock_open):
             target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
             target.write(task)
-        mock_path.isfile.assert_called_with(temp_path)
-        mock_os.remove.assert_called_with(temp_path)
+
+        calls = [mock.call(test_path), mock.call(temp_path), mock.call(test_path)]
+        self.assertEqual(calls, mock_path.isfile.mock_calls)
+
+        calls = [mock.call(temp_path), mock.call(test_path)]
+        self.assertEqual(calls, mock_os.remove.mock_calls)
+
         mock_open.assert_called_with(temp_path, 'w+')
         handle = mock_open()
         handle.write.assert_called_once_with(expected_output + '\n')

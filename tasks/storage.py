@@ -87,4 +87,7 @@ class TaskWarriorPendingStorage:
             for task in tasks:
                 formatted_task = self._formatter.format(task)
                 file.write(formatted_task + '\n')
+        if os.name != 'posix':
+            if os.path.isfile(self._path):
+                os.remove(self._path)
         os.rename(temp_path, self._path)
