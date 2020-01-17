@@ -60,18 +60,23 @@ logger.debug('\n')
 logger.debug('Application started')
 try:
     DATA_FILENAME = os.path.join(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0], 'todo.txt')
-    ARGS = cli.CommandLineParser().parse(sys.argv[1:])
     STORAGE = storage.TaskWarriorPendingStorage(DATA_FILENAME)
     COMMAND_FACTORY = commands.CommandFactory(STORAGE)
     COMMAND_FACTORY.register_known_parsers()
-    COMMAND = COMMAND_FACTORY.get_command(ARGS)
+
+    try:
+        ARGS = cli.CommandLineParser().parse(sys.argv[1:])
+        COMMAND = COMMAND_FACTORY.get_command(ARGS)
+    except Exception as ex:
+        raise cli.ExitCodeException(str(ex), cli.ExitCodes.command_line_argument_error) from ex
+
     COMMAND.execute()
     exit_code = cli.ExitCodes.success
 except cli.ExitCodeException as ex:
     logger.error(str(ex), exc_info=True)
     exit_code = ex.exit_code
 except Exception as ex:
-    logger.error(str(ex), exc_info=ex)
+    logger.error(str(ex), exc_info=True)
     exit_code = cli.ExitCodes.unknown_error
 
 exit_code_description = cli.ExitCodes.get_description(exit_code)

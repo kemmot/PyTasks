@@ -7,12 +7,15 @@ import argparse
 
 class ExitCodes:
     success = 0
+    command_line_argument_error = 1
     unknown_error = 99
 
     @staticmethod
     def get_description(value):
         if value == ExitCodes.success:
             description = 'Success'
+        elif value == ExitCodes.command_line_argument_error:
+            description = 'Command Line Argument Error'
         else:
             description = 'Unknown Error'
         return description
@@ -28,6 +31,13 @@ class ExitCodeException(Exception):
         return self._exit_code
 
 
+class ErrorCatchingArgumentParser(argparse.ArgumentParser):
+    def exit(self, status=0, message=None):
+        if status:
+            raise ExitCodeException(message, ExitCodes.command_line_argument_error)
+        exit(status)
+
+
 class CommandLineParser:
     '''
     A command line argument parser implemented using the argparse library.
@@ -36,7 +46,7 @@ class CommandLineParser:
         '''
         Parses the arguments.
         '''
-        parser = argparse.ArgumentParser(prog='tasks')
+        parser = ErrorCatchingArgumentParser(prog='tasks')
         subparsers = parser.add_subparsers( \
                 dest='command', \
                 help='The available commands.')
