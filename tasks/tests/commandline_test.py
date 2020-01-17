@@ -1,6 +1,6 @@
 import unittest
 
-import commandlineparser as cli
+import commandline as cli
 
 
 class CommandLineParserTests(unittest.TestCase):

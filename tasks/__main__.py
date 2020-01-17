@@ -11,7 +11,7 @@ import sys
 import yaml
 
 import commands
-import commandlineparser as cli
+import commandline as cli
 import storage
 
 
@@ -66,6 +66,14 @@ try:
     COMMAND_FACTORY.register_known_parsers()
     COMMAND = COMMAND_FACTORY.get_command(ARGS)
     COMMAND.execute()
-    logger.debug('Application stopped')
+    exit_code = cli.ExitCodes.success
+except cli.ExitCodeException as ex:
+    logger.error(str(ex), exc_info=True)
+    exit_code = ex.exit_code
 except Exception as ex:
     logger.error(str(ex), exc_info=ex)
+    exit_code = cli.ExitCodes.unknown_error
+
+exit_code_description = cli.ExitCodes.get_description(exit_code)
+logger.debug('Application stopped with exit code: {} ({})'.format(exit_code, exit_code_description))
+exit(exit_code)

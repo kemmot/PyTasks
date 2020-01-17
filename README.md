@@ -24,6 +24,8 @@ To display command help, the following can be used.
 ./tasks.sh --help
 ```
 
+* See [here](#exit-codes) for exit codes.
+
 -----------------------------------------------------------------------------------------------------
 
 ## Add Command
@@ -80,3 +82,13 @@ Optional arguments:
 |Name      |Description|
 |:---------|:----------|
 |-h, --help|Show help message and exit.|
+
+-----------------------------------------------------------------------------------------------------
+
+# Exit Codes
+The following is a description of the exit codes that the application can produce.
+
+|Code|Description|
+|---:|:----------|
+|   0|Command executed successfully.|
+|  99|Unknown error.                |
