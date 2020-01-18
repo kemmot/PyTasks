@@ -10,7 +10,7 @@ import os
 import sys
 import yaml
 
-import commands
+import commandfactory
 import commandline as cli
 import storage
 
@@ -61,7 +61,7 @@ logger.debug('Application started')
 try:
     DATA_FILENAME = os.path.join(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0], 'todo.txt')
     STORAGE = storage.TaskWarriorPendingStorage(DATA_FILENAME)
-    COMMAND_FACTORY = commands.CommandFactory(STORAGE)
+    COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE)
     COMMAND_FACTORY.register_known_parsers()
 
     try:

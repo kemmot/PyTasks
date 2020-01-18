@@ -6,6 +6,7 @@ import datetime
 import logging
 import uuid
 
+import commands.commandbase as commandbase
 import entities
 
 
@@ -15,7 +16,7 @@ class CommandFactory:
         self._storage = storage
 
     def register_known_parsers(self):
-        for cla in CommandParserBase.__subclasses__():
+        for cla in commandbase.CommandParserBase.__subclasses__():
             self.register_parser(cla())
 
     def register_parser(self, parser):
@@ -29,37 +30,7 @@ class CommandFactory:
         return parser.parse(self._storage, args)
 
 
-class CommandBase:
-    '''
-    A base class providing functionality common to all commands.
-    '''
-    def __init__(self, storage):
-        self._logger = logging.getLogger(__class__.__name__)
-        self._storage = storage
-
-    @property
-    def storage(self):
-        '''
-        The storage to write the task to.
-        '''
-        return self._storage
-
-    def execute(self):
-        '''
-        Executes the logic of this command.
-        '''
-        raise Exception('Execute not implemented in {}'.format(__class__.__name__))
-
-
-class CommandParserBase:
-    def get_name(self):
-        raise Exception('get_name not implemented in {}'.format(__class__.__name__))
-
-    def parse(self, storage, args):
-        raise Exception('parse not implemented in {}'.format(__class__.__name__))
-
-
-class AddTaskCommand(CommandBase):
+class AddTaskCommand(commandbase.CommandBase):
     '''
     A command that will add a task.
     '''
@@ -88,7 +59,7 @@ class AddTaskCommand(CommandBase):
         print('Task created: {}'.format(self.task.index))
 
 
-class AddTaskCommandParser(CommandParserBase):
+class AddTaskCommandParser(commandbase.CommandParserBase):
     def get_name(self):
         return 'add'
 
@@ -104,7 +75,7 @@ class AddTaskCommandParser(CommandParserBase):
         return command
 
 
-class DoneCommand(CommandBase):
+class DoneCommand(commandbase.CommandBase):
     def __init__(self, storage):
         super().__init__(storage)
         self._task_index = -1
@@ -122,7 +93,7 @@ class DoneCommand(CommandBase):
         self.storage.delete(task)
 
 
-class DoneCommandParser(CommandParserBase):
+class DoneCommandParser(commandbase.CommandParserBase):
     def get_name(self):
         return 'done'
 
@@ -132,7 +103,7 @@ class DoneCommandParser(CommandParserBase):
         return command
 
 
-class ListTaskCommand(CommandBase):
+class ListTaskCommand(commandbase.CommandBase):
     '''
     A command that will list tasks.
     '''
@@ -151,7 +122,7 @@ class ListTaskCommand(CommandBase):
                     task.name))
 
 
-class ListTaskCommandParser(CommandParserBase):
+class ListTaskCommandParser(commandbase.CommandParserBase):
     def get_name(self):
         return 'list'
 

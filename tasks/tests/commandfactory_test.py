@@ -3,7 +3,7 @@ from unittest import mock
 from unittest.mock import MagicMock
 import uuid
 
-import commands
+import commandfactory
 import entities
 
 
@@ -11,7 +11,7 @@ class CommandFactoryTests(unittest.TestCase):
     def test_get_unknown_command(self):
         args = mock.Mock()
         args.command = 'unknown'
-        factory = commands.CommandFactory('filename')
+        factory = commandfactory.CommandFactory('filename')
         with self.assertRaises(Exception):
             factory.get_command(args)
 
@@ -26,7 +26,7 @@ class CommandFactoryTests(unittest.TestCase):
         parser.parse = mock.MagicMock(return_value=expected_command)
 
         storage = mock.Mock()
-        factory = commands.CommandFactory(storage)
+        factory = commandfactory.CommandFactory(storage)
         factory.register_parser(parser)
 
         command = factory.get_command(args)
@@ -39,29 +39,10 @@ class CommandFactoryTests(unittest.TestCase):
         args = mock.Mock()
         args.command = 'list'
         storage = mock.Mock()
-        factory = commands.CommandFactory(storage)
+        factory = commandfactory.CommandFactory(storage)
         factory.register_known_parsers()
         command = factory.get_command(args)
-        self.assertIsInstance(command, commands.ListTaskCommand)
-
-class CommandBaseTests(unittest.TestCase):
-    def test_execute_errors(self):
-        storage = mock.MagicMock()
-        command = commands.CommandBase(storage)
-        with self.assertRaises(Exception):
-            command.execute()
-
-
-class CommandParserBaseTests(unittest.TestCase):
-    def test_get_name_errors(self):
-        parser = commands.CommandParserBase()
-        with self.assertRaises(Exception):
-            parser.get_name()
-
-    def test_parse_errors(self):
-        parser = commands.CommandParserBase()
-        with self.assertRaises(Exception):
-            parser.parse(mock.Mock(), mock.Mock())
+        self.assertIsInstance(command, commandfactory.ListTaskCommand)
 
 
 class AddTaskCommandTests(unittest.TestCase):
@@ -72,7 +53,7 @@ class AddTaskCommandTests(unittest.TestCase):
         task = entities.Task()
         task.name = 'test name'
 
-        command = commands.AddTaskCommand(storage)
+        command = commandfactory.AddTaskCommand(storage)
         command.task = task
         command.execute()
 
@@ -90,11 +71,11 @@ class AddTaskCommandTests(unittest.TestCase):
         task = entities.Task()
         task.name = 'test name'
 
-        command = commands.AddTaskCommand(storage)
+        command = commandfactory.AddTaskCommand(storage)
         command.task = task
 
         mock_print = mock.MagicMock()
-        with mock.patch('commands.print', mock_print):
+        with mock.patch('commandfactory.print', mock_print):
             command.execute()
         output = 'Task created: {}'.format(existing_task_count + 1)
         mock_print.assert_called_once_with(output)
@@ -107,9 +88,9 @@ class AddTaskCommandParserTests(unittest.TestCase):
         args.name = ['first', 'task']
 
         storage = mock.Mock()
-        command = commands.AddTaskCommandParser().parse(storage, args)
+        command = commandfactory.AddTaskCommandParser().parse(storage, args)
 
-        self.assertIsInstance(command, commands.AddTaskCommand)
+        self.assertIsInstance(command, commandfactory.AddTaskCommand)
         self.assertEqual(command.storage, storage)
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
@@ -119,12 +100,12 @@ class AddTaskCommandParserTests(unittest.TestCase):
 class DoneCommandTests(unittest.TestCase):
     def test_constructor_sets_properties(self):
         storage = mock.Mock()
-        command = commands.DoneCommand(storage)
+        command = commandfactory.DoneCommand(storage)
         self.assertEqual(storage, command.storage)
         self.assertEqual(-1, command.task_index)
 
     def test_task_index_property_sets_value(self):
-        command = commands.DoneCommand(mock.Mock())
+        command = commandfactory.DoneCommand(mock.Mock())
         command.task_index = 5
         self.assertEqual(5, command.task_index)
 
@@ -133,7 +114,7 @@ class DoneCommandTests(unittest.TestCase):
         storage = mock.Mock()
         storage.delete = mock.MagicMock()
         storage.read = mock.MagicMock(return_value=task)
-        command = commands.DoneCommand(storage)
+        command = commandfactory.DoneCommand(storage)
         command.task_index = 3
         command.execute()
         storage.read.assert_called_once_with(3)
@@ -142,16 +123,16 @@ class DoneCommandTests(unittest.TestCase):
 
 class DoneCommandParserTests(unittest.TestCase):
     def test_get_name_returns_correct_value(self):
-        parser = commands.DoneCommandParser()
+        parser = commandfactory.DoneCommandParser()
         self.assertEqual('done', parser.get_name())
 
     def test_parse_creates_correct_command(self):
         args = mock.Mock()
         args.filter = 2
         storage = mock.Mock()
-        parser = commands.DoneCommandParser()
+        parser = commandfactory.DoneCommandParser()
         command = parser.parse(storage, args)
-        self.assertIsInstance(command, commands.DoneCommand)
+        self.assertIsInstance(command, commandfactory.DoneCommand)
         self.assertEqual(2, command.task_index)
 
 
@@ -164,7 +145,7 @@ class ListTaskCommandTests(unittest.TestCase):
         storage = mock.MagicMock()
         storage.read_all = MagicMock(return_value=tasks)
 
-        command = commands.ListTaskCommand(storage)
+        command = commandfactory.ListTaskCommand(storage)
         command.execute()
 
         storage.read_all.assert_called_once()
@@ -182,10 +163,10 @@ class ListTaskCommandTests(unittest.TestCase):
         storage = mock.MagicMock()
         storage.read_all = MagicMock(return_value=tasks)
 
-        command = commands.ListTaskCommand(storage)
+        command = commandfactory.ListTaskCommand(storage)
 
         mock_print = mock.MagicMock()
-        with mock.patch('commands.print', mock_print):
+        with mock.patch('commandfactory.print', mock_print):
             command.execute()
 
         mock_print.assert_called()
@@ -197,7 +178,7 @@ class ListTaskCommandParserTests(unittest.TestCase):
         args.command = 'list'
 
         storage = mock.Mock()
-        command = commands.ListTaskCommandParser().parse(storage, args)
+        command = commandfactory.ListTaskCommandParser().parse(storage, args)
 
-        self.assertIsInstance(command, commands.ListTaskCommand)
+        self.assertIsInstance(command, commandfactory.ListTaskCommand)
         self.assertEqual(command.storage, storage)
