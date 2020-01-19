@@ -42,13 +42,14 @@ class ListTaskCommandTests(unittest.TestCase):
 
 
 class ListTaskCommandParserTests(unittest.TestCase):
-    def test_get_name(self):
-        name = listcommand.ListTaskCommandParser().get_name()
-        self.assertEqual('list', name)
+    def test_parse_wrong_command(self):
+        args = ['wrong']
+        storage = mock.Mock()
+        command = listcommand.ListTaskCommandParser().parse(storage, args)
+        self.assertEqual(None, command)
 
-    def test_get_list_command(self):
-        args = mock.Mock()
-        args.command = 'list'
+    def test_parse_success(self):
+        args = ['list']
 
         storage = mock.Mock()
         command = listcommand.ListTaskCommandParser().parse(storage, args)

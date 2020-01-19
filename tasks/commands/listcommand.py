@@ -21,8 +21,9 @@ class ListTaskCommand(commandbase.CommandBase):
 
 
 class ListTaskCommandParser(commandbase.CommandParserBase):
-    def get_name(self):
-        return 'list'
-
     def parse(self, storage, args):
-        return ListTaskCommand(storage)
+        if args[0] == 'list':
+            command = ListTaskCommand(storage)
+        else:
+            command = None
+        return command

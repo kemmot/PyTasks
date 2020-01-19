@@ -70,8 +70,7 @@ try:
     COMMAND_FACTORY.register_known_parsers()
 
     try:
-        ARGS = cli.CommandLineParser().parse(sys.argv[1:])
-        COMMAND = COMMAND_FACTORY.get_command(ARGS)
+        COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:])
     except Exception as ex:
         raise cli.ExitCodeException(str(ex), cli.ExitCodes.command_line_argument_error) from ex
 

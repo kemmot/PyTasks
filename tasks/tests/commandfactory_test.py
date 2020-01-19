@@ -1,10 +1,7 @@
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock
-import uuid
 
 import commandfactory
-import entities
 
 
 class CommandFactoryTests(unittest.TestCase):
@@ -16,13 +13,11 @@ class CommandFactoryTests(unittest.TestCase):
             factory.get_command(args)
 
     def test_get_known_command(self):
-        args = mock.Mock()
-        args.command = 'add'
+        args = ['test']
 
         expected_command = mock.Mock()
 
         parser = mock.Mock()
-        parser.get_name = mock.MagicMock(return_value=args.command)
         parser.parse = mock.MagicMock(return_value=expected_command)
 
         storage = mock.Mock()
@@ -32,7 +27,6 @@ class CommandFactoryTests(unittest.TestCase):
         command = factory.get_command(args)
 
         self.assertEqual(command, expected_command)
-        parser.get_name.assert_called_once()
         parser.parse.assert_called_once_with(storage, args)
 
     def test_register_known_parsers_registers(self):

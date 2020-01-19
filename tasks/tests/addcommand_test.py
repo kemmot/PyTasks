@@ -44,10 +44,20 @@ class AddTaskCommandTests(unittest.TestCase):
 
 
 class AddTaskCommandParserTests(unittest.TestCase):
+    def test_parse_wrong_command(self):
+        args = ['wrong']
+        storage = mock.Mock()
+        command = addcommand.AddTaskCommandParser().parse(storage, args)
+        self.assertEqual(None, command)
+
+    def test_parse_no_name(self):
+        args = ['add']
+        storage = mock.Mock()
+        with self.assertRaises(Exception):
+            addcommand.AddTaskCommandParser().parse(storage, args)
+
     def test_parse_returns_correct_command(self):
-        args = mock.Mock()
-        args.command = 'add'
-        args.name = ['first', 'task']
+        args = ['add', 'first', 'task']
 
         storage = mock.Mock()
         command = addcommand.AddTaskCommandParser().parse(storage, args)
@@ -56,4 +66,4 @@ class AddTaskCommandParserTests(unittest.TestCase):
         self.assertEqual(command.storage, storage)
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
-        self.assertEqual(command.task.name, ' '.join(args.name))
+        self.assertEqual(command.task.name, 'first task')

@@ -24,8 +24,5 @@ class CommandBase:
 
 
 class CommandParserBase:
-    def get_name(self):
-        raise Exception('get_name not implemented in {}'.format(__class__.__name__))
-
     def parse(self, storage, args):
         raise Exception('parse not implemented in {}'.format(__class__.__name__))

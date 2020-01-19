@@ -13,11 +13,6 @@ class CommandBaseTests(unittest.TestCase):
 
 
 class CommandParserBaseTests(unittest.TestCase):
-    def test_get_name_errors(self):
-        parser = commandbase.CommandParserBase()
-        with self.assertRaises(Exception):
-            parser.get_name()
-
     def test_parse_errors(self):
         parser = commandbase.CommandParserBase()
         with self.assertRaises(Exception):

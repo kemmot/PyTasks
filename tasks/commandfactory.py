@@ -12,7 +12,7 @@ import entities
 
 class CommandFactory:
     def __init__(self, storage):
-        self._parsers = {}
+        self._parsers = []
         self._storage = storage
 
     def register_known_parsers(self):
@@ -20,11 +20,15 @@ class CommandFactory:
             self.register_parser(cla())
 
     def register_parser(self, parser):
-        self._parsers[parser.get_name()] = parser
+        self._parsers.append(parser)
 
     def get_command(self, args):
-        if not args.command in self._parsers:
+        for parser in self._parsers:
+            command = parser.parse(self._storage, args)
+            if command != None:
+                break
+
+        if command == None:
             raise Exception('Command not recognised: [{}]'.format(args.command))
 
-        parser = self._parsers[args.command]
-        return parser.parse(self._storage, args)
+        return command

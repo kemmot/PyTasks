@@ -29,13 +29,26 @@ class DoneCommandTests(unittest.TestCase):
 
 
 class DoneCommandParserTests(unittest.TestCase):
-    def test_get_name_returns_correct_value(self):
-        parser = donecommand.DoneCommandParser()
-        self.assertEqual('done', parser.get_name())
+    def test_parse_wrong_command(self):
+        args = ['wrong']
+        storage = mock.Mock()
+        command = donecommand.DoneCommandParser().parse(storage, args)
+        self.assertEqual(None, command)
 
-    def test_parse_creates_correct_command(self):
-        args = mock.Mock()
-        args.filter = 2
+    def test_parse_no_filter(self):
+        args = ['done']
+        storage = mock.Mock()
+        with self.assertRaises(Exception):
+            donecommand.DoneCommandParser().parse(storage, args)
+
+    def test_parse_filter_not_numeric(self):
+        args = ['done', 'text']
+        storage = mock.Mock()
+        with self.assertRaises(Exception):
+            donecommand.DoneCommandParser().parse(storage, args)
+
+    def test_parse_parse_success(self):
+        args = ['done', '2']
         storage = mock.Mock()
         parser = donecommand.DoneCommandParser()
         command = parser.parse(storage, args)

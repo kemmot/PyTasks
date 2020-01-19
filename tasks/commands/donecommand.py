@@ -22,10 +22,17 @@ class DoneCommand(commandbase.CommandBase):
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
-    def get_name(self):
-        return 'done'
-
     def parse(self, storage, args):
-        command = DoneCommand(storage)
-        command.task_index = args.filter
+        if args[0] == 'done':
+            if len(args) < 2:
+                raise Exception('Done command requires task filter')
+
+            filter = args[1]
+            if not filter.isnumeric():
+                raise Exception('Done command filter should be number')
+
+            command = DoneCommand(storage)
+            command.task_index = int(filter)
+        else:
+            command = None
         return command

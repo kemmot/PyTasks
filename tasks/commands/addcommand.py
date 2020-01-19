@@ -35,16 +35,21 @@ class AddTaskCommand(commandbase.CommandBase):
 
 
 class AddTaskCommandParser(commandbase.CommandParserBase):
-    def get_name(self):
-        return 'add'
-
     def parse(self, storage, args):
-        task = entities.Task()
-        task.created = datetime.datetime.now()
-        task.id_number = uuid.uuid4()
-        task.name = ' '.join(args.name)
-        task.status = 'pending'
+        if args[0] == 'add':
+            if len(args) < 2:
+                raise Exception('Add command requires task description')
 
-        command = AddTaskCommand(storage)
-        command.task = task
+            name = args[1:]
+
+            task = entities.Task()
+            task.created = datetime.datetime.now()
+            task.id_number = uuid.uuid4()
+            task.name = ' '.join(name)
+            task.status = 'pending'
+
+            command = AddTaskCommand(storage)
+            command.task = task
+        else:
+            command = None
         return command
