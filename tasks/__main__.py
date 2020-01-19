@@ -17,6 +17,7 @@ import storage
 # modules used by reflection
 import commands.addcommand
 import commands.donecommand
+import commands.listcommand
 
 
 class OneLineExceptionFormatter(logging.Formatter):
