@@ -12,6 +12,7 @@ import yaml
 
 import commandfactory
 import commandline as cli
+import commands.addcommand
 import storage
 
 
