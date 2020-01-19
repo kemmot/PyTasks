@@ -12,8 +12,11 @@ import yaml
 
 import commandfactory
 import commandline as cli
-import commands.addcommand
 import storage
+
+# modules used by reflection
+import commands.addcommand
+import commands.donecommand
 
 
 class OneLineExceptionFormatter(logging.Formatter):
