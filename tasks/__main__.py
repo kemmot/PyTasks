@@ -74,7 +74,7 @@ try:
     except cli.ExitCodeException as ex:
         raise
     except Exception as ex:
-        raise cli.ExitCodeException(str(ex), cli.ExitCodes.command_line_argument_error) from ex
+        raise cli.ExitCodeException(message=str(ex), exit_code=cli.ExitCodes.command_line_argument_error) from ex
 
     COMMAND.execute()
     exit_code = cli.ExitCodes.success

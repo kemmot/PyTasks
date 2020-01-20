@@ -38,17 +38,16 @@ class DoneCommandParserTests(unittest.TestCase):
     def test_parse_no_filter(self):
         args = ['done']
         storage = mock.Mock()
-        with self.assertRaises(Exception):
-            donecommand.DoneCommandParser().parse(storage, args)
+        self.assertIsNone(donecommand.DoneCommandParser().parse(storage, args))            
 
     def test_parse_filter_not_numeric(self):
-        args = ['done', 'text']
+        args = ['text', 'done']
         storage = mock.Mock()
         with self.assertRaises(Exception):
             donecommand.DoneCommandParser().parse(storage, args)
 
     def test_parse_parse_success(self):
-        args = ['done', '2']
+        args = ['2', 'done']
         storage = mock.Mock()
         parser = donecommand.DoneCommandParser()
         command = parser.parse(storage, args)
