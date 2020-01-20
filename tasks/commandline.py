@@ -6,6 +6,8 @@ Module used for parsing command line arguments.
 class ExitCodes:
     success = 0
     command_line_argument_error = 1
+    no_command_specified_error = 2
+    unknown_command_error = 3
     unknown_error = 99
 
     @staticmethod
@@ -14,13 +16,19 @@ class ExitCodes:
             description = 'Success'
         elif value == ExitCodes.command_line_argument_error:
             description = 'Command Line Argument Error'
+        elif value == ExitCodes.no_command_specified_error:
+            description = 'No command specified'
+        elif value == ExitCodes.unknown_command_error:
+            description = 'Unknown command'
         else:
             description = 'Unknown Error'
         return description
 
 
 class ExitCodeException(Exception):
-    def __init__(self, message, exit_code=ExitCodes.unknown_error):
+    def __init__(self, exit_code, message='',):
+        if message == '':
+            message = ExitCodes.get_description(exit_code)
         Exception.__init__(self, message)
         self._exit_code = exit_code
 

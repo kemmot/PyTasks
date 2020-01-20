@@ -71,6 +71,8 @@ try:
 
     try:
         COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:])
+    except cli.ExitCodeException as ex:
+        raise
     except Exception as ex:
         raise cli.ExitCodeException(str(ex), cli.ExitCodes.command_line_argument_error) from ex
 
