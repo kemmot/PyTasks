@@ -39,7 +39,7 @@ class TaskWarriorPendingFormatter:
             if key == 'description':
                 task.name = value
             elif key == 'entry':
-                task.created = datetime.datetime.fromtimestamp(float(value)/1000.)
+                task.created = datetime.datetime.utcfromtimestamp(float(value)/1000.)
             elif key == 'status':
                 task.status = value
             elif key == 'uuid':
