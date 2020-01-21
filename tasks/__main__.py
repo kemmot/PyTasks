@@ -12,6 +12,7 @@ import yaml
 
 import commands.commandfactory as commandfactory
 import commandline as cli
+import settings
 import storage
 
 # modules used by reflection
@@ -69,9 +70,11 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.debug('\n')
 LOGGER.debug('Application started')
 try:
-    SCRIPT_FOLDER = os.path.dirname(os.path.abspath(__file__))
-    DATA_FILENAME = os.path.join(os.path.split(SCRIPT_FOLDER)[0], 'todo.txt')
-    STORAGE = storage.TaskWarriorPendingStorage(DATA_FILENAME)
+    SETTINGS_FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tasks.ini')
+    SETTINGS = settings.Settings()
+    SETTINGS.read(SETTINGS_FILENAME)
+
+    STORAGE = storage.TaskWarriorPendingStorage(SETTINGS.connection_string)
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
     COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE, FILTER_FACTORY)
