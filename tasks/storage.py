@@ -4,6 +4,7 @@ A module containing task formatter classes.
 
 import calendar
 import datetime
+import logging
 import re
 import os
 
@@ -51,6 +52,7 @@ class TaskWarriorPendingStorage:
     def __init__(self, path, formatter=TaskWarriorPendingFormatter()):
         self._path = path
         self._formatter = formatter
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def delete(self, task):
         tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
@@ -72,6 +74,8 @@ class TaskWarriorPendingStorage:
                     task = self._formatter.parse(line_number, line)
                     tasks.append(task)
                     line_number += 1
+        else:
+            self._logger.warning('File not found: [{}]'.format(self._path))
         return tasks
 
     def write(self, task):
@@ -87,7 +91,10 @@ class TaskWarriorPendingStorage:
             for task in tasks:
                 formatted_task = self._formatter.format(task)
                 file.write(formatted_task + '\n')
-        if os.name != 'posix':
-            if os.path.isfile(self._path):
+        file_exists = os.path.isfile(self._path)
+        if file_exists:
+            if os.name != 'posix':
                 os.remove(self._path)
+        else:
+            self._logger.info('Creating new file: [{}]'.format(self._path))
         os.rename(temp_path, self._path)
