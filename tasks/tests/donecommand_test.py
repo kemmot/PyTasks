@@ -17,15 +17,20 @@ class DoneCommandTests(unittest.TestCase):
         self.assertEqual(5, command.task_index)
 
     def test_execute_calls_delete_on_storage(self):
-        task = mock.Mock()
+        task1 = mock.Mock()
+        task1.index = 1
+        task2 = mock.Mock()
+        task2.index = 2
+        task3 = mock.Mock()
+        task3.index = 3
         storage = mock.Mock()
         storage.delete = mock.MagicMock()
-        storage.read = mock.MagicMock(return_value=task)
+        storage.read_all = mock.MagicMock(return_value=[task1, task2, task3])
         command = donecommand.DoneCommand(storage)
-        command.task_index = 3
+        command.task_index = 2
         command.execute()
-        storage.read.assert_called_once_with(3)
-        storage.delete.assert_called_once_with(task)
+        storage.read_all.assert_called_once()
+        storage.delete.assert_called_once_with(task2)
 
 
 class DoneCommandParserTests(unittest.TestCase):

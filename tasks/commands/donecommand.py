@@ -1,6 +1,7 @@
 
 import commands.commandbase as commandbase
 import entities
+import filters.taskindexfilter as taskindexfilter
 
 
 class DoneCommand(commandbase.CommandBase):
@@ -17,8 +18,11 @@ class DoneCommand(commandbase.CommandBase):
         self._task_index = value
 
     def execute(self):
-        task = self.storage.read(self.task_index)
-        self.storage.delete(task)
+        filter = taskindexfilter.TaskIndexFilter(self.task_index)
+        tasks = self.storage.read_all()
+        for task in tasks:
+            if filter.is_match(task):
+                self.storage.delete(task)
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
