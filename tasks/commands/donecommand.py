@@ -5,35 +5,30 @@ import filters.taskindexfilter as taskindexfilter
 
 
 class DoneCommand(commandbase.CommandBase):
-    def __init__(self, storage):
+    def __init__(self, storage, filter):
         super().__init__(storage)
-        self._task_index = -1
-
+        self._filter = filter
+    
     @property
-    def task_index(self):
-        return self._task_index
-
-    @task_index.setter
-    def task_index(self, value):
-        self._task_index = value
+    def filter(self):
+        return self._filter
 
     def execute(self):
-        filter = taskindexfilter.TaskIndexFilter(self.task_index)
         tasks = self.storage.read_all()
         for task in tasks:
-            if filter.is_match(task):
+            if self._filter.is_match(task):
                 self.storage.delete(task)
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
     def parse(self, storage, args):
         if len(args) == 2 and args[1] == 'done':
-            filter = args[0]
-            if not filter.isnumeric():
+            index = args[0]
+            if not index.isnumeric():
                 raise Exception('Done command filter should be number')
 
-            command = DoneCommand(storage)
-            command.task_index = int(filter)
+            filter = taskindexfilter.TaskIndexFilter(int(index))
+            command = DoneCommand(storage, filter)
         else:
             command = None
         return command
