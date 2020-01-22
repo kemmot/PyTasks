@@ -32,7 +32,9 @@ class OneLineExceptionFormatter(logging.Formatter):
         return result
 
 
-def create_app_folder_log_handler(maxBytes=10485760, backupCount=10, encoding='utf8', filename='timesheet.log', level='DEBUG'):
+def create_app_folder_log_handler( \
+        maxBytes=10485760, backupCount=10, encoding='utf8', \
+        filename='timesheet.log', level='DEBUG'):
     path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(path, filename)
     handler = logging.handlers.RotatingFileHandler(path)
@@ -43,8 +45,8 @@ def create_app_folder_log_handler(maxBytes=10485760, backupCount=10, encoding='u
     return handler
 
 
-def configureLogging(filename):
-    if (os.path.isfile(filename)):
+def configure_logging(filename):
+    if os.path.isfile(filename):
         try:
             with open(filename) as file:
                 config = yaml.safe_load(file.read())
@@ -58,33 +60,35 @@ def configureLogging(filename):
 SCRIPT_PATH = os.path.realpath(__file__)
 SCRIPT_FOLDER = os.path.dirname(SCRIPT_PATH)
 LOGGING_CONFIG_PATH = os.path.join(SCRIPT_FOLDER, 'tasks.logging.yaml')
-configureLogging(LOGGING_CONFIG_PATH)
+configure_logging(LOGGING_CONFIG_PATH)
 
-logger = logging.getLogger(__name__)
-logger.debug('\n')
-logger.debug('Application started')
+LOGGER = logging.getLogger(__name__)
+LOGGER.debug('\n')
+LOGGER.debug('Application started')
 try:
-    DATA_FILENAME = os.path.join(os.path.split(os.path.dirname(os.path.abspath(__file__)))[0], 'todo.txt')
+    SCRIPT_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    DATA_FILENAME = os.path.join(os.path.split(SCRIPT_FOLDER)[0], 'todo.txt')
     STORAGE = storage.TaskWarriorPendingStorage(DATA_FILENAME)
     COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE)
     COMMAND_FACTORY.register_known_parsers()
 
     try:
         COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:])
-    except cli.ExitCodeException as ex:
+    except cli.ExitCodeException:
         raise
     except Exception as ex:
-        raise cli.ExitCodeException(message=str(ex), exit_code=cli.ExitCodes.command_line_argument_error) from ex
+        EXIT_CODE = cli.ExitCodes.command_line_argument_error
+        raise cli.ExitCodeException(message=str(ex), exit_code=EXIT_CODE) from ex
 
     COMMAND.execute()
-    exit_code = cli.ExitCodes.success
+    EXIT_CODE = cli.ExitCodes.success
 except cli.ExitCodeException as ex:
-    logger.error(str(ex), exc_info=True)
-    exit_code = ex.exit_code
+    LOGGER.error(str(ex), exc_info=True)
+    EXIT_CODE = ex.exit_code
 except Exception as ex:
-    logger.error(str(ex), exc_info=True)
-    exit_code = cli.ExitCodes.unknown_error
+    LOGGER.error(str(ex), exc_info=True)
+    EXIT_CODE = cli.ExitCodes.unknown_error
 
-exit_code_description = cli.ExitCodes.get_description(exit_code)
-logger.debug('Application stopped with exit code: {} ({})'.format(exit_code, exit_code_description))
-exit(exit_code)
+EXIT_CODE_DESCRIPTION = cli.ExitCodes.get_description(EXIT_CODE)
+LOGGER.debug('Application stopped with exit code: {} ({})'.format(EXIT_CODE, EXIT_CODE_DESCRIPTION))
+exit(EXIT_CODE)
