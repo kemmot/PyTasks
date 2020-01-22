@@ -11,3 +11,12 @@ class TaskIndexFilter(filterbase.FilterBase):
 
     def is_match(self, task):
         return task.index == self._index
+
+
+class TaskIndexFilterParser(filterbase.FilterParserBase):
+    def parse(self, arg):
+        if arg.isnumeric():
+            filter = TaskIndexFilter(int(arg))
+        else:
+            filter = None
+        return filter

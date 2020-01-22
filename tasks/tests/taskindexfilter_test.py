@@ -18,3 +18,14 @@ class TaskIndexFilterTests(unittest.TestCase):
         task = mock.Mock()
         task.index = 1
         self.assertFalse(taskindexfilter.TaskIndexFilter(2).is_match(task))
+
+
+class TaskIndexFilterParserTests(unittest.TestCase):
+    def test_parse_integer_returns_filter(self):
+        filter = taskindexfilter.TaskIndexFilterParser().parse('13')
+        self.assertIsInstance(filter, taskindexfilter.TaskIndexFilter)
+        self.assertEqual(13, filter.index)
+
+    def test_parse_non_integer_returns_none(self):
+        filter = taskindexfilter.TaskIndexFilterParser().parse('words')
+        self.assertIsNone(filter)
