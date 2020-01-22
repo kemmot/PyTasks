@@ -1,4 +1,7 @@
-class TaskIndexFilter:
+import filters.filterbase as filterbase
+
+
+class TaskIndexFilter(filterbase.FilterBase):
     def __init__(self, index):
         self._index = index
     
