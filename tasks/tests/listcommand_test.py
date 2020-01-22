@@ -11,13 +11,39 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks.append(mock.MagicMock())
         tasks.append(mock.MagicMock())
 
-        storage = mock.MagicMock()
-        storage.read_all = MagicMock(return_value=tasks)
+        mock_storage = mock.MagicMock()
+        mock_storage.read_all = MagicMock(return_value=tasks)
 
-        command = listcommand.ListTaskCommand(storage)
+        mock_filter = mock.Mock()
+        mock_filter.is_match = mock.MagicMock(return_value=True)
+
+        command = listcommand.ListTaskCommand(mock_storage, mock_filter)
         command.execute()
 
-        storage.read_all.assert_called_once()
+        mock_storage.read_all.assert_called_once()
+
+    def test_execute_filters_tasks(self):
+        tasks = []
+        tasks.append(mock.Mock())
+        tasks.append(mock.Mock())
+        tasks.append(mock.Mock())
+
+        mock_storage = mock.Mock()
+        mock_storage.read_all = MagicMock(return_value=tasks)
+
+        mock_filter = mock.Mock()
+        mock_filter.is_match = mock.Mock()
+        mock_filter.is_match.side_effect = [False, True, False]
+
+        command = listcommand.ListTaskCommand(mock_storage, mock_filter)
+
+        mock_print = mock.MagicMock()
+        with mock.patch('commands.listcommand.print', mock_print):
+            command.execute()
+
+        mock_filter.is_match.assert_called()
+        calls = [mock.call('ID   Status  Description'), mock.call('------------------------'), mock.call(mock.ANY)]
+        self.assertEqual(calls, mock_print.mock_calls)
 
     def test_execute_prints_content(self):
         task = mock.MagicMock()
@@ -29,10 +55,13 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks = []
         tasks.append(task)
 
-        storage = mock.MagicMock()
-        storage.read_all = MagicMock(return_value=tasks)
+        mock_storage = mock.MagicMock()
+        mock_storage.read_all = MagicMock(return_value=tasks)
+        
+        mock_filter = mock.Mock()
+        mock_filter.is_match = mock.MagicMock(return_value=True)
 
-        command = listcommand.ListTaskCommand(storage)
+        command = listcommand.ListTaskCommand(mock_storage, mock_filter)
 
         mock_print = mock.MagicMock()
         with mock.patch('commands.listcommand.print', mock_print):
