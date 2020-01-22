@@ -70,7 +70,7 @@ try:
     DATA_FILENAME = os.path.join(os.path.split(SCRIPT_FOLDER)[0], 'todo.txt')
     STORAGE = storage.TaskWarriorPendingStorage(DATA_FILENAME)
     COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE)
-    COMMAND_FACTORY.register_known_parsers()
+    COMMAND_FACTORY.register_known_types()
 
     try:
         COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:])

@@ -34,7 +34,7 @@ class CommandFactoryTests(unittest.TestCase):
 
         storage = mock.Mock()
         factory = commandfactory.CommandFactory(storage)
-        factory.register_parser(parser)
+        factory.register_type(parser)
 
         command = factory.get_command(args)
 
@@ -49,6 +49,6 @@ class CommandFactoryTests(unittest.TestCase):
 
         storage = mock.Mock()
         factory = commandfactory.CommandFactory(storage)
-        factory.register_parser(parser)
+        factory.register_type(parser)
         command = factory.get_command(['test'])
         self.assertEqual(expected_command, command)
