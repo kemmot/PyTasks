@@ -18,6 +18,7 @@ import storage
 import commands.addcommand
 import commands.donecommand
 import commands.listcommand
+import filters.taskindexfilter as taskindexfilter
 
 
 class OneLineExceptionFormatter(logging.Formatter):

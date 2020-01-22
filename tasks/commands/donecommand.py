@@ -1,7 +1,8 @@
 
 import commands.commandbase as commandbase
 import entities
-import filters.taskindexfilter as taskindexfilter
+import filters.alwaysfilter as alwaysfilter
+import filters.filterfactory as filterfactory
 
 
 class DoneCommand(commandbase.CommandBase):
@@ -23,11 +24,11 @@ class DoneCommand(commandbase.CommandBase):
 class DoneCommandParser(commandbase.CommandParserBase):
     def parse(self, storage, args):
         if len(args) == 2 and args[1] == 'done':
-            index = args[0]
-            if not index.isnumeric():
-                raise Exception('Done command filter should be number')
-
-            filter = taskindexfilter.TaskIndexFilter(int(index))
+            filter_factory = filterfactory.FilterFactory()
+            filter_factory.register_known_types()
+            filter = filter_factory.parse(args[0])
+            if filter is None:
+                raise Exception('Done command filter should specify task index')
             command = DoneCommand(storage, filter)
         else:
             command = None

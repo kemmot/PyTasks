@@ -1,6 +1,6 @@
 import commands.commandbase as commandbase
 import filters.alwaysfilter as alwaysfilter
-import filters.taskindexfilter as taskindexfilter
+import filters.filterfactory as filterfactory
 
 
 class ListTaskCommand(commandbase.CommandBase):
@@ -33,11 +33,9 @@ class ListTaskCommandParser(commandbase.CommandParserBase):
             filter = alwaysfilter.AlwaysFilter()
             command = ListTaskCommand(storage, filter)
         elif len(args) == 2 and args[1] == 'list':
-            index = args[0]
-            if not index.isnumeric():
-                raise Exception('List command filter should be number')
-
-            filter = taskindexfilter.TaskIndexFilter(int(index))
+            filter_factory = filterfactory.FilterFactory()
+            filter_factory.register_known_types()
+            filter = filter_factory.parse(args[0])
             command = ListTaskCommand(storage, filter)
         else:
             command = None

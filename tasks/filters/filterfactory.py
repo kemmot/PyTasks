@@ -1,4 +1,3 @@
-import filters.alwaysfilter as alwaysfilter
 import filters.filterbase as filterbase
 
 import typefactory
