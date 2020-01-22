@@ -10,7 +10,7 @@ import os
 import sys
 import yaml
 
-import commandfactory
+import commands.commandfactory as commandfactory
 import commandline as cli
 import storage
 

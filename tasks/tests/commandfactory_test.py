@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-import commandfactory
+import commands.commandfactory as commandfactory
 import commandline
 
 
