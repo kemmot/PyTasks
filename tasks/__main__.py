@@ -20,6 +20,7 @@ import commands.donecommand
 import commands.listcommand
 import filters.filterfactory as filterfactory
 import filters.taskindexfilter as taskindexfilter
+import filters.tasknamefilter as tasknamefilter
 
 
 class OneLineExceptionFormatter(logging.Formatter):
