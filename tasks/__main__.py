@@ -18,6 +18,7 @@ import storage
 import commands.addcommand
 import commands.donecommand
 import commands.listcommand
+import filters.filterfactory as filterfactory
 import filters.taskindexfilter as taskindexfilter
 
 
@@ -70,7 +71,9 @@ try:
     SCRIPT_FOLDER = os.path.dirname(os.path.abspath(__file__))
     DATA_FILENAME = os.path.join(os.path.split(SCRIPT_FOLDER)[0], 'todo.txt')
     STORAGE = storage.TaskWarriorPendingStorage(DATA_FILENAME)
-    COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE)
+    FILTER_FACTORY = filterfactory.FilterFactory()
+    FILTER_FACTORY.register_known_types()
+    COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE, FILTER_FACTORY)
     COMMAND_FACTORY.register_known_types()
 
     try:

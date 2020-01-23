@@ -8,9 +8,10 @@ import typefactory
 
 
 class CommandFactory(typefactory.TypeFactory):
-    def __init__(self, storage):
+    def __init__(self, storage, filter_factory):
         super().__init__(commandbase.CommandParserBase)
         self._storage = storage
+        self._filter_factory = filter_factory
 
     def get_command(self, args):
         if not args:
