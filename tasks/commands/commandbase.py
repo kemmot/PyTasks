@@ -24,5 +24,5 @@ class CommandBase:
 
 
 class CommandParserBase:
-    def parse(self, storage, args):
+    def parse(self, storage, filter_factory, args):
         raise Exception('parse not implemented in {}'.format(__class__.__name__))

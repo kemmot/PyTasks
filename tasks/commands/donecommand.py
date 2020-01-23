@@ -22,13 +22,9 @@ class DoneCommand(commandbase.CommandBase):
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
-    def parse(self, storage, args):
+    def parse(self, storage, filter_factory, args):
         if len(args) == 2 and args[1] == 'done':
-            filter_factory = filterfactory.FilterFactory()
-            filter_factory.register_known_types()
             filter = filter_factory.parse(args[0])
-            if filter is None:
-                raise Exception('Done command filter should specify task index')
             command = DoneCommand(storage, filter)
         else:
             command = None

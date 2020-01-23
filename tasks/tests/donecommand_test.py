@@ -35,25 +35,33 @@ class DoneCommandTests(unittest.TestCase):
 class DoneCommandParserTests(unittest.TestCase):
     def test_parse_wrong_command(self):
         args = ['wrong']
-        storage = mock.Mock()
-        command = donecommand.DoneCommandParser().parse(storage, args)
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
+        command = donecommand.DoneCommandParser().parse(mock_storage, mock_filter_factory, args)
         self.assertEqual(None, command)
 
     def test_parse_no_filter(self):
         args = ['done']
-        storage = mock.Mock()
-        self.assertIsNone(donecommand.DoneCommandParser().parse(storage, args))            
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
+        self.assertIsNone(donecommand.DoneCommandParser().parse(mock_storage, mock_filter_factory, args))
 
-    def test_parse_filter_not_numeric(self):
+    def test_parse_no_filter_parsed(self):
         args = ['text', 'done']
-        storage = mock.Mock()
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock()
+        mock_filter_factory.parse.side_effect = Exception
         with self.assertRaises(Exception):
-            donecommand.DoneCommandParser().parse(storage, args)
+            donecommand.DoneCommandParser().parse(mock_storage, mock_filter_factory, args)
 
     def test_parse_parse_success(self):
         args = ['2', 'done']
-        storage = mock.Mock()
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
+        mock_filter = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
         parser = donecommand.DoneCommandParser()
-        command = parser.parse(storage, args)
+        command = parser.parse(mock_storage, mock_filter_factory, args)
         self.assertIsInstance(command, donecommand.DoneCommand)
-        self.assertEqual(2, command.filter.index)
+        self.assertEqual(mock_filter, command.filter)

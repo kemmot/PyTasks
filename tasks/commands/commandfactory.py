@@ -20,7 +20,7 @@ class CommandFactory(typefactory.TypeFactory):
 
         command = None
         for parser in self.types:
-            command = parser.parse(self._storage, args)
+            command = parser.parse(self._storage, self._filter_factory, args)
             if command is not None:
                 break
 

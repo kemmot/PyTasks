@@ -46,24 +46,27 @@ class AddTaskCommandTests(unittest.TestCase):
 class AddTaskCommandParserTests(unittest.TestCase):
     def test_parse_wrong_command(self):
         args = ['wrong']
-        storage = mock.Mock()
-        command = addcommand.AddTaskCommandParser().parse(storage, args)
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
+        command = addcommand.AddTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
         self.assertEqual(None, command)
 
     def test_parse_no_name(self):
         args = ['add']
-        storage = mock.Mock()
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
         with self.assertRaises(Exception):
-            addcommand.AddTaskCommandParser().parse(storage, args)
+            addcommand.AddTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
 
     def test_parse_returns_correct_command(self):
         args = ['add', 'first', 'task']
 
-        storage = mock.Mock()
-        command = addcommand.AddTaskCommandParser().parse(storage, args)
+        mock_storage = mock.Mock()
+        mock_filter_factory = mock.Mock()
+        command = addcommand.AddTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
 
         self.assertIsInstance(command, addcommand.AddTaskCommand)
-        self.assertEqual(command.storage, storage)
+        self.assertEqual(command.storage, mock_storage)
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, 'first task')

@@ -44,7 +44,7 @@ class CommandFactoryTests(unittest.TestCase):
         command = factory.get_command(args)
 
         self.assertEqual(command, expected_command)
-        parser.parse.assert_called_once_with(mock_storage, args)
+        parser.parse.assert_called_once_with(mock_storage, mock_filter_factory, args)
 
     def test_register_known_parsers_registers(self):
         expected_command = mock.Mock()
