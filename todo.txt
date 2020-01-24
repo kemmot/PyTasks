@@ -7,6 +7,3 @@
 [description:"FEAT-0015: List command should be capable of displaying done tasks" entry:"0" status:"pending" uuid:"95e88b6e-77c9-4a05-a069-56f0fb3cec7a"]
 [description:"FEAT-0016: Should auto allocate ticket numbers" entry:"0" status:"pending" uuid:"ce9abfdb-3623-4aea-9767-fe5bf0ed8e6b"]
 [description:"FEAT-0017: List command output should be sorted" entry:"0" status:"pending" uuid:"6bdcb644-7f0e-4f14-96df-427d3052f3b7"]
-[description:"test" entry:"1579" status:"pending" uuid:"12648d50-cc3e-4bcf-8583-b8ef523a96b1"]
-[description:"list" entry:"1579894" status:"pending" uuid:"6c95b536-ed04-4166-8e82-f66c441de73c"]
-[description:"FEAT-0020: Text filter should support slash syntax" entry:"1579894115" status:"pending" uuid:"265cd98b-940f-429f-8415-f2afa9bdfb08"]
