@@ -12,8 +12,15 @@ class Settings:
         self._logger = logging.getLogger(self.__class__.__name__)
 
     @property
-    def connection_string(self):
-        key = 'storage.connectionstring'
+    def data_location(self):
+        key = 'data.location'
+        if not self._config.has_option(self._category, key):
+            raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
+        return self._config[self._category][key]
+    
+    @property
+    def data_pending_filename(self):
+        key = 'data.pending.filename'
         if not self._config.has_option(self._category, key):
             raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
         return self._config[self._category][key]

@@ -31,7 +31,7 @@ class SettingTests(unittest.TestCase):
         mock_config.read.assert_called_with(test_path)
 
     @mock.patch('settings.os.path')
-    def test_read_connection_string_does_not_exist(self, mock_path):
+    def test_read_data_location_does_not_exist(self, mock_path):
         mock_path.isfile.return_value = True
         mock_config = mock.Mock()
         mock_config.read = mock.MagicMock()
@@ -39,8 +39,8 @@ class SettingTests(unittest.TestCase):
         s = settings.Settings(config=mock_config)
         s.read('path')
         with self.assertRaises(Exception):
-            connection_string = s.connection_string
-        mock_config.has_option.assert_called_with('general', 'storage.connectionstring')
+            data_location = s.data_location
+        mock_config.has_option.assert_called_with('general', 'data.location')
 
     @mock.patch('settings.os.path')
     def test_read_connection_string_exists(self, mock_path):

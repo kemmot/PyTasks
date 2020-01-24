@@ -50,13 +50,18 @@ class TaskWarriorPendingFormatter:
 
 
 class TaskWarriorPendingStorage:
-    def __init__(self, path, formatter=TaskWarriorPendingFormatter()):
+    def __init__(self, settings, formatter=TaskWarriorPendingFormatter()):
         self._logger = logging.getLogger(self.__class__.__name__)
-        if not os.path.isabs(path):
-            path = os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)), path)
-            self._logger.debug('Converted relative path to: [{}]'.format(path))
-        self._path = path
-        self._formatter = formatter
+
+        data_location = settings.data_location
+        pending_filename = settings.data_pending_filename
+
+        if not os.path.isabs(data_location):
+            data_location = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), data_location))
+            self._logger.debug('Converted relative data location [{}] to: [{}]'.format(settings.data_location, data_location))
+        
+        self._path = os.path.join(data_location, pending_filename)
+        self._formatter = formatter        
     
     @property
     def path(self):

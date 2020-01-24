@@ -9,6 +9,10 @@ import entities
 import storage
 
 
+class Empty:
+    pass
+
+
 class TaskWarriorFormatterTests(unittest.TestCase):
     def test_format_gives_correct_output(self):
         task = entities.Task()
@@ -51,16 +55,19 @@ class TaskWarriorPendingStorage(unittest.TestCase):
     def setUp(self):
         self._formatter = mock.Mock()
         self._formatter.parse = mock.Mock()
+
+        self._mock_settings = mock.Mock()
+        self._mock_settings.data_location = '/d/test/'
+        self._mock_settings.data_pending_filename = 'file.dat'
         
     def test_constructor_sets_absolute_path_without_alteration(self):
-        test_path = '/d/test/file.dat'
-        target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
-        self.assertEqual(target.path, test_path)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
+        self.assertEqual('/d/test/file.dat', target.path)
         
     def test_constructor_sets_path_relative_to_main(self):
-        test_path = 'file.dat'
-        target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
-        full_test_path = os.path.join(os.path.dirname(__main__.__file__), test_path)
+        self._mock_settings.data_location = 'test'
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
+        full_test_path = os.path.join(os.path.dirname(__main__.__file__), 'test/file.dat')
         self.assertEqual(full_test_path, target.path)
 
     @mock.patch('storage.os.path')
@@ -71,7 +78,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         self._formatter.format = mock.Mock(return_value='')
         self._formatter.parse.side_effect = tasks
 
-        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
 
         mock_path.isfile.return_value = True
         mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
@@ -86,7 +93,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
     def test_read_raises_when_no_matching_task(self):
         task1 = self._create_task()
         self._formatter.parse.side_effect = [task1]
-        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
             mock_open = mock.mock_open(read_data='task1\n')
@@ -97,7 +104,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
     def test_read_returns_matching_task(self):
         tasks = self._create_tasks(3)
         self._formatter.parse.side_effect = tasks
-        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
             mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
@@ -106,15 +113,14 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         self.assertEqual(tasks[1], result)
 
     def test_read_all_does_not_open_file_if_not_exists(self):
-        target = storage.TaskWarriorPendingStorage('path')
+        target = storage.TaskWarriorPendingStorage(self._mock_settings)
         mock_isfile = mock.Mock(return_value=False)
         with mock.patch('os.path.isfile', mock_isfile):
             results = target.read_all()
         self.assertEqual(0, len(results))
 
     def test_read_all_opens_and_closes_file(self):
-        test_path = '/d/test_path.dat'
-        target = storage.TaskWarriorPendingStorage(test_path)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings)
 
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
@@ -122,11 +128,11 @@ class TaskWarriorPendingStorage(unittest.TestCase):
             with mock.patch('storage.open', mock_open):
                 target.read_all()
 
-        mock_open.assert_called_once_with(test_path, 'r')
+        mock_open.assert_called_once_with('/d/test/file.dat', 'r')
         mock_open().__exit__.assert_called()
 
     def test_read_all_reads_file(self):
-        target = storage.TaskWarriorPendingStorage('test path')
+        target = storage.TaskWarriorPendingStorage(self._mock_settings)
 
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
@@ -141,7 +147,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
 
         self._formatter.parse = mock.MagicMock(return_value=task)
 
-        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
 
         read_data = 'task1'
         mock_isfile = mock.Mock(return_value=True)
@@ -157,7 +163,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
 
         self._formatter.parse = mock.MagicMock(return_value=task)
 
-        target = storage.TaskWarriorPendingStorage('test path', self._formatter)
+        target = storage.TaskWarriorPendingStorage(self._mock_settings, self._formatter)
 
         mock_isfile = mock.Mock(return_value=True)
         with mock.patch('os.path.isfile', mock_isfile):
@@ -180,12 +186,18 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         task = entities.Task()
         task.created = datetime.datetime.now()
 
-        test_path = 'test path'
-        temp_path = 'test path.tmp'
+        test_data_location = '/tmp'
+        test_pending_filename = 'test.dat'
+        test_path = '/tmp/test.dat'
+        temp_path = '/tmp/test.dat.tmp'
         mock_path.isfile.return_value = True
+        mock_path.join.return_value = test_path
+        mock_settings = Empty()
+        mock_settings.data_location = test_data_location
+        mock_settings.data_pending_filename = test_pending_filename
         mock_open = mock.mock_open()
         with mock.patch('storage.open', mock_open):
-            target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
+            target = storage.TaskWarriorPendingStorage(mock_settings, self._formatter)
             target.write(task)
 
         calls = [mock.call(test_path), mock.call(temp_path), mock.call(test_path)]
