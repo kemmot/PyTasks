@@ -43,3 +43,8 @@ class TaskNameFilterParserTests(unittest.TestCase):
         filter = tasknamefilter.TaskNameFilterParser().parse('test')
         self.assertIsInstance(filter, tasknamefilter.TaskNameFilter)
         self.assertEqual('test', filter.name)
+
+    def test_parse_strips_forward_slashes(self):
+        filter = tasknamefilter.TaskNameFilterParser().parse('/test/')
+        self.assertIsInstance(filter, tasknamefilter.TaskNameFilter)
+        self.assertEqual('test', filter.name)

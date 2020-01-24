@@ -16,7 +16,10 @@ class TaskNameFilter(filterbase.FilterBase):
 class TaskNameFilterParser(filterbase.FilterParserBase):
     def parse(self, arg):
         if arg:
-            filter = TaskNameFilter(arg)
+            search_term = arg
+            if len(search_term) > 2 and search_term[0] == '/' and search_term[-1] == '/':
+                search_term = search_term[1:-1]
+            filter = TaskNameFilter(search_term)
         else:
             filter = None
         return filter
