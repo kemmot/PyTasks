@@ -8,6 +8,7 @@ import logging
 import re
 import os
 
+import __main__
 import entities
 
 
@@ -50,9 +51,16 @@ class TaskWarriorPendingFormatter:
 
 class TaskWarriorPendingStorage:
     def __init__(self, path, formatter=TaskWarriorPendingFormatter()):
+        self._logger = logging.getLogger(self.__class__.__name__)
+        if not os.path.isabs(path):
+            path = os.path.join(os.path.dirname(os.path.abspath(__main__.__file__)), path)
+            self._logger.debug('Converted relative path to: [{}]'.format(path))
         self._path = path
         self._formatter = formatter
-        self._logger = logging.getLogger(self.__class__.__name__)
+    
+    @property
+    def path(self):
+        return self._path
 
     def delete(self, task):
         tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]

@@ -1,8 +1,10 @@
 import datetime
+import os
 import unittest
 import unittest.mock as mock
 import uuid
 
+import __main__
 import entities
 import storage
 
@@ -49,6 +51,17 @@ class TaskWarriorPendingStorage(unittest.TestCase):
     def setUp(self):
         self._formatter = mock.Mock()
         self._formatter.parse = mock.Mock()
+        
+    def test_constructor_sets_absolute_path_without_alteration(self):
+        test_path = '/d/test/file.dat'
+        target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
+        self.assertEqual(target.path, test_path)
+        
+    def test_constructor_sets_path_relative_to_main(self):
+        test_path = 'file.dat'
+        target = storage.TaskWarriorPendingStorage(test_path, self._formatter)
+        full_test_path = os.path.join(os.path.dirname(__main__.__file__), test_path)
+        self.assertEqual(full_test_path, target.path)
 
     @mock.patch('storage.os.path')
     @mock.patch('storage.os')
@@ -100,7 +113,7 @@ class TaskWarriorPendingStorage(unittest.TestCase):
         self.assertEqual(0, len(results))
 
     def test_read_all_opens_and_closes_file(self):
-        test_path = 'test path'
+        test_path = '/d/test_path.dat'
         target = storage.TaskWarriorPendingStorage(test_path)
 
         mock_isfile = mock.Mock(return_value=True)
