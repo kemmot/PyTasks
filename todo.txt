@@ -7,3 +7,4 @@
 [description:"FEAT-0015: List command should be capable of displaying done tasks" entry:"0" status:"pending" uuid:"95e88b6e-77c9-4a05-a069-56f0fb3cec7a"]
 [description:"FEAT-0016: Should auto allocate ticket numbers" entry:"0" status:"pending" uuid:"ce9abfdb-3623-4aea-9767-fe5bf0ed8e6b"]
 [description:"FEAT-0017: List command output should be sorted" entry:"0" status:"pending" uuid:"6bdcb644-7f0e-4f14-96df-427d3052f3b7"]
+[description:"FEAT-0021: Add modify command" entry:"1579895105" status:"pending" uuid:"98db2e6d-0494-4d35-8c36-627156400f1d"]
