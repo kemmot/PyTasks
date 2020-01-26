@@ -201,6 +201,17 @@ class TaskWarriorStorageTests(unittest.TestCase):
         mock_done_storage = mock.Mock()
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         self.assertEqual(mock_pending_storage, target.pending_storage)
+        self.assertEqual(mock_done_storage, target.done_storage)
+    
+    def test_delete_calls_write_on_done_storage(self):
+        mock_pending_storage = mock.Mock()
+        mock_pending_storage.delete = mock.MagicMock()
+        mock_done_storage = mock.Mock()
+        mock_done_storage.write = mock.MagicMock()
+        mock_task = mock.Mock()
+        target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
+        target.delete(mock_task)
+        mock_done_storage.write.assert_called_once_with(mock_task)
     
     def test_delete_calls_delete_on_pending_storage(self):
         mock_pending_storage = mock.Mock()

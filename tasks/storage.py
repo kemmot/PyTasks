@@ -118,6 +118,7 @@ class TaskWarriorStorage:
         return self._pending_storage
 
     def delete(self, task):
+        self._done_storage.write(task)
         self._pending_storage.delete(task)
 
     def read_all(self):
