@@ -12,9 +12,9 @@ import __main__
 import entities
 
 
-class TaskWarriorPendingFormatter:
+class TaskWarriorFormatter:
     '''
-    A formatter matching task warriors pending file format.
+    A formatter matching task warriors file format.
     '''
     def format(self, task):
         '''
@@ -49,33 +49,19 @@ class TaskWarriorPendingFormatter:
         return task
 
 
-class TaskWarriorPendingStorage:
-    def __init__(self, settings, formatter=TaskWarriorPendingFormatter()):
+class TextFileStorage:
+    def __init__(self, path, formatter):
         self._logger = logging.getLogger(self.__class__.__name__)
+        self._path = path
+        self._formatter = formatter       
 
-        data_location = settings.data_location
-        pending_filename = settings.data_pending_filename
+    @property
+    def formatter(self):
+        return self._formatter
 
-        if not os.path.isabs(data_location):
-            data_location = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), data_location))
-            self._logger.debug('Converted relative data location [{}] to: [{}]'.format(settings.data_location, data_location))
-        
-        self._path = os.path.join(data_location, pending_filename)
-        self._formatter = formatter        
-    
     @property
     def path(self):
         return self._path
-
-    def delete(self, task):
-        tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
-        self._write_all(tasks_to_keep)
-
-    def read(self, task_index):
-        results = [t for t in self.read_all() if t.index == task_index]
-        if not results:
-            raise IndexError('Task index not found: {}'.format(task_index))
-        return results[0]
 
     def read_all(self):
         tasks = []
@@ -90,11 +76,6 @@ class TaskWarriorPendingStorage:
         else:
             self._logger.warning('File not found: [{}]'.format(self._path))
         return tasks
-
-    def write(self, task):
-        tasks = self.read_all()
-        tasks.append(task)
-        self._write_all(tasks)
 
     def _write_all(self, tasks):
         temp_path = self._path + '.tmp'
@@ -111,3 +92,33 @@ class TaskWarriorPendingStorage:
         else:
             self._logger.info('Creating new file: [{}]'.format(self._path))
         os.rename(temp_path, self._path)
+
+
+class TaskWarriorStorage(TextFileStorage):
+    def __init__(self, settings, formatter=TaskWarriorFormatter()):
+        self._logger = logging.getLogger(self.__class__.__name__)
+
+        data_location = settings.data_location
+        pending_filename = settings.data_pending_filename
+
+        if not os.path.isabs(data_location):
+            data_location = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), data_location))
+            self._logger.debug('Converted relative data location [{}] to: [{}]'.format(settings.data_location, data_location))
+        
+        path = os.path.join(data_location, pending_filename)
+        super().__init__(path, formatter)
+
+    def delete(self, task):
+        tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
+        self._write_all(tasks_to_keep)
+
+    def read(self, task_index):
+        results = [t for t in self.read_all() if t.index == task_index]
+        if not results:
+            raise IndexError('Task index not found: {}'.format(task_index))
+        return results[0]
+
+    def write(self, task):
+        tasks = self.read_all()
+        tasks.append(task)
+        self._write_all(tasks)

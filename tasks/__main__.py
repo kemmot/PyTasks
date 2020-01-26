@@ -74,7 +74,7 @@ try:
     SETTINGS = settings.Settings()
     SETTINGS.read(SETTINGS_FILENAME)
 
-    STORAGE = storage.TaskWarriorPendingStorage(SETTINGS)
+    STORAGE = storage.TaskWarriorStorage(SETTINGS)
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
     COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE, FILTER_FACTORY)
