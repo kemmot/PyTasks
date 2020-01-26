@@ -13,21 +13,17 @@ class Settings:
     
     @property
     def data_done_filename(self):
-        key = 'data.done.filename'
-        if not self._config.has_option(self._category, key):
-            raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
-        return self._config[self._category][key]
+        return self._get_value('data.done.filename')
 
     @property
     def data_location(self):
-        key = 'data.location'
-        if not self._config.has_option(self._category, key):
-            raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
-        return self._config[self._category][key]
+        return self._get_value('data.location')
     
     @property
     def data_pending_filename(self):
-        key = 'data.pending.filename'
+        return self._get_value('data.pending.filename')
+    
+    def _get_value(self, key):
         if not self._config.has_option(self._category, key):
             raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
         return self._config[self._category][key]
