@@ -10,6 +10,13 @@ class Settings:
             config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
         self._config = config
         self._logger = logging.getLogger(self.__class__.__name__)
+    
+    @property
+    def data_done_filename(self):
+        key = 'data.done.filename'
+        if not self._config.has_option(self._category, key):
+            raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
+        return self._config[self._category][key]
 
     @property
     def data_location(self):
