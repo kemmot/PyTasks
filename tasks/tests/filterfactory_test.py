@@ -17,7 +17,7 @@ class FilterFactoryTests(unittest.TestCase):
 
         with self.assertRaises(Exception):
             factory.parse('unknown')
-        
+
         mock_parser1.parse.assert_called_once_with('unknown')
         mock_parser2.parse.assert_called_once_with('unknown')
 
@@ -30,5 +30,5 @@ class FilterFactoryTests(unittest.TestCase):
         factory = filterfactory.FilterFactory()
         factory.register_type(mock_parser)
 
-        filter = factory.parse('unknown')
-        self.assertEqual(mock_filter, filter)
+        result = factory.parse('unknown')
+        self.assertEqual(mock_filter, result)

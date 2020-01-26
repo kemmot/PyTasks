@@ -6,11 +6,11 @@ import commands.donecommand as donecommand
 
 class DoneCommandTests(unittest.TestCase):
     def test_constructor_sets_properties(self):
-        storage = mock.Mock()
-        filter = mock.Mock()
-        command = donecommand.DoneCommand(storage, filter)
-        self.assertEqual(storage, command.storage)
-        self.assertEqual(filter, command.filter)
+        mock_storage = mock.Mock()
+        mock_filter = mock.Mock()
+        command = donecommand.DoneCommand(mock_storage, mock_filter)
+        self.assertEqual(mock_storage, command.storage)
+        self.assertEqual(mock_filter, command.filter)
 
     def test_execute_calls_delete_on_storage(self):
         task1 = mock.Mock()
@@ -22,10 +22,10 @@ class DoneCommandTests(unittest.TestCase):
         storage = mock.Mock()
         storage.delete = mock.MagicMock()
         storage.read_all = mock.MagicMock(return_value=[task1, task2, task3])
-        filter = mock.MagicMock()
-        filter.is_match = mock.Mock()
-        filter.is_match.side_effect = [False, True, False]
-        command = donecommand.DoneCommand(storage, filter)
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.Mock()
+        mock_filter.is_match.side_effect = [False, True, False]
+        command = donecommand.DoneCommand(storage, mock_filter)
         command.task_index = 2
         command.execute()
         storage.read_all.assert_called_once()
@@ -44,7 +44,9 @@ class DoneCommandParserTests(unittest.TestCase):
         args = ['done']
         mock_storage = mock.Mock()
         mock_filter_factory = mock.Mock()
-        self.assertIsNone(donecommand.DoneCommandParser().parse(mock_storage, mock_filter_factory, args))
+        parser = donecommand.DoneCommandParser()
+        result = parser.parse(mock_storage, mock_filter_factory, args)
+        self.assertIsNone(result)
 
     def test_parse_no_filter_parsed(self):
         args = ['text', 'done']

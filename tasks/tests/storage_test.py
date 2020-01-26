@@ -55,7 +55,7 @@ class TextFileStorageTests(unittest.TestCase):
     def setUp(self):
         self._formatter = mock.Mock()
         self._formatter.parse = mock.Mock()
-    
+
     def test_constructor_sets_pproperties(self):
         test_path = '/d/temp.dat'
         target = storage.TextFileStorage(test_path, self._formatter)
@@ -202,7 +202,7 @@ class TaskWarriorStorageTests(unittest.TestCase):
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         self.assertEqual(mock_pending_storage, target.pending_storage)
         self.assertEqual(mock_done_storage, target.done_storage)
-    
+
     def test_delete_calls_write_on_done_storage(self):
         mock_pending_storage = mock.Mock()
         mock_pending_storage.delete = mock.MagicMock()
@@ -212,7 +212,7 @@ class TaskWarriorStorageTests(unittest.TestCase):
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         target.delete(mock_task)
         mock_done_storage.write.assert_called_once_with(mock_task)
-    
+
     def test_delete_calls_delete_on_pending_storage(self):
         mock_pending_storage = mock.Mock()
         mock_pending_storage.delete = mock.MagicMock()
@@ -221,16 +221,16 @@ class TaskWarriorStorageTests(unittest.TestCase):
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         target.delete(mock_task)
         mock_pending_storage.delete.assert_called_once_with(mock_task)
-    
+
     def test_read_all_calls_read_all_on_pending_storage(self):
         tasks = [mock.Mock(), mock.Mock()]
         mock_pending_storage = mock.Mock()
-        mock_pending_storage.read_all = mock.MagicMock(return_value=tasks)   
-        mock_done_storage = mock.Mock()     
+        mock_pending_storage.read_all = mock.MagicMock(return_value=tasks)
+        mock_done_storage = mock.Mock()
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         result = target.read_all()
         self.assertEqual(tasks, result)
-    
+
     def test_write_calls_write_on_pending_storage(self):
         mock_pending_storage = mock.Mock()
         mock_pending_storage.write = mock.MagicMock()
@@ -250,13 +250,13 @@ class TaskWarriorStorageCreatorTests(unittest.TestCase):
         result = storage.TaskWarriorStorageCreator().create(mock_settings)
         self.assertIsInstance(result, storage.TaskWarriorStorage)
         self.assertEqual('/d/test/pending.dat', result.pending_storage.path)
-        
+
     def test_constructor_sets_path_relative_to_main(self):
         mock_settings = mock.Mock()
         mock_settings.data_location = 'test'
         mock_settings.data_pending_filename = 'pending.dat'
         mock_settings.data_done_filename = 'done.dat'
-        result = storage.TaskWarriorStorageCreator().create(mock_settings)        
+        result = storage.TaskWarriorStorageCreator().create(mock_settings)
         full_test_path = os.path.join(os.path.dirname(__main__.__file__), 'test/pending.dat')
         self.assertIsInstance(result, storage.TaskWarriorStorage)
         self.assertEqual(full_test_path, result.pending_storage.path)

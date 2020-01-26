@@ -11,7 +11,7 @@ class SettingTests(unittest.TestCase):
         mock_path.isfile.return_value = False
         with self.assertRaises(Exception):
             settings.Settings().read('./womble.ini')
-    
+
     @mock.patch('settings.os.path')
     def test_read_raises(self, mock_path):
         mock_path.isfile.return_value = True
@@ -30,7 +30,7 @@ class SettingTests(unittest.TestCase):
         test_path = 'test path'
         settings.Settings(config=mock_config).read(test_path)
         mock_config.read.assert_called_with(test_path)
-    
+
     @mock.patch('settings.os.path')
     def test_read_data_location_category_not_exists(self, mock_path):
         mock_path.isfile.return_value = True
@@ -39,7 +39,7 @@ class SettingTests(unittest.TestCase):
         target.read('test path')
         with self.assertRaises(Exception):
             result = target.data_location
-    
+
     @mock.patch('settings.os.path')
     def test_read_data_location_exists(self, mock_path):
         self._test_setting_exists(mock_path, 'data.location', '/folder', 'data_location')
@@ -47,19 +47,20 @@ class SettingTests(unittest.TestCase):
     @mock.patch('settings.os.path')
     def test_read_data_location_does_not_exist(self, mock_path):
         self._test_setting_not_exists(mock_path, 'data_location')
-    
+
     @mock.patch('settings.os.path')
     def test_read_data_pending_filename_exists(self, mock_path):
-        self._test_setting_exists(mock_path, 'data.pending.filename', 'pending.dat', 'data_pending_filename')
-    
+        self._test_setting_exists(mock_path, \
+            'data.pending.filename', 'pending.dat', 'data_pending_filename')
+
     @mock.patch('settings.os.path')
     def test_read_data_pending_filename_not_exists(self, mock_path):
         self._test_setting_not_exists(mock_path, 'data_pending_filename')
-    
+
     @mock.patch('settings.os.path')
     def test_read_data_done_filename_exists(self, mock_path):
         self._test_setting_exists(mock_path, 'data.done.filename', 'done.dat', 'data_done_filename')
-    
+
     @mock.patch('settings.os.path')
     def test_read_data_done_filename_not_exists(self, mock_path):
         self._test_setting_not_exists(mock_path, 'data_done_filename')

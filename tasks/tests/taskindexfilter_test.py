@@ -6,8 +6,8 @@ import filters.taskindexfilter as taskindexfilter
 
 class TaskIndexFilterTests(unittest.TestCase):
     def test_constructor_sets_index(self):
-        filter = taskindexfilter.TaskIndexFilter(9)
-        self.assertEqual(9, filter.index)
+        target = taskindexfilter.TaskIndexFilter(9)
+        self.assertEqual(9, target.index)
 
     def test_is_match_returns_true_on_matching_index(self):
         task = mock.Mock()
@@ -22,10 +22,10 @@ class TaskIndexFilterTests(unittest.TestCase):
 
 class TaskIndexFilterParserTests(unittest.TestCase):
     def test_parse_integer_returns_filter(self):
-        filter = taskindexfilter.TaskIndexFilterParser().parse('13')
-        self.assertIsInstance(filter, taskindexfilter.TaskIndexFilter)
-        self.assertEqual(13, filter.index)
+        target = taskindexfilter.TaskIndexFilterParser().parse('13')
+        self.assertIsInstance(target, taskindexfilter.TaskIndexFilter)
+        self.assertEqual(13, target.index)
 
     def test_parse_non_integer_returns_none(self):
-        filter = taskindexfilter.TaskIndexFilterParser().parse('words')
-        self.assertIsNone(filter)
+        target = taskindexfilter.TaskIndexFilterParser().parse('words')
+        self.assertIsNone(target)

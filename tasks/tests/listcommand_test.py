@@ -55,7 +55,10 @@ class ListTaskCommandTests(unittest.TestCase):
             command.execute()
 
         mock_filter.is_match.assert_called()
-        calls = [mock.call('ID   Status  Description'), mock.call('------------------------'), mock.call(mock.ANY)]
+        call1 = mock.call('ID   Status  Description')
+        call2 = mock.call('------------------------')
+        call3 = mock.call(mock.ANY)
+        calls = [call1, call2, call3]
         self.assertEqual(calls, mock_print.mock_calls)
 
     def test_execute_prints_content(self):
@@ -70,7 +73,7 @@ class ListTaskCommandTests(unittest.TestCase):
 
         mock_storage = mock.MagicMock()
         mock_storage.read_all = MagicMock(return_value=tasks)
-        
+
         mock_filter = mock.Mock()
         mock_filter.is_match = mock.MagicMock(return_value=True)
 

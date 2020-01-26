@@ -2,7 +2,7 @@ class TypeFactory:
     def __init__(self, base_class):
         self._types = []
         self._base_class = base_class
-    
+
     @property
     def types(self):
         return self._types

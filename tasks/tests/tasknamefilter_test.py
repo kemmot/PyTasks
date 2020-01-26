@@ -6,8 +6,8 @@ import filters.tasknamefilter as tasknamefilter
 
 class TaskNameFilterTests(unittest.TestCase):
     def test_constructor_sets_name(self):
-        filter = tasknamefilter.TaskNameFilter('test')
-        self.assertEqual('test', filter.name)
+        target = tasknamefilter.TaskNameFilter('test')
+        self.assertEqual('test', target.name)
 
     def test_is_match_returns_true_on_matching_name(self):
         task = mock.Mock()
@@ -32,19 +32,19 @@ class TaskNameFilterTests(unittest.TestCase):
 
 class TaskNameFilterParserTests(unittest.TestCase):
     def test_parse_none_returns_none(self):
-        filter = tasknamefilter.TaskNameFilterParser().parse(None)
-        self.assertIsNone(filter)
+        target = tasknamefilter.TaskNameFilterParser().parse(None)
+        self.assertIsNone(target)
 
     def test_parse_empty_string_returns_none(self):
-        filter = tasknamefilter.TaskNameFilterParser().parse('')
-        self.assertIsNone(filter)
+        target = tasknamefilter.TaskNameFilterParser().parse('')
+        self.assertIsNone(target)
 
     def test_parse_non_empty_string_returns_filter(self):
-        filter = tasknamefilter.TaskNameFilterParser().parse('test')
-        self.assertIsInstance(filter, tasknamefilter.TaskNameFilter)
-        self.assertEqual('test', filter.name)
+        target = tasknamefilter.TaskNameFilterParser().parse('test')
+        self.assertIsInstance(target, tasknamefilter.TaskNameFilter)
+        self.assertEqual('test', target.name)
 
     def test_parse_strips_forward_slashes(self):
-        filter = tasknamefilter.TaskNameFilterParser().parse('/test/')
-        self.assertIsInstance(filter, tasknamefilter.TaskNameFilter)
-        self.assertEqual('test', filter.name)
+        target = tasknamefilter.TaskNameFilterParser().parse('/test/')
+        self.assertIsInstance(target, tasknamefilter.TaskNameFilter)
+        self.assertEqual('test', target.name)
