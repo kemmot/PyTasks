@@ -3,18 +3,13 @@ import filters.alwaysfilter as alwaysfilter
 import filters.filterfactory as filterfactory
 
 
-class ListTaskCommand(commandbase.CommandBase):
+class ListTaskCommand(commandbase.FilterCommandBase):
     '''
     A command that will list tasks.
     '''
 
     def __init__(self, storage, filter):
-        super().__init__(storage)
-        self._filter = filter
-
-    @property
-    def filter(self):
-        return self._filter
+        super().__init__(storage, filter)
         
     def execute(self):
         '''
@@ -22,13 +17,12 @@ class ListTaskCommand(commandbase.CommandBase):
         '''
         print('ID   Status  Description')
         print('------------------------')
-        for task in self.storage.read_all():
-            if self._filter.is_match(task):
-                format_string = '{} {} {}'
-                print(format_string.format( \
-                        task.index, \
-                        task.status, \
-                        task.name))
+        for task in self.get_filtered_tasks():
+            format_string = '{} {} {}'
+            print(format_string.format( \
+                    task.index, \
+                    task.status, \
+                    task.name))
 
 
 class ListTaskCommandParser(commandbase.CommandParserBase):

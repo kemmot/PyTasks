@@ -5,20 +5,13 @@ import filters.alwaysfilter as alwaysfilter
 import filters.filterfactory as filterfactory
 
 
-class DoneCommand(commandbase.CommandBase):
+class DoneCommand(commandbase.FilterCommandBase):
     def __init__(self, storage, filter):
-        super().__init__(storage)
-        self._filter = filter
-    
-    @property
-    def filter(self):
-        return self._filter
+        super().__init__(storage, filter)
 
     def execute(self):
-        tasks = self.storage.read_all()
-        for task in tasks:
-            if self._filter.is_match(task):
-                self.storage.delete(task)
+        for task in self.get_filtered_tasks():
+            self.storage.delete(task)
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
