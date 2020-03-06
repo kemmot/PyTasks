@@ -1,1 +1,2 @@
 [description:"FEAT-0003: Add default command" entry:"0" status:"pending" uuid:"5428a3f4-8059-4aca-9426-8e7d9377cb32"]
+[description:"FEAT-0022: Done command should have optional confirmation" entry:"1583518" status:"pending" uuid:"40cbb0f2-4ffc-4739-8bc9-cb7fca3cddfb"]
