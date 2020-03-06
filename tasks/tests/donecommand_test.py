@@ -6,10 +6,10 @@ import commands.donecommand as donecommand
 
 class DoneCommandTests(unittest.TestCase):
     def test_constructor_sets_properties(self):
-        mock_storage = mock.Mock()
+        mock_context = mock.Mock()
         mock_filter = mock.Mock()
-        command = donecommand.DoneCommand(mock_storage, mock_filter)
-        self.assertEqual(mock_storage, command.storage)
+        command = donecommand.DoneCommand(mock_context, mock_filter)
+        self.assertEqual(mock_context, command.context)
         self.assertEqual(mock_filter, command.filter)
 
     def test_execute_calls_delete_on_storage(self):
@@ -19,17 +19,19 @@ class DoneCommandTests(unittest.TestCase):
         task2.index = 2
         task3 = mock.Mock()
         task3.index = 3
-        storage = mock.Mock()
-        storage.delete = mock.MagicMock()
-        storage.read_all = mock.MagicMock(return_value=[task1, task2, task3])
+        mock_storage = mock.Mock()
+        mock_storage.delete = mock.MagicMock()
+        mock_storage.read_all = mock.MagicMock(return_value=[task1, task2, task3])
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
         mock_filter = mock.MagicMock()
         mock_filter.is_match = mock.Mock()
         mock_filter.is_match.side_effect = [False, True, False]
-        command = donecommand.DoneCommand(storage, mock_filter)
+        command = donecommand.DoneCommand(mock_context, mock_filter)
         command.task_index = 2
         command.execute()
-        storage.read_all.assert_called_once()
-        storage.delete.assert_called_once_with(task2)
+        mock_storage.read_all.assert_called_once()
+        mock_storage.delete.assert_called_once_with(task2)
 
 
 class DoneCommandParserTests(unittest.TestCase):
@@ -59,14 +61,12 @@ class DoneCommandParserTests(unittest.TestCase):
 
     def test_parse_parse_success(self):
         args = ['2', 'done']
-        mock_storage = mock.Mock()
         mock_context = mock.Mock()
-        mock_context.storage = mock_storage
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
         parser = donecommand.DoneCommandParser()
         command = parser.parse(mock_context, mock_filter_factory, args)
         self.assertIsInstance(command, donecommand.DoneCommand)
-        self.assertEqual(mock_storage, command.storage)
+        self.assertEqual(mock_context, command.context)
         self.assertEqual(mock_filter, command.filter)

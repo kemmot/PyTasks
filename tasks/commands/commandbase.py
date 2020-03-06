@@ -5,16 +5,16 @@ class CommandBase:
     '''
     A base class providing functionality common to all commands.
     '''
-    def __init__(self, storage):
+    def __init__(self, context):
         self._logger = logging.getLogger(__class__.__name__)
-        self._storage = storage
+        self._context = context
 
     @property
-    def storage(self):
+    def context(self):
         '''
-        The storage to write the task to.
+        The command context.
         '''
-        return self._storage
+        return self._context
 
     def execute(self):
         '''
@@ -24,8 +24,8 @@ class CommandBase:
 
 
 class FilterCommandBase(CommandBase):
-    def __init__(self, storage, filter):
-        super().__init__(storage)
+    def __init__(self, context, filter):
+        super().__init__(context)
         self._filter = filter
 
     @property
@@ -34,7 +34,7 @@ class FilterCommandBase(CommandBase):
 
     def get_filtered_tasks(self):
         filtered_tasks = []
-        for task in self.storage.read_all():
+        for task in self.context.storage.read_all():
             if self.filter.is_match(task):
                 filtered_tasks.append(task)
         return filtered_tasks

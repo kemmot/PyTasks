@@ -9,17 +9,20 @@ import entities
 
 class AddTaskCommandTests(unittest.TestCase):
     def test_execute_calls_write_on_storage(self):
-        storage = mock.MagicMock()
-        storage.write = MagicMock()
+        mock_storage = mock.MagicMock()
+        mock_storage.write = MagicMock()
+        
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
 
         task = entities.Task()
         task.name = 'test name'
 
-        command = addcommand.AddTaskCommand(storage)
+        command = addcommand.AddTaskCommand(mock_context)
         command.task = task
         command.execute()
 
-        storage.write.assert_called_once_with(task)
+        mock_storage.write.assert_called_once_with(task)
 
     def test_execute_prints_task_id(self):
         existing_task_count = 3
@@ -27,13 +30,16 @@ class AddTaskCommandTests(unittest.TestCase):
         for _ in range(0, existing_task_count):
             existing_tasks.append(mock.Mock())
 
-        storage = mock.MagicMock()
-        storage.read_all = MagicMock(return_value=existing_tasks)
+        mock_storage = mock.MagicMock()
+        mock_storage.read_all = MagicMock(return_value=existing_tasks)
+        
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
 
         task = entities.Task()
         task.name = 'test name'
 
-        command = addcommand.AddTaskCommand(storage)
+        command = addcommand.AddTaskCommand(mock_context)
         command.task = task
 
         mock_print = mock.MagicMock()
@@ -46,9 +52,7 @@ class AddTaskCommandTests(unittest.TestCase):
 class AddTaskCommandParserTests(unittest.TestCase):
     def test_parse_wrong_command(self):
         args = ['wrong']
-        mock_storage = mock.Mock()
         mock_context = mock.Mock()
-        mock_context.storage = mock_storage
         mock_filter_factory = mock.Mock()
         command = addcommand.AddTaskCommandParser().parse(mock_context, mock_filter_factory, args)
         self.assertEqual(None, command)
@@ -63,14 +67,12 @@ class AddTaskCommandParserTests(unittest.TestCase):
     def test_parse_returns_correct_command(self):
         args = ['add', 'first', 'task']
 
-        mock_storage = mock.Mock()
         mock_context = mock.Mock()
-        mock_context.storage = mock_storage
         mock_filter_factory = mock.Mock()
         command = addcommand.AddTaskCommandParser().parse(mock_context, mock_filter_factory, args)
 
         self.assertIsInstance(command, addcommand.AddTaskCommand)
-        self.assertEqual(command.storage, mock_storage)
+        self.assertEqual(command.context, mock_context)
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, 'first task')

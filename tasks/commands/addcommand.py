@@ -9,8 +9,8 @@ class AddTaskCommand(commandbase.CommandBase):
     '''
     A command that will add a task.
     '''
-    def __init__(self, storage):
-        super().__init__(storage)
+    def __init__(self, context):
+        super().__init__(context)
         self._task = None
 
     @property
@@ -28,8 +28,8 @@ class AddTaskCommand(commandbase.CommandBase):
         '''
         Executes the logic of this command.
         '''
-        existing_tasks = self._storage.read_all()
-        self._storage.write(self.task)
+        existing_tasks = self.context.storage.read_all()
+        self.context.storage.write(self.task)
         self.task.index = len(existing_tasks) + 1
         print('Task created: {}'.format(self.task.index))
 
@@ -48,7 +48,7 @@ class AddTaskCommandParser(commandbase.CommandParserBase):
             task.name = ' '.join(name)
             task.status = 'pending'
 
-            command = AddTaskCommand(context.storage)
+            command = AddTaskCommand(context)
             command.task = task
         else:
             command = None
