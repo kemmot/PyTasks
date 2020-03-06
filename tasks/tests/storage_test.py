@@ -257,6 +257,7 @@ class TaskWarriorStorageCreatorTests(unittest.TestCase):
         mock_settings.data_pending_filename = 'pending.dat'
         mock_settings.data_done_filename = 'done.dat'
         result = storage.TaskWarriorStorageCreator().create(mock_settings)
-        full_test_path = os.path.join(os.path.dirname(__main__.__file__), 'test/pending.dat')
+        full_test_path = os.path.join(os.path.dirname(__main__.__file__), 'test')
+        full_test_path = os.path.join(full_test_path, 'pending.dat')
         self.assertIsInstance(result, storage.TaskWarriorStorage)
         self.assertEqual(full_test_path, result.pending_storage.path)
