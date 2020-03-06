@@ -38,7 +38,9 @@ class CommandFactoryTests(unittest.TestCase):
 
         mock_storage = mock.Mock()
         mock_filter_factory = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_storage, mock_filter_factory)
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
+        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
         factory.register_type(parser)
 
         command = factory.get_command(args)

@@ -10,6 +10,7 @@ import os
 import sys
 import yaml
 
+import commandcontext as commandcontext
 import commands.commandfactory as commandfactory
 import commandline as cli
 import settings
@@ -75,9 +76,12 @@ try:
     SETTINGS.read(SETTINGS_FILENAME)
 
     STORAGE = storage.TaskWarriorStorageCreator().create(SETTINGS)
+
+    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE)
+
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
-    COMMAND_FACTORY = commandfactory.CommandFactory(STORAGE, FILTER_FACTORY)
+    COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT, FILTER_FACTORY)
     COMMAND_FACTORY.register_known_types()
 
     try:
