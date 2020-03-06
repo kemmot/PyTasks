@@ -35,7 +35,7 @@ class AddTaskCommand(commandbase.CommandBase):
 
 
 class AddTaskCommandParser(commandbase.CommandParserBase):
-    def parse(self, storage, filter_factory, args):
+    def parse(self, context, filter_factory, args):
         if args[0] == 'add':
             if len(args) < 2:
                 raise Exception('Add command requires task description')
@@ -48,7 +48,7 @@ class AddTaskCommandParser(commandbase.CommandParserBase):
             task.name = ' '.join(name)
             task.status = 'pending'
 
-            command = AddTaskCommand(storage)
+            command = AddTaskCommand(context.storage)
             command.task = task
         else:
             command = None

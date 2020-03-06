@@ -15,10 +15,10 @@ class DoneCommand(commandbase.FilterCommandBase):
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
-    def parse(self, storage, filter_factory, args):
+    def parse(self, context, filter_factory, args):
         if len(args) == 2 and args[1] == 'done':
             filter = filter_factory.parse(args[0])
-            command = DoneCommand(storage, filter)
+            command = DoneCommand(context.storage, filter)
         else:
             command = None
         return command

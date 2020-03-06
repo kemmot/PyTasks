@@ -47,23 +47,27 @@ class AddTaskCommandParserTests(unittest.TestCase):
     def test_parse_wrong_command(self):
         args = ['wrong']
         mock_storage = mock.Mock()
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
         mock_filter_factory = mock.Mock()
-        command = addcommand.AddTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
+        command = addcommand.AddTaskCommandParser().parse(mock_context, mock_filter_factory, args)
         self.assertEqual(None, command)
 
     def test_parse_no_name(self):
         args = ['add']
-        mock_storage = mock.Mock()
+        mock_context = mock.Mock()
         mock_filter_factory = mock.Mock()
         with self.assertRaises(Exception):
-            addcommand.AddTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
+            addcommand.AddTaskCommandParser().parse(mock_context, mock_filter_factory, args)
 
     def test_parse_returns_correct_command(self):
         args = ['add', 'first', 'task']
 
         mock_storage = mock.Mock()
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
         mock_filter_factory = mock.Mock()
-        command = addcommand.AddTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
+        command = addcommand.AddTaskCommandParser().parse(mock_context, mock_filter_factory, args)
 
         self.assertIsInstance(command, addcommand.AddTaskCommand)
         self.assertEqual(command.storage, mock_storage)

@@ -26,13 +26,13 @@ class ListTaskCommand(commandbase.FilterCommandBase):
 
 
 class ListTaskCommandParser(commandbase.CommandParserBase):
-    def parse(self, storage, filter_factory, args):
+    def parse(self, context, filter_factory, args):
         if len(args) == 1 and args[0] == 'list':
             filter = alwaysfilter.AlwaysFilter()
-            command = ListTaskCommand(storage, filter)
+            command = ListTaskCommand(context.storage, filter)
         elif len(args) == 2 and args[1] == 'list':
             filter = filter_factory.parse(args[0])
-            command = ListTaskCommand(storage, filter)
+            command = ListTaskCommand(context.storage, filter)
         else:
             command = None
         return command

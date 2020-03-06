@@ -90,18 +90,22 @@ class ListTaskCommandParserTests(unittest.TestCase):
     def test_parse_wrong_command(self):
         args = ['wrong']
         mock_storage = mock.Mock()
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
         mock_filter_factory = mock.Mock()
-        command = listcommand.ListTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
+        command = listcommand.ListTaskCommandParser().parse(mock_context, mock_filter_factory, args)
         self.assertEqual(None, command)
 
     def test_parse_success_no_filter(self):
         args = ['list']
 
         mock_storage = mock.Mock()
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
         mock_filter = mock.Mock()
         mock_filter_factory = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
-        command = listcommand.ListTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
+        command = listcommand.ListTaskCommandParser().parse(mock_context, mock_filter_factory, args)
 
         self.assertIsInstance(command, listcommand.ListTaskCommand)
         self.assertEqual(command.storage, mock_storage)
@@ -111,10 +115,12 @@ class ListTaskCommandParserTests(unittest.TestCase):
         args = ['filter', 'list']
 
         mock_storage = mock.Mock()
+        mock_context = mock.Mock()
+        mock_context.storage = mock_storage
         mock_filter = mock.Mock()
         mock_filter_factory = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
-        command = listcommand.ListTaskCommandParser().parse(mock_storage, mock_filter_factory, args)
+        command = listcommand.ListTaskCommandParser().parse(mock_context, mock_filter_factory, args)
 
         self.assertIsInstance(command, listcommand.ListTaskCommand)
         self.assertEqual(command.storage, mock_storage)
