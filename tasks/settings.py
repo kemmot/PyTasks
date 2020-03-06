@@ -12,6 +12,10 @@ class Settings:
         self._logger = logging.getLogger(self.__class__.__name__)
     
     @property
+    def command_default(self):
+        return self._get_value('command.default')
+    
+    @property
     def data_done_filename(self):
         return self._get_value('data.done.filename')
 
