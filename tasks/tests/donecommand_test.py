@@ -40,23 +40,23 @@ class DoneCommandTests(unittest.TestCase):
         mock_filter = mock.MagicMock()
         mock_filter.is_match = mock.Mock()
         mock_filter.is_match.side_effect = [False, True, False]
-        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task as done?... ID: 2, name: task 2')
+        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task as done? [y/n]... ID: 2, name: task 2')
 
     def test_execute_prompts_before_multiple_deletion_when_configured_to(self):
         mock_filter = mock.MagicMock()
         mock_filter.is_match = mock.MagicMock(return_value=True)
-        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task(s) as done?... 3 tasks')
+        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task(s) as done? [y/n]... 3 tasks')
 
     def _test_execute_prompts_when_confgured_to(self, mock_filter, message, prompt=True):
-        tasks = self._create_tasks(3)
-        mock_context = self._create_context(tasks)
+        mock_context = self._create_context()
         mock_context.settings.command_done_confirm = prompt
 
         command = donecommand.DoneCommand(mock_context, mock_filter)
 
         mock_print = mock.MagicMock()
         with mock.patch('commands.donecommand.print', mock_print):
-            command.execute()
+            with mock.patch('commands.donecommand.input', return_value="No"):
+                command.execute()
         
         if not message:
             mock_print.assert_not_called()
@@ -64,12 +64,41 @@ class DoneCommandTests(unittest.TestCase):
             mock_print.assert_called_once_with(message)
         
     def test_execute_negative_confirmation_does_not_change_task(self):
-        pass
+        mock_context = self._create_context()
+        mock_context.settings.command_done_confirm = True
+
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.MagicMock(return_value=True)
+
+        command = donecommand.DoneCommand(mock_context, mock_filter)
+
+        mock_print = mock.MagicMock()
+        with mock.patch('commands.donecommand.print', mock_print):
+            with mock.patch('commands.donecommand.input', return_value="No"):
+                command.execute()
+        
+        mock_context.storage.delete.assert_not_called()
         
     def test_execute_positive_confirmation_does_change_task(self):
-        pass
+        mock_context = self._create_context()
+        mock_context.settings.command_done_confirm = True
 
-    def _create_context(self, tasks):
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.MagicMock(return_value=True)
+
+        command = donecommand.DoneCommand(mock_context, mock_filter)
+
+        mock_print = mock.MagicMock()
+        with mock.patch('commands.donecommand.print', mock_print):
+            with mock.patch('commands.donecommand.input', return_value="yes"):
+                command.execute()
+        
+        mock_context.storage.delete.assert_called()
+
+    def _create_context(self, tasks=None):
+        if not tasks:
+            tasks = self._create_tasks(3)
+
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
         
