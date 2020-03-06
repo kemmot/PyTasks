@@ -1,4 +1,3 @@
-[description:"FEAT-0003: Add default command" entry:"0" status:"pending" uuid:"5428a3f4-8059-4aca-9426-8e7d9377cb32"]
 [description:"FEAT-0004: Add task key generation" entry:"0" status:"pending" uuid:"da92a6fb-5959-4e9d-9dd3-f34e32b3371e"]
 [description:"FEAT-0005: Add update command" entry:"0" status:"pending" uuid:"77b70d35-c0a6-4f14-9cee-e3dee61773e3"]
 [description:"FEAT-0010: Add change log" entry:"0" status:"pending" uuid:"2c06393b-42d9-41dd-b925-6c909c40a4ee"]
