@@ -13,25 +13,84 @@ class DoneCommandTests(unittest.TestCase):
         self.assertEqual(mock_filter, command.filter)
 
     def test_execute_calls_delete_on_storage(self):
-        task1 = mock.Mock()
-        task1.index = 1
-        task2 = mock.Mock()
-        task2.index = 2
-        task3 = mock.Mock()
-        task3.index = 3
-        mock_storage = mock.Mock()
-        mock_storage.delete = mock.MagicMock()
-        mock_storage.read_all = mock.MagicMock(return_value=[task1, task2, task3])
-        mock_context = mock.Mock()
-        mock_context.storage = mock_storage
+        tasks = self._create_tasks(3)
+        mock_context = self._create_context(tasks)
+
         mock_filter = mock.MagicMock()
         mock_filter.is_match = mock.Mock()
         mock_filter.is_match.side_effect = [False, True, False]
+
         command = donecommand.DoneCommand(mock_context, mock_filter)
-        command.task_index = 2
         command.execute()
-        mock_storage.read_all.assert_called_once()
-        mock_storage.delete.assert_called_once_with(task2)
+
+        mock_context.storage.read_all.assert_called_once()
+        mock_context.storage.delete.assert_called_once_with(tasks[1])
+
+    def test_execute_does_not_prompt_for_zero_deletions(self):
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.MagicMock(return_value=False)
+        self._test_execute_prompts_when_confgured_to(mock_filter, None)
+
+    def test_execute_does_not_prompt_when_not_configured_to(self):
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.MagicMock(return_value=True)
+        self._test_execute_prompts_when_confgured_to(mock_filter, None, False)
+
+    def test_execute_prompts_before_single_deletion_when_configured_to(self):
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.Mock()
+        mock_filter.is_match.side_effect = [False, True, False]
+        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task as done?... ID: 2, name: task 2')
+
+    def test_execute_prompts_before_multiple_deletion_when_configured_to(self):
+        mock_filter = mock.MagicMock()
+        mock_filter.is_match = mock.MagicMock(return_value=True)
+        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task(s) as done?... 3 tasks')
+
+    def _test_execute_prompts_when_confgured_to(self, mock_filter, message, prompt=True):
+        tasks = self._create_tasks(3)
+        mock_context = self._create_context(tasks)
+        mock_context.settings.command_done_confirm = prompt
+
+        command = donecommand.DoneCommand(mock_context, mock_filter)
+
+        mock_print = mock.MagicMock()
+        with mock.patch('commands.donecommand.print', mock_print):
+            command.execute()
+        
+        if not message:
+            mock_print.assert_not_called()
+        else:
+            mock_print.assert_called_once_with(message)
+        
+    def test_execute_negative_confirmation_does_not_change_task(self):
+        pass
+        
+    def test_execute_positive_confirmation_does_change_task(self):
+        pass
+
+    def _create_context(self, tasks):
+        mock_settings = mock.Mock()
+        mock_settings.command_done_confirm = False
+        
+        mock_storage = mock.Mock()
+        mock_storage.delete = mock.MagicMock()
+        mock_storage.read_all = mock.MagicMock(return_value=tasks)
+
+        mock_context = mock.Mock()
+        mock_context.settings = mock_settings
+        mock_context.storage = mock_storage
+
+        return mock_context
+
+    def _create_tasks(self, count):
+        tasks = []
+        for index in range(count):
+            task = mock.Mock()
+            task.index = index + 1
+            task.name = 'task {}'.format(task.index)
+            tasks.append(task)
+        return tasks
 
 
 class DoneCommandParserTests(unittest.TestCase):

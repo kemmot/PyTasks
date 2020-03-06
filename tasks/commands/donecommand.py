@@ -10,8 +10,16 @@ class DoneCommand(commandbase.FilterCommandBase):
         super().__init__(context, filter)
 
     def execute(self):
-        for task in self.get_filtered_tasks():
-            self.context.storage.delete(task)
+        tasks_to_change = self.get_filtered_tasks()
+        if len(tasks_to_change) > 0:
+            if self.context.settings.command_done_confirm:
+                if len(tasks_to_change) > 1:
+                    message = 'Mark task(s) as done?... {} tasks'.format(len(tasks_to_change))
+                else:
+                    message = 'Mark task as done?... ID: {}, name: {}'.format(tasks_to_change[0].index, tasks_to_change[0].name)
+                print(message)
+            for task in tasks_to_change:
+                self.context.storage.delete(task)
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
