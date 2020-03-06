@@ -6,16 +6,49 @@ import commandline
 
 
 class CommandFactoryTests(unittest.TestCase):
-    def test_get_command_no_command_specified(self):
-        mock_storage = mock.Mock()
+    def test_get_command_no_command_specified_and_no_default(self):
+        mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_default = ''
         mock_filter_factory = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_storage, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
         try:
             args = []
             factory.get_command(args)
             self.fail('Should not have reached this code')
         except commandline.ExitCodeException as ex:
             self.assertEqual(commandline.ExitCodes.no_command_specified_error, ex.exit_code)
+
+    def test_get_command_no_command_specified_with_known_default(self):
+        mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_default = 'test'
+        mock_filter_factory = mock.Mock()
+
+        expected_command = mock.Mock()
+
+        parser = mock.Mock()
+        parser.parse = mock.MagicMock(return_value=expected_command)
+
+        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
+        factory.register_type(parser)
+        args = []
+        command = factory.get_command(args)
+        self.assertEqual(command, expected_command)
+
+    def test_get_command_no_command_specified_with_unknown_default(self):
+        mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_default = 'test'
+        mock_filter_factory = mock.Mock()
+        
+        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
+        try:
+            args = []
+            factory.get_command(args)
+            self.fail('Should not have reached this code')
+        except commandline.ExitCodeException as ex:
+            self.assertEqual(commandline.ExitCodes.unknown_command_error, ex.exit_code)
 
     def test_get_unknown_command(self):
         mock_storage = mock.Mock()

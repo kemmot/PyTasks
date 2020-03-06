@@ -15,6 +15,9 @@ class CommandFactory(typefactory.TypeFactory):
 
     def get_command(self, args):
         if not args:
+            args = self._command_context.settings.command_default.split()
+
+        if not args:
             exit_code = commandline.ExitCodes.no_command_specified_error
             raise commandline.ExitCodeException(exit_code=exit_code)
 
