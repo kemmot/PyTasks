@@ -20,6 +20,7 @@ import storage
 import commands.addcommand
 import commands.donecommand
 import commands.listcommand
+import commands.modifycommand
 import filters.filterfactory as filterfactory
 import filters.taskindexfilter as taskindexfilter
 import filters.tasknamefilter as tasknamefilter
