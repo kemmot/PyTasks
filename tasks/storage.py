@@ -85,6 +85,18 @@ class TextFileStorage:
         tasks = self.read_all()
         tasks.append(task)
         self._write_all(tasks)
+    
+    def update(self, tasks):
+        original_tasks = self.read_all()
+        tasks_to_keep = []
+        for original_task in original_tasks:
+            task_to_keep = original_task
+            for task_to_update in tasks:
+                if original_task.id_number == task_to_update.id_number:
+                    task_to_keep = task_to_update
+                    break
+            tasks_to_keep.append(task_to_keep)
+        self._write_all(tasks_to_keep)
 
     def _write_all(self, tasks):
         temp_path = self._path + '.tmp'
@@ -123,6 +135,9 @@ class TaskWarriorStorage:
 
     def read_all(self):
         return self._pending_storage.read_all()
+
+    def update(self, tasks):
+        self._pending_storage.update(tasks)
 
     def write(self, task):
         self._pending_storage.write(task)

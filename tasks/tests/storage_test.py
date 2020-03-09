@@ -148,6 +148,28 @@ class TextFileStorageTests(unittest.TestCase):
 
     @mock.patch('storage.os.path')
     @mock.patch('storage.os')
+    def test_update_updates_correct_task(self, mock_os, mock_path):
+        tasks = self._create_tasks(3)
+        new_task = mock.Mock()
+        new_task.id_number = tasks[1].id_number
+
+        self._formatter.format = mock.Mock(return_value='')
+        self._formatter.parse.side_effect = tasks
+
+        target = storage.TextFileStorage('test file', self._formatter)
+
+        mock_path.isfile.return_value = True
+        mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
+        with mock.patch('storage.open', mock_open):
+            target.update([new_task])
+        handle = mock_open()
+        calls = [mock.call(tasks[0]), mock.call(new_task), mock.call(tasks[2])]
+        self.assertEqual(calls, self._formatter.format.mock_calls)
+        handle.write.assert_called()
+        handle.__exit__.assert_called()
+
+    @mock.patch('storage.os.path')
+    @mock.patch('storage.os')
     def test_write_writes_to_file(self, mock_os, mock_path):
         expected_output = 'testing 1 2 3'
 
@@ -230,6 +252,15 @@ class TaskWarriorStorageTests(unittest.TestCase):
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         result = target.read_all()
         self.assertEqual(tasks, result)
+
+    def test_update_calls_update_on_pending_storage(self):
+        mock_pending_storage = mock.Mock()
+        mock_pending_storage.update = mock.MagicMock()
+        mock_done_storage = mock.Mock()
+        mock_task = mock.Mock()
+        target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
+        target.update(mock_task)
+        mock_pending_storage.update.assert_called_once_with(mock_task)
 
     def test_write_calls_write_on_pending_storage(self):
         mock_pending_storage = mock.Mock()
