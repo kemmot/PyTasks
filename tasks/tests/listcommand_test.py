@@ -31,7 +31,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.storage = mock_storage
 
         mock_filter = mock.Mock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
+        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
         command.execute()
@@ -51,8 +51,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.storage = mock_storage
 
         mock_filter = mock.Mock()
-        mock_filter.is_match = mock.Mock()
-        mock_filter.is_match.side_effect = [False, True, False]
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
 
@@ -60,7 +59,7 @@ class ListTaskCommandTests(unittest.TestCase):
         with mock.patch('commands.listcommand.print', mock_print):
             command.execute()
 
-        mock_filter.is_match.assert_called()
+        mock_filter.filter_items.assert_called()
         call1 = mock.call('ID   Status  Description')
         call2 = mock.call('------------------------')
         call3 = mock.call(mock.ANY)
@@ -84,7 +83,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.storage = mock_storage
 
         mock_filter = mock.Mock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
+        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
 

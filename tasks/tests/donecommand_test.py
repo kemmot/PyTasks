@@ -17,8 +17,7 @@ class DoneCommandTests(unittest.TestCase):
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.Mock()
-        mock_filter.is_match.side_effect = [False, True, False]
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         command = donecommand.DoneCommand(mock_context, mock_filter)
         command.execute()
@@ -27,29 +26,31 @@ class DoneCommandTests(unittest.TestCase):
         mock_context.storage.delete.assert_called_once_with(tasks[1])
 
     def test_execute_does_not_prompt_for_zero_deletions(self):
-        mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=False)
-        self._test_execute_prompts_when_confgured_to(mock_filter, None)
+        self._test_execute_prompts_when_confgured_to([], None)
 
     def test_execute_does_not_prompt_when_not_configured_to(self):
-        mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
-        self._test_execute_prompts_when_confgured_to(mock_filter, None, False)
+        self._test_execute_prompts_when_confgured_to([0,1,2], None, False)
 
     def test_execute_prompts_before_single_deletion_when_configured_to(self):
-        mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.Mock()
-        mock_filter.is_match.side_effect = [False, True, False]
-        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task as done? [y/n]... ID: 2, name: task 2')
+        self._test_execute_prompts_when_confgured_to([1], 'Mark task as done? [y/n]... ID: 2, name: task 2')
 
     def test_execute_prompts_before_multiple_deletion_when_configured_to(self):
         mock_filter = mock.MagicMock()
         mock_filter.is_match = mock.MagicMock(return_value=True)
-        self._test_execute_prompts_when_confgured_to(mock_filter, 'Mark task(s) as done? [y/n]... 3 tasks')
+        self._test_execute_prompts_when_confgured_to([0,1,2], 'Mark task(s) as done? [y/n]... 3 tasks')
 
-    def _test_execute_prompts_when_confgured_to(self, mock_filter, message, prompt=True):
-        mock_context = self._create_context()
+    def _test_execute_prompts_when_confgured_to(self, filter_task_indexes, message, prompt=True):
+        tasks = self._create_tasks(3)
+
+        mock_context = self._create_context(tasks)
         mock_context.settings.command_done_confirm = prompt
+        
+        filtered_tasks = []
+        for filter_task_index in filter_task_indexes:
+            filtered_tasks.append(tasks[filter_task_index])
+
+        mock_filter = mock.MagicMock()
+        mock_filter.filter_items = mock.MagicMock(return_value=filtered_tasks)
 
         command = donecommand.DoneCommand(mock_context, mock_filter)
 
@@ -80,11 +81,13 @@ class DoneCommandTests(unittest.TestCase):
         mock_context.storage.delete.assert_not_called()
         
     def test_execute_positive_confirmation_does_change_task(self):
-        mock_context = self._create_context()
+        tasks = self._create_tasks(3)
+
+        mock_context = self._create_context(tasks)
         mock_context.settings.command_done_confirm = True
 
         mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
+        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
 
         command = donecommand.DoneCommand(mock_context, mock_filter)
 

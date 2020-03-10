@@ -33,11 +33,7 @@ class FilterCommandBase(CommandBase):
         return self._filter
 
     def get_filtered_tasks(self):
-        filtered_tasks = []
-        for task in self.context.storage.read_all():
-            if self.filter.is_match(task):
-                filtered_tasks.append(task)
-        return filtered_tasks
+        return self.filter.filter_items(self.context.storage.read_all())
 
 
 class CommandParserBase:

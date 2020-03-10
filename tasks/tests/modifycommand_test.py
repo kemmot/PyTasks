@@ -33,8 +33,7 @@ class ModifyCommandTests(unittest.TestCase):
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.Mock()
-        mock_filter.is_match.side_effect = [False, True, False]
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         template_task = mock.Mock()
         template_task.name = 'new name'
@@ -50,8 +49,7 @@ class ModifyCommandTests(unittest.TestCase):
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.Mock()
-        mock_filter.is_match.side_effect = [False, True, False]
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         template_task = mock.Mock()
         template_task.name = 'new name'
