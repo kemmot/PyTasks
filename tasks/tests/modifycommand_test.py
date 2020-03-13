@@ -2,6 +2,8 @@ import unittest
 from unittest import mock
 
 import commands.modifycommand as modifycommand
+import filters.allbatchfilter as allbatchfilter
+import filters.confirmfilter as confirmfilter
 
 
 class ModifyCommandTests(unittest.TestCase):
@@ -112,16 +114,35 @@ class ModifyCommandParserTests(unittest.TestCase):
         with self.assertRaises(Exception):
             modifycommand.ModifyCommandParser().parse(mock_context, mock_filter_factory, args)
 
-    def test_parse_parse_success(self):
+    def test_parse_parse_success_no_confirmation(self):
+        self._test_parse_parse_success(False)
+
+    def test_parse_parse_success_with_confirmation(self):
+        self._test_parse_parse_success(True)
+        
+    def _test_parse_parse_success(self, with_confirmation):
         args = ['2', 'modify', 'new name']
         mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_modify_confirm = with_confirmation
+
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
         parser = modifycommand.ModifyCommandParser()
         command = parser.parse(mock_context, mock_filter_factory, args)
+
         self.assertIsInstance(command, modifycommand.ModifyCommand)
         self.assertEqual(mock_context, command.context)
-        self.assertEqual(mock_filter, command.filter)
+        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
+        self.assertEqual(mock_filter, command.filter._filters[0])
+
+        if with_confirmation:
+            self.assertEqual(2, len(command.filter._filters))
+            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
+        else:
+            self.assertEqual(1, len(command.filter._filters))
+
         self.assertIsNotNone(command.template_task)
         self.assertEqual(command.template_task.name, 'new name')

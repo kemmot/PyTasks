@@ -1,4 +1,6 @@
 import commands.commandbase as commandbase
+import filters.allbatchfilter as allbatchfilter
+import filters.confirmfilter as confirmfilter
 import entities
 
 
@@ -35,14 +37,18 @@ class ModifyCommand(commandbase.FilterCommandBase):
 class ModifyCommandParser(commandbase.CommandParserBase):
     def parse(self, context, filter_factory, args):
         if len(args) > 2 and args[1] == 'modify':
-            filter = filter_factory.parse(args[0])
+            batch_filter = allbatchfilter.AllBatchFilter()
+            batch_filter.add_filter(filter_factory.parse(args[0]))
+
+            if context.settings.command_modify_confirm:
+                batch_filter.add_filter(confirmfilter.ConfirmFilter('Mark as done'))
             
             name = args[2:]
 
             template_task = entities.Task()
             template_task.name = ' '.join(name)
 
-            command = ModifyCommand(context, filter)
+            command = ModifyCommand(context, batch_filter)
             command.template_task = template_task
         else:
             command = None
