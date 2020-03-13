@@ -1,3 +1,4 @@
 [description:"FEAT-0003: Add default command" entry:"0" status:"pending" uuid:"5428a3f4-8059-4aca-9426-8e7d9377cb32"]
-[description:"FEAT-0022: Done command should have optional confirmation" entry:"1583" status:"pending" uuid:"40cbb0f2-4ffc-4739-8bc9-cb7fca3cddfb"]
+[description:"FEAT-0022: Done command should have optional confirmation" entry:"0" status:"pending" uuid:"40cbb0f2-4ffc-4739-8bc9-cb7fca3cddfb"]
 [description:"FEAT-0021: Add modify command" entry:"0" status:"pending" uuid:"98db2e6d-0494-4d35-8c36-627156400f1d"]
+[description:"FEAT-0037: Add confirmation dialog to modify command" entry:"0" status:"pending" uuid:"5d8262b4-a83b-4ff4-97a2-68d040fbb4c6"]
