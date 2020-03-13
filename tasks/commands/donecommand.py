@@ -1,8 +1,7 @@
-
 import commands.commandbase as commandbase
 import entities
-import filters.alwaysfilter as alwaysfilter
-import filters.filterfactory as filterfactory
+import filters.allbatchfilter as allbatchfilter
+import filters.confirmfilter as confirmfilter
 
 
 class DoneCommand(commandbase.FilterCommandBase):
@@ -10,32 +9,20 @@ class DoneCommand(commandbase.FilterCommandBase):
         super().__init__(context, filter)
 
     def execute(self):
-        tasks_to_change = self.get_filtered_tasks()
-        if len(tasks_to_change) > 0:
-            if len(tasks_to_change) > 1:
-                message = 'Mark task(s) as done? [y/n]... {} tasks'.format(len(tasks_to_change))
-            else:
-                message = 'Mark task as done? [y/n]... ID: {}, name: {}'.format(tasks_to_change[0].index, tasks_to_change[0].name)
+        for task in self.get_filtered_tasks():
+            self.context.storage.delete(task)
 
-            if self._should_process(message):
-                for task in tasks_to_change:
-                    self.context.storage.delete(task)
-
-    def _should_process(self, message):
-        result = False
-        if self.context.settings.command_done_confirm:
-            print(message)
-            if input().startswith('y'):
-                result = True
-        else:
-            result = True
-        return result
 
 class DoneCommandParser(commandbase.CommandParserBase):
     def parse(self, context, filter_factory, args):
         if len(args) == 2 and args[1] == 'done':
-            filter = filter_factory.parse(args[0])
-            command = DoneCommand(context, filter)
+            batch_filter = allbatchfilter.AllBatchFilter()
+            batch_filter.add_filter(filter_factory.parse(args[0]))
+
+            if context.settings.command_done_confirm:
+                batch_filter.add_filter(confirmfilter.ConfirmFilter('Mark as done'))
+
+            command = DoneCommand(context, batch_filter)
         else:
             command = None
         return command

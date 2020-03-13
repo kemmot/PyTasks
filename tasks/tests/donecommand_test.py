@@ -2,7 +2,8 @@ import unittest
 from unittest import mock
 
 import commands.donecommand as donecommand
-
+import filters.allbatchfilter as allbatchfilter
+import filters.confirmfilter as confirmfilter
 
 class DoneCommandTests(unittest.TestCase):
     def test_constructor_sets_properties(self):
@@ -24,79 +25,6 @@ class DoneCommandTests(unittest.TestCase):
 
         mock_context.storage.read_all.assert_called_once()
         mock_context.storage.delete.assert_called_once_with(tasks[1])
-
-    def test_execute_does_not_prompt_for_zero_deletions(self):
-        self._test_execute_prompts_when_confgured_to([], None)
-
-    def test_execute_does_not_prompt_when_not_configured_to(self):
-        self._test_execute_prompts_when_confgured_to([0,1,2], None, False)
-
-    def test_execute_prompts_before_single_deletion_when_configured_to(self):
-        self._test_execute_prompts_when_confgured_to([1], 'Mark task as done? [y/n]... ID: 2, name: task 2')
-
-    def test_execute_prompts_before_multiple_deletion_when_configured_to(self):
-        mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
-        self._test_execute_prompts_when_confgured_to([0,1,2], 'Mark task(s) as done? [y/n]... 3 tasks')
-
-    def _test_execute_prompts_when_confgured_to(self, filter_task_indexes, message, prompt=True):
-        tasks = self._create_tasks(3)
-
-        mock_context = self._create_context(tasks)
-        mock_context.settings.command_done_confirm = prompt
-        
-        filtered_tasks = []
-        for filter_task_index in filter_task_indexes:
-            filtered_tasks.append(tasks[filter_task_index])
-
-        mock_filter = mock.MagicMock()
-        mock_filter.filter_items = mock.MagicMock(return_value=filtered_tasks)
-
-        command = donecommand.DoneCommand(mock_context, mock_filter)
-
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.donecommand.print', mock_print):
-            with mock.patch('commands.donecommand.input', return_value="No"):
-                command.execute()
-        
-        if not message:
-            mock_print.assert_not_called()
-        else:
-            mock_print.assert_called_once_with(message)
-        
-    def test_execute_negative_confirmation_does_not_change_task(self):
-        mock_context = self._create_context()
-        mock_context.settings.command_done_confirm = True
-
-        mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
-
-        command = donecommand.DoneCommand(mock_context, mock_filter)
-
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.donecommand.print', mock_print):
-            with mock.patch('commands.donecommand.input', return_value="No"):
-                command.execute()
-        
-        mock_context.storage.delete.assert_not_called()
-        
-    def test_execute_positive_confirmation_does_change_task(self):
-        tasks = self._create_tasks(3)
-
-        mock_context = self._create_context(tasks)
-        mock_context.settings.command_done_confirm = True
-
-        mock_filter = mock.MagicMock()
-        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
-
-        command = donecommand.DoneCommand(mock_context, mock_filter)
-
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.donecommand.print', mock_print):
-            with mock.patch('commands.donecommand.input', return_value="yes"):
-                command.execute()
-        
-        mock_context.storage.delete.assert_called()
 
     def _create_context(self, tasks=None):
         if not tasks:
@@ -133,7 +61,7 @@ class DoneCommandParserTests(unittest.TestCase):
         command = donecommand.DoneCommandParser().parse(mock_context, mock_filter_factory, args)
         self.assertEqual(None, command)
 
-    def test_parse_no_filter(self):
+    def test_parse_no_filter_specified(self):
         args = ['done']
         mock_context = mock.Mock()
         mock_filter_factory = mock.Mock()
@@ -141,7 +69,7 @@ class DoneCommandParserTests(unittest.TestCase):
         result = parser.parse(mock_context, mock_filter_factory, args)
         self.assertIsNone(result)
 
-    def test_parse_no_filter_parsed(self):
+    def test_parse_filter_not_found(self):
         args = ['text', 'done']
         mock_context = mock.Mock()
         mock_filter_factory = mock.Mock()
@@ -150,14 +78,32 @@ class DoneCommandParserTests(unittest.TestCase):
         with self.assertRaises(Exception):
             donecommand.DoneCommandParser().parse(mock_context, mock_filter_factory, args)
 
-    def test_parse_parse_success(self):
+    def test_parse_parse_success_no_confirmation(self):
+        self._test_parse_parse_success(False)
+
+    def test_parse_parse_success_with_confirmation(self):
+        self._test_parse_parse_success(True)
+        
+    def _test_parse_parse_success(self, with_confirmation):
         args = ['2', 'done']
         mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_done_confirm = with_confirmation
+
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
         parser = donecommand.DoneCommandParser()
         command = parser.parse(mock_context, mock_filter_factory, args)
+
         self.assertIsInstance(command, donecommand.DoneCommand)
         self.assertEqual(mock_context, command.context)
-        self.assertEqual(mock_filter, command.filter)
+        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
+        self.assertEqual(mock_filter, command.filter._filters[0])
+
+        if with_confirmation:
+            self.assertEqual(2, len(command.filter._filters))
+            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
+        else:
+            self.assertEqual(1, len(command.filter._filters))
