@@ -36,7 +36,7 @@ class TaskWarriorFormatterTests(unittest.TestCase):
     def test_parse_parses_details(self):
         line = '['
         line += 'description:"new"'
-        line += ' entry:"1575063536"'
+        line += ' entry:"1575061158"'
         line += ' status:"pending"'
         line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
         line += ']'
@@ -47,7 +47,7 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.index, 1)
         self.assertEqual(task.name, 'new')
         self.assertEqual(task.status, 'pending')
-        self.assertEqual(task.created, datetime.datetime(1970, 1, 19, 5, 31, 3, 536000))
+        self.assertEqual(task.created, datetime.datetime(2019, 11, 29, 20, 59, 18))
         self.assertEqual(task.id_number, '43462153-2313-4fc0-b1a4-f6c4b1501d8f')
 
 

@@ -19,3 +19,4 @@
 [description:"FEAT-0035: Add columns command to list available attributes" entry:"0" status:"pending" uuid:"deef5e7a-2157-41b4-933c-77635896f3dc"]
 [description:"FEAT-0036: Add info command" entry:"0" status:"pending" uuid:"818989a8-9e43-4a3c-9a22-138407ab7d03"]
 [description:"FEAT-0038: Have option for modify confirmation to only appear on multiple changes" entry:"0" status:"pending" uuid:"8a7616b0-dc75-4a2a-b917-02d04aa09f03"]
+[description:"BUG-0002: reading created date corrupts it" entry:"1584482540" status:"pending" uuid:"9aa9fab6-23b6-4fb3-9d9b-a8dfb23b9ccc"]

@@ -7,6 +7,7 @@ import datetime
 import logging
 import re
 import os
+import time
 
 import __main__
 import entities
@@ -41,7 +42,15 @@ class TaskWarriorFormatter:
             if key == 'description':
                 task.name = value
             elif key == 'entry':
-                task.created = datetime.datetime.utcfromtimestamp(float(value)/1000.)
+                created_utc_time_struct = time.gmtime(float(value))
+                created_utc_datetime = datetime.datetime( \
+                    created_utc_time_struct.tm_year,
+                    created_utc_time_struct.tm_mon,
+                    created_utc_time_struct.tm_mday,
+                    created_utc_time_struct.tm_hour,
+                    created_utc_time_struct.tm_min,
+                    created_utc_time_struct.tm_sec)
+                task.created = created_utc_datetime
             elif key == 'status':
                 task.status = value
             elif key == 'uuid':
