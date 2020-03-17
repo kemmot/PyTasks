@@ -22,6 +22,11 @@ class TaskWarriorFormatter:
         Formats the task.
         '''
         output = '['
+
+        for annotation in task.annotations:
+            created_output = calendar.timegm(annotation.created.utctimetuple())
+            output += 'annotation_{}:"{}" '.format(created_output, annotation.message)
+
         output += 'description:"{}"'.format(task.name)
         output += ' entry:"{}"'.format(calendar.timegm(task.created.utctimetuple()))
         output += ' status:"{}"'.format(task.status)
@@ -42,20 +47,27 @@ class TaskWarriorFormatter:
             if key == 'description':
                 task.name = value
             elif key == 'entry':
-                created_utc_time_struct = time.gmtime(float(value))
-                created_utc_datetime = datetime.datetime( \
-                    created_utc_time_struct.tm_year,
-                    created_utc_time_struct.tm_mon,
-                    created_utc_time_struct.tm_mday,
-                    created_utc_time_struct.tm_hour,
-                    created_utc_time_struct.tm_min,
-                    created_utc_time_struct.tm_sec)
-                task.created = created_utc_datetime
+                task.created = self._parse_datetime(value)
             elif key == 'status':
                 task.status = value
             elif key == 'uuid':
                 task.id_number = value
+            elif key.startswith('annotation_'):
+                created_timestamp = key[11:]
+                annotation_created = self._parse_datetime(created_timestamp)
+                annotation = entities.TaskAnnotation(value, annotation_created)
+                task.annotations.append(annotation)
         return task
+
+    def _parse_datetime(self, seconds_since_epoc_string):
+        created_utc_time_struct = time.gmtime(float(seconds_since_epoc_string))
+        return datetime.datetime( \
+            created_utc_time_struct.tm_year,
+            created_utc_time_struct.tm_mon,
+            created_utc_time_struct.tm_mday,
+            created_utc_time_struct.tm_hour,
+            created_utc_time_struct.tm_min,
+            created_utc_time_struct.tm_sec)
 
 
 class TextFileStorage:

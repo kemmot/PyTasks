@@ -16,13 +16,21 @@ class Empty:
 class TaskWarriorFormatterTests(unittest.TestCase):
     def test_format_gives_correct_output(self):
         task = entities.Task()
+        annotation1_date = datetime.datetime(2019, 12, 1, 20, 59, 18)
+        annotation2_date = datetime.datetime(2019, 12, 2, 20, 59, 18)
+        annotation1 = entities.TaskAnnotation('annotation 1', annotation1_date)
+        annotation2 = entities.TaskAnnotation('annotation 2', annotation2_date)
+        task.annotations.append(annotation1)
+        task.annotations.append(annotation2)
         task.created = datetime.datetime(2019, 11, 29, 20, 59, 18)
         task.id_number = uuid.UUID('a0bde7e1-21b5-4378-9e06-1f72e0336c28')
         task.name = 'task name'
         task.status = 'pending'
 
         expected = '['
-        expected += 'description:"task name"'
+        expected += 'annotation_1575233958:"annotation 1"'
+        expected += ' annotation_1575320358:"annotation 2"'
+        expected += ' description:"task name"'
         expected += ' entry:"1575061158"'
         expected += ' status:"pending"'
         expected += ' uuid:"' + str(task.id_number) + '"'
@@ -35,7 +43,9 @@ class TaskWarriorFormatterTests(unittest.TestCase):
 
     def test_parse_parses_details(self):
         line = '['
-        line += 'description:"new"'
+        line += 'annotation_1575233958:"annotation 1"'
+        line += ' annotation_1575320358:"annotation 2"'
+        line += ' description:"new"'
         line += ' entry:"1575061158"'
         line += ' status:"pending"'
         line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
@@ -49,6 +59,11 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.status, 'pending')
         self.assertEqual(task.created, datetime.datetime(2019, 11, 29, 20, 59, 18))
         self.assertEqual(task.id_number, '43462153-2313-4fc0-b1a4-f6c4b1501d8f')
+        self.assertEqual(len(task.annotations), 2)
+        self.assertEqual(task.annotations[0].created, datetime.datetime(2019, 12, 1, 20, 59, 18))
+        self.assertEqual(task.annotations[0].message, 'annotation 1')
+        self.assertEqual(task.annotations[1].created, datetime.datetime(2019, 12, 2, 20, 59, 18))
+        self.assertEqual(task.annotations[1].message, 'annotation 2')
 
 
 class TextFileStorageTests(unittest.TestCase):

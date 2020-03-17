@@ -5,16 +5,35 @@ Module for task related entity classes.
 import datetime
 
 
+class TaskAnnotation:
+    def __init__(self, message, created):
+        self._message = message
+        self._created = created
+    
+    @property
+    def created(self):
+        return self._created
+
+    @property
+    def message(self):
+        return self._message
+    
+
 class Task:
     '''
     A class for encapsulating task details.
     '''
     def __init__(self):
+        self._annotations = []
         self._created = datetime.datetime.now()
         self._id_number = ''
         self._index = -1
         self._name = ''
         self._status = ''
+    
+    @property
+    def annotations(self):
+        return self._annotations
 
     @property
     def id_number(self):
