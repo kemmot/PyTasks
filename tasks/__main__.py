@@ -18,6 +18,7 @@ import storage
 
 # modules used by reflection
 import commands.addcommand
+import commands.annotatecommand
 import commands.donecommand
 import commands.listcommand
 import commands.modifycommand
