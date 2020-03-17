@@ -37,6 +37,10 @@ class AnnotateCommandParser(commandbase.CommandParserBase):
         if len(args) >= 3 and args[1] == 'annotate':
             batch_filter = allbatchfilter.AllBatchFilter()
             batch_filter.add_filter(filter_factory.parse(args[0]))
+
+            if context.settings.command_annotate_confirm:
+                batch_filter.add_filter(confirmfilter.ConfirmFilter('Annotate'))
+
             command = AnnotateCommand(context, batch_filter)
             command.message = ' '.join(args[2:])
         else:

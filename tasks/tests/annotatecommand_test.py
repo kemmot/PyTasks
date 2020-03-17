@@ -125,6 +125,7 @@ class DoneCommandParserTests(unittest.TestCase):
         args = ['2', 'annotate', 'this', 'is', 'a', 'multi-word', 'message']
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
+        mock_context.settings.command_annotate_confirm = with_confirmation
 
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
@@ -138,4 +139,10 @@ class DoneCommandParserTests(unittest.TestCase):
         self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
         self.assertEqual(mock_filter, command.filter._filters[0])
         self.assertEqual(command.message, 'this is a multi-word message')
-        self.assertEqual(1, len(command.filter._filters))
+
+        if with_confirmation:
+            self.assertEqual(2, len(command.filter._filters))
+            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
+            self.assertIn('Annotate', command.filter._filters[1].action_name)
+        else:
+            self.assertEqual(1, len(command.filter._filters))
