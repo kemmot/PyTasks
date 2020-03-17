@@ -16,6 +16,10 @@ class Settings:
         return self._get_value('command.default')
     
     @property
+    def command_annotate_confirm(self):
+        return self._get_value('command.annotate.confirm')
+    
+    @property
     def command_done_confirm(self):
         return self._get_value('command.done.confirm')
 
