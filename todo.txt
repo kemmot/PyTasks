@@ -13,7 +13,7 @@
 [description:"FEAT-0029: Add wildcard support to task name filter" entry:"0" status:"pending" uuid:"40462b42-2305-4257-bdc7-bfd5e9f3933b"]
 [description:"FEAT-0030: Add ability to filter on any attribute" entry:"0" status:"pending" uuid:"60b8589f-ed18-48c6-9ce7-02b47960cf30"]
 [description:"FEAT-0031: Add custom attributes" entry:"0" status:"pending" uuid:"1114f570-14de-42c6-8783-7a40ff1c372d"]
-[description:"FEAT-0032: Add annotation support" entry:"0" status:"pending" uuid:"13bfe5c0-a727-4c35-9f38-700d6f91fef4"]
+[description:"FEAT-0032: Add annotate command" entry:"0" status:"pending" uuid:"13bfe5c0-a727-4c35-9f38-700d6f91fef4"]
 [description:"FEAT-0033: Add import command" entry:"0" status:"pending" uuid:"55ad17fb-5ed6-4868-a26b-3f68413552a6"]
 [description:"FEAT-0034: Add export command" entry:"0" status:"pending" uuid:"f35e6fc0-d0e9-41b0-ae94-2828361c6195"]
 [description:"FEAT-0035: Add columns command to list available attributes" entry:"0" status:"pending" uuid:"deef5e7a-2157-41b4-933c-77635896f3dc"]

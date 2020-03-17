@@ -41,7 +41,7 @@ class ModifyCommandParser(commandbase.CommandParserBase):
             batch_filter.add_filter(filter_factory.parse(args[0]))
 
             if context.settings.command_modify_confirm:
-                batch_filter.add_filter(confirmfilter.ConfirmFilter('Mark as done'))
+                batch_filter.add_filter(confirmfilter.ConfirmFilter('Modify'))
             
             name = args[2:]
 

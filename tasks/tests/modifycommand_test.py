@@ -141,6 +141,7 @@ class ModifyCommandParserTests(unittest.TestCase):
         if with_confirmation:
             self.assertEqual(2, len(command.filter._filters))
             self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
+            self.assertIn('Modify', command.filter._filters[1].action_name)
         else:
             self.assertEqual(1, len(command.filter._filters))
 
