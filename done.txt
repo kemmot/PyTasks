@@ -4,3 +4,4 @@
 [description:"FEAT-0037: Add confirmation dialog to modify command" entry:"0" status:"pending" uuid:"5d8262b4-a83b-4ff4-97a2-68d040fbb4c6"]
 [description:"BUG-0001: Modify command prints incorrect prompt" entry:"0" status:"pending" uuid:"592253de-0137-4188-bfcc-14c5ed21a2f0"]
 [description:"BUG-0002: reading created date corrupts it" entry:"1584482540" status:"pending" uuid:"9aa9fab6-23b6-4fb3-9d9b-a8dfb23b9ccc"]
+[description:"FEAT-0032: Add annotate command" entry:"0" status:"pending" uuid:"13bfe5c0-a727-4c35-9f38-700d6f91fef4"]
