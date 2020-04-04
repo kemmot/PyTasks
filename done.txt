@@ -6,3 +6,4 @@
 [description:"BUG-0002: reading created date corrupts it" entry:"1584482540" status:"pending" uuid:"9aa9fab6-23b6-4fb3-9d9b-a8dfb23b9ccc"]
 [description:"FEAT-0032: Add annotate command" entry:"0" status:"pending" uuid:"13bfe5c0-a727-4c35-9f38-700d6f91fef4"]
 [description:"FEAT-0040: Add git hooks to repo" entry:"1586005535" status:"pending" uuid:"db4072fd-8e7f-49cf-b02f-7885fea431b1"]
+[description:"FEAT-0041: Add git hook to run unit tests on commit" entry:"1586005462" status:"pending" uuid:"9c90f45e-a6fc-435d-b979-4bf954841d0c"]
