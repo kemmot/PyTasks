@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# chain multiple hooks sequentially
+for filename in $0-*; do
+	# skip the glob pattern itself if there are no matches
+    if [ ! -e "$filename" ]; then
+		echo "No scripts found with glob pattern: $0-*"
+		continue
+	fi
+
+	eval "$filename" "$@"
+	exit_code=$?
+	if [ $exit_code -ne 0 ]; then
+		#echo "script complete: $filename, with exit code: $exit_code"
+		exit $exit_code
+	fi
+done
+
+exit 0
