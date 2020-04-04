@@ -25,4 +25,3 @@
 [description:"FEAT-0043: Add git hooks to generate read me on commit" entry:"1586000322" status:"pending" uuid:"d7d9163a-bb03-46db-8951-8158ade7fef6"]
 [description:"FEAT-0044: Add git hook to check style on pre-commit" entry:"1586000340" status:"pending" uuid:"b87683da-da64-446a-a7d3-2fe4a4cc012b"]
 [description:"FEAT-0045: add git hook to prevent commits to develop" entry:"1586004156" status:"pending" uuid:"54a65c06-714a-45c5-bd81-11f20e63d9fc"]
-
