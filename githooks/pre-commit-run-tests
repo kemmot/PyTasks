@@ -1,6 +1,8 @@
 #!/bin/bash
 
-bin/run-tests.sh > /dev/null 2>&1
+set -o pipefail
+
+coverage=$(bin/run-tests.sh 2>&1 | sed -n 's/^TOTAL[[:blank:]]\+[0-9]\+[[:blank:]]\+[0-9]\+[[:blank:]]\+\([0-9]\+\)%$/\1/p')
 exit_code=${PIPESTATUS[0]}
 
 if [[ $exit_code -ne 0 ]]; then
@@ -8,6 +10,13 @@ if [[ $exit_code -ne 0 ]]; then
     exit $exit_code
 else
     echo "Unit tests passed"
+fi
+
+if [[ $coverage -lt 90 ]]; then
+    echo "Unit test coverage: $coverage%, less than 90% threshold"
+    exit 1
+else
+    echo "Unit test coverage: $coverage%, acceptable"
 fi
 
 exit 0
