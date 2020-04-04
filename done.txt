@@ -7,3 +7,4 @@
 [description:"FEAT-0032: Add annotate command" entry:"0" status:"pending" uuid:"13bfe5c0-a727-4c35-9f38-700d6f91fef4"]
 [description:"FEAT-0040: Add git hooks to repo" entry:"1586005535" status:"pending" uuid:"db4072fd-8e7f-49cf-b02f-7885fea431b1"]
 [description:"FEAT-0041: Add git hook to run unit tests on commit" entry:"1586005462" status:"pending" uuid:"9c90f45e-a6fc-435d-b979-4bf954841d0c"]
+[description:"FEAT-0042: Add git hook to check test coverage on commit" entry:"1586005473" status:"pending" uuid:"feebfa8c-1110-4f5a-983e-d5ff3fe9d80c"]
