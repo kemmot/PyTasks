@@ -1,0 +1,12 @@
+#!/bin/bash
+
+bin/convert-readme.sh
+exit_code=$?
+
+if [[ $exit_code -ne 0 ]]; then
+    echo "Failed converting readme"
+else
+    echo "Converted readme"
+fi
+
+exit $exit_code
