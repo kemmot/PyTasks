@@ -37,5 +37,5 @@ class FilterCommandBase(CommandBase):
 
 
 class CommandParserBase:
-    def parse(self, context, filter_factory, args):
+    def parse(self, context, args):
         raise Exception('parse not implemented in {}'.format(__class__.__name__))

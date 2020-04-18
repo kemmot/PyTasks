@@ -57,26 +57,25 @@ class DoneCommandParserTests(unittest.TestCase):
     def test_parse_wrong_command(self):
         args = ['wrong']
         mock_context = mock.Mock()
-        mock_filter_factory = mock.Mock()
-        command = donecommand.DoneCommandParser().parse(mock_context, mock_filter_factory, args)
+        command = donecommand.DoneCommandParser().parse(mock_context, args)
         self.assertEqual(None, command)
 
     def test_parse_no_filter_specified(self):
         args = ['done']
         mock_context = mock.Mock()
-        mock_filter_factory = mock.Mock()
         parser = donecommand.DoneCommandParser()
-        result = parser.parse(mock_context, mock_filter_factory, args)
+        result = parser.parse(mock_context, args)
         self.assertIsNone(result)
 
     def test_parse_filter_not_found(self):
         args = ['text', 'done']
-        mock_context = mock.Mock()
         mock_filter_factory = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock()
         mock_filter_factory.parse.side_effect = Exception
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
         with self.assertRaises(Exception):
-            donecommand.DoneCommandParser().parse(mock_context, mock_filter_factory, args)
+            donecommand.DoneCommandParser().parse(mock_context, args)
 
     def test_parse_parse_success_no_confirmation(self):
         self._test_parse_parse_success(False)
@@ -86,16 +85,18 @@ class DoneCommandParserTests(unittest.TestCase):
         
     def _test_parse_parse_success(self, with_confirmation):
         args = ['2', 'done']
-        mock_context = mock.Mock()
-        mock_context.settings = mock.Mock()
-        mock_context.settings.command_done_confirm = with_confirmation
 
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
         mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
 
+        mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_done_confirm = with_confirmation
+        mock_context.filter_factory = mock_filter_factory
+
         parser = donecommand.DoneCommandParser()
-        command = parser.parse(mock_context, mock_filter_factory, args)
+        command = parser.parse(mock_context, args)
 
         self.assertIsInstance(command, donecommand.DoneCommand)
         self.assertEqual(mock_context, command.context)

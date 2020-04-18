@@ -33,10 +33,10 @@ class AnnotateCommand(commandbase.FilterCommandBase):
 
 
 class AnnotateCommandParser(commandbase.CommandParserBase):
-    def parse(self, context, filter_factory, args):
+    def parse(self, context, args):
         if len(args) >= 3 and args[1] == 'annotate':
             batch_filter = allbatchfilter.AllBatchFilter()
-            batch_filter.add_filter(filter_factory.parse(args[0]))
+            batch_filter.add_filter(context.filter_factory.parse(args[0]))
 
             if context.settings.command_annotate_confirm:
                 batch_filter.add_filter(confirmfilter.ConfirmFilter('Annotate'))

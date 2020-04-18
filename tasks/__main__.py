@@ -79,11 +79,12 @@ try:
 
     STORAGE = storage.TaskWarriorStorageCreator().create(SETTINGS)
 
-    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE)
-
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
-    COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT, FILTER_FACTORY)
+    
+    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY)
+
+    COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT)
     COMMAND_FACTORY.register_known_types()
 
     try:

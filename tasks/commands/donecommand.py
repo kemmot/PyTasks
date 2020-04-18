@@ -14,10 +14,10 @@ class DoneCommand(commandbase.FilterCommandBase):
 
 
 class DoneCommandParser(commandbase.CommandParserBase):
-    def parse(self, context, filter_factory, args):
+    def parse(self, context, args):
         if len(args) == 2 and args[1] == 'done':
             batch_filter = allbatchfilter.AllBatchFilter()
-            batch_filter.add_filter(filter_factory.parse(args[0]))
+            batch_filter.add_filter(context.filter_factory.parse(args[0]))
 
             if context.settings.command_done_confirm:
                 batch_filter.add_filter(confirmfilter.ConfirmFilter('Mark as done'))

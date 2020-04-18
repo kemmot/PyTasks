@@ -35,7 +35,7 @@ class AddTaskCommand(commandbase.CommandBase):
 
 
 class AddTaskCommandParser(commandbase.CommandParserBase):
-    def parse(self, context, filter_factory, args):
+    def parse(self, context, args):
         if args[0] == 'add':
             if len(args) < 2:
                 raise Exception('Add command requires task description')

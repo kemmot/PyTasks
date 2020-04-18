@@ -8,10 +8,9 @@ import typefactory
 
 
 class CommandFactory(typefactory.TypeFactory):
-    def __init__(self, command_context, filter_factory):
+    def __init__(self, command_context):
         super().__init__(commandbase.CommandParserBase)
         self._command_context = command_context
-        self._filter_factory = filter_factory
 
     def get_command(self, args):
         if not args:
@@ -23,7 +22,7 @@ class CommandFactory(typefactory.TypeFactory):
 
         command = None
         for parser in self.types:
-            command = parser.parse(self._command_context, self._filter_factory, args)
+            command = parser.parse(self._command_context, args)
             if command is not None:
                 break
 

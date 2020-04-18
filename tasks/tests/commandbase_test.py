@@ -15,8 +15,7 @@ class CommandBaseTests(unittest.TestCase):
 class CommandParserBaseTests(unittest.TestCase):
     def test_parse_errors(self):
         mock_storage = mock.Mock()
-        mock_filter_factory = mock.Mock()
         parser = commandbase.CommandParserBase()
         args = []
         with self.assertRaises(Exception):
-            parser.parse(mock_storage, mock_filter_factory, args)
+            parser.parse(mock_storage, args)

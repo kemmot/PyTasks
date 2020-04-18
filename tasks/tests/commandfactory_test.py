@@ -10,8 +10,7 @@ class CommandFactoryTests(unittest.TestCase):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
         mock_context.settings.command_default = ''
-        mock_filter_factory = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_context)
         try:
             args = []
             factory.get_command(args)
@@ -23,14 +22,13 @@ class CommandFactoryTests(unittest.TestCase):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
         mock_context.settings.command_default = 'test'
-        mock_filter_factory = mock.Mock()
 
         expected_command = mock.Mock()
 
         parser = mock.Mock()
         parser.parse = mock.MagicMock(return_value=expected_command)
 
-        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_context)
         factory.register_type(parser)
         args = []
         command = factory.get_command(args)
@@ -40,9 +38,8 @@ class CommandFactoryTests(unittest.TestCase):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
         mock_context.settings.command_default = 'test'
-        mock_filter_factory = mock.Mock()
         
-        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_context)
         try:
             args = []
             factory.get_command(args)
@@ -52,8 +49,7 @@ class CommandFactoryTests(unittest.TestCase):
 
     def test_get_unknown_command(self):
         mock_storage = mock.Mock()
-        mock_filter_factory = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_storage, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_storage)
         try:
             args = ['unknown']
             factory.get_command(args)
@@ -69,15 +65,14 @@ class CommandFactoryTests(unittest.TestCase):
         parser = mock.Mock()
         parser.parse = mock.MagicMock(return_value=expected_command)
 
-        mock_filter_factory = mock.Mock()
         mock_context = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_context, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_context)
         factory.register_type(parser)
 
         command = factory.get_command(args)
 
         self.assertEqual(command, expected_command)
-        parser.parse.assert_called_once_with(mock_context, mock_filter_factory, args)
+        parser.parse.assert_called_once_with(mock_context, args)
 
     def test_register_known_parsers_registers(self):
         expected_command = mock.Mock()
@@ -86,8 +81,7 @@ class CommandFactoryTests(unittest.TestCase):
         parser.parse = mock.MagicMock(return_value=expected_command)
 
         mock_storage = mock.Mock()
-        mock_filter_factory = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_storage, mock_filter_factory)
+        factory = commandfactory.CommandFactory(mock_storage)
         factory.register_type(parser)
         command = factory.get_command(['test'])
         self.assertEqual(expected_command, command)
