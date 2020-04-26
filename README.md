@@ -16,6 +16,7 @@ The following commands are available:
 * [add](#add-command)
 * [annotate](#annotate-command)
 * [done](#done-command)
+* [help](#help-command)
 * [list](#list-command)
 * [modify](#modify-command)
 
@@ -97,6 +98,16 @@ tasks <filter> done
 ### Applicable Settings
 
 * [command.done.confirm](#commanddoneconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
+## Help Command
+Lists usage of available commands.
+
+### Usage
+```
+tasks help
+```
 
 -----------------------------------------------------------------------------------------------------
 

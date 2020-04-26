@@ -20,6 +20,7 @@ import storage
 import commands.addcommand
 import commands.annotatecommand
 import commands.donecommand
+import commands.helpcommand
 import commands.listcommand
 import commands.modifycommand
 import filters.filterfactory as filterfactory
@@ -86,6 +87,7 @@ try:
 
     COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT)
     COMMAND_FACTORY.register_known_types()
+    CONTEXT.command_factory = COMMAND_FACTORY
 
     try:
         COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:])
