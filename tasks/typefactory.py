@@ -8,8 +8,17 @@ class TypeFactory:
         return self._types
 
     def register_known_types(self):
-        for cla in self._base_class.__subclasses__():
-            self.register_type(cla())
+        self._register_known_types(self._base_class)
+
+    def _register_known_types(self, specific_base_class):
+        for cla in specific_base_class.__subclasses__():
+            if len(cla.__subclasses__()) > 0:
+                self._register_known_types(cla)
+            else:
+                try:
+                    self.register_type(cla())
+                except Exception as ex:
+                    raise Exception('Failed registering type {}'.format(cla)) from ex
 
     def register_type(self, cla):
         self._types.append(cla)

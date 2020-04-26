@@ -25,12 +25,17 @@ class ListTaskCommand(commandbase.FilterCommandBase):
                     task.name))
 
 
-class ListTaskCommandParser(commandbase.CommandParserBase):
+class ListTaskCommandParser(commandbase.FilterCommandParserBase):
+    COMMAND_NAME = 'list'
+
+    def __init__(self):
+        super().__init__(ListTaskCommandParser.COMMAND_NAME)
+
     def parse(self, context, args):
-        if len(args) == 1 and args[0] == 'list':
+        if len(args) == 1 and args[0] == ListTaskCommandParser.COMMAND_NAME:
             filter = alwaysfilter.AlwaysFilter()
             command = ListTaskCommand(context, filter)
-        elif len(args) == 2 and args[1] == 'list':
+        elif len(args) == 2 and args[1] == ListTaskCommandParser.COMMAND_NAME:
             filter = context.filter_factory.parse(args[0])
             command = ListTaskCommand(context, filter)
         else:

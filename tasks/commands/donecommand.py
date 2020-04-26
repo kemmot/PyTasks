@@ -13,9 +13,14 @@ class DoneCommand(commandbase.FilterCommandBase):
             self.context.storage.delete(task)
 
 
-class DoneCommandParser(commandbase.CommandParserBase):
+class DoneCommandParser(commandbase.FilterCommandParserBase):
+    COMMAND_NAME = 'done'
+
+    def __init__(self):
+        super().__init__(DoneCommandParser.COMMAND_NAME)
+
     def parse(self, context, args):
-        if len(args) == 2 and args[1] == 'done':
+        if len(args) == 2 and args[1] == DoneCommandParser.COMMAND_NAME:
             batch_filter = allbatchfilter.AllBatchFilter()
             batch_filter.add_filter(context.filter_factory.parse(args[0]))
 

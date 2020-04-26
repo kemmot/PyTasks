@@ -1,4 +1,5 @@
 import logging
+import abc
 
 
 class CommandBase:
@@ -37,5 +38,24 @@ class FilterCommandBase(CommandBase):
 
 
 class CommandParserBase:
+    def __init__(self, command_name):
+        self._command_name = command_name
+        super().__init__()
+    
+    @property
+    def command_name(self):
+        return self._command_name
+
     def parse(self, context, args):
         raise Exception('parse not implemented in {}'.format(__class__.__name__))
+
+    def print_help(self):
+        print('tasks {}'.format(self._command_name))
+
+
+class FilterCommandParserBase(CommandParserBase):
+    def __init__(self, command_name):
+        super().__init__(command_name)
+
+    def print_help(self):
+        print('tasks [filter] {}'.format(self.command_name))

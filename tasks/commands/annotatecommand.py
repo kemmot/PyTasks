@@ -32,9 +32,14 @@ class AnnotateCommand(commandbase.FilterCommandBase):
         self.context.storage.update(tasks)
 
 
-class AnnotateCommandParser(commandbase.CommandParserBase):
+class AnnotateCommandParser(commandbase.FilterCommandParserBase):
+    COMMAND_NAME = 'annotate'
+
+    def __init__(self):
+        super().__init__(AnnotateCommandParser.COMMAND_NAME)
+
     def parse(self, context, args):
-        if len(args) >= 3 and args[1] == 'annotate':
+        if len(args) >= 3 and args[1] == AnnotateCommandParser.COMMAND_NAME:
             batch_filter = allbatchfilter.AllBatchFilter()
             batch_filter.add_filter(context.filter_factory.parse(args[0]))
 

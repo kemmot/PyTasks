@@ -34,9 +34,14 @@ class ModifyCommand(commandbase.FilterCommandBase):
         self.context.storage.update(filtered_tasks)
 
 
-class ModifyCommandParser(commandbase.CommandParserBase):
+class ModifyCommandParser(commandbase.FilterCommandParserBase):
+    COMMAND_NAME = 'modify'
+
+    def __init__(self):
+        super().__init__(ModifyCommandParser.COMMAND_NAME)
+
     def parse(self, context, args):
-        if len(args) > 2 and args[1] == 'modify':
+        if len(args) > 2 and args[1] == ModifyCommandParser.COMMAND_NAME:
             batch_filter = allbatchfilter.AllBatchFilter()
             batch_filter.add_filter(context.filter_factory.parse(args[0]))
 
