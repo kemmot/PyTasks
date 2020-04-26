@@ -19,3 +19,9 @@ class InfoCommand(commandbase.FilterCommandBase):
             print('Status      {}'.format(task.status))
             print('Entered     {}'.format(task.created))
             print('UUID        {}'.format(task.id_number))
+
+            if len(task.annotations) > 0:
+                print('')
+                print('Date                Modification')
+                for annotation in task.annotations:
+                    print('{} {}'.format(annotation.created.strftime('%Y-%m-%d %H:%M'), annotation.message))

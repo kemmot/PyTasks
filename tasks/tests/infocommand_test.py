@@ -1,3 +1,4 @@
+import datetime
 import unittest
 import uuid
 from unittest import mock
@@ -37,7 +38,7 @@ class InfoCommandTests(unittest.TestCase):
         mock_print = mock.MagicMock()
         with mock.patch('commands.infocommand.print', mock_print):
             command.execute()
-
+        
         calls = []
         calls.append(mock.call('Name        Value'))
         calls.append(mock.call('ID          {}'.format(task.index)))
@@ -45,6 +46,31 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('Status      {}'.format(task.status)))
         calls.append(mock.call('Entered     {}'.format(task.created)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
+        self.assertEqual(calls, mock_print.mock_calls)
+
+    def test_execute_prints_task_details_with_annotations(self):
+        task = self._create_tasks(1, 1)[0]
+
+        mock_filter = mock.Mock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[task])
+
+        mock_context = self._create_context()
+        command = infocommand.InfoCommand(mock_context, mock_filter)
+        
+        mock_print = mock.MagicMock()
+        with mock.patch('commands.infocommand.print', mock_print):
+            command.execute()
+        
+        calls = []
+        calls.append(mock.call('Name        Value'))
+        calls.append(mock.call('ID          {}'.format(task.index)))
+        calls.append(mock.call('Description {}'.format(task.name)))
+        calls.append(mock.call('Status      {}'.format(task.status)))
+        calls.append(mock.call('Entered     {}'.format(task.created)))
+        calls.append(mock.call('UUID        {}'.format(task.id_number)))
+        calls.append(mock.call(''))
+        calls.append(mock.call('Date                Modification'))
+        calls.append(mock.call('{} {}'.format(task.annotations[0].created.strftime('%Y-%m-%d %H:%M'), task.annotations[0].message)))
         self.assertEqual(calls, mock_print.mock_calls)
 
     def _create_context(self, tasks=None):
@@ -64,7 +90,7 @@ class InfoCommandTests(unittest.TestCase):
 
         return mock_context
 
-    def _create_tasks(self, count):
+    def _create_tasks(self, count, annotation_count=0):
         tasks = []
         for index in range(count):
             task = mock.Mock()
@@ -73,4 +99,11 @@ class InfoCommandTests(unittest.TestCase):
             task.index = index + 1
             task.name = 'task {}'.format(task.index)
             tasks.append(task)
+
+            for annotation_index in range(0, annotation_count):
+                annotation = mock.Mock()
+                annotation.created = datetime.datetime(2020, 1, 1, 12, 34, 56)
+                annotation.message = 'this is an annotation'
+                task.annotations.append(annotation)
+            
         return tasks
