@@ -5,7 +5,7 @@ from unittest import mock
 
 import commands.infocommand as infocommand
 import filters.allbatchfilter as allbatchfilter
-import filters.confirmfilter as confirmfilter
+import filters.alwaysfilter as alwaysfilter
 
 
 class InfoCommandTests(unittest.TestCase):
@@ -107,3 +107,36 @@ class InfoCommandTests(unittest.TestCase):
                 task.annotations.append(annotation)
             
         return tasks
+
+
+class InfoCommandParserTests(unittest.TestCase):
+    def test_parse_wrong_command(self):
+        args = ['wrong']
+        mock_context = mock.Mock()
+        command = infocommand.InfoCommandParser().parse(mock_context, args)
+        self.assertEqual(None, command)
+
+    def test_parse_success_no_filter(self):
+        args = ['info']
+        mock_context = mock.Mock()
+        command = infocommand.InfoCommandParser().parse(mock_context, args)
+        self.assertIsInstance(command, infocommand.InfoCommand)
+        self.assertIsInstance(command.filter, alwaysfilter.AlwaysFilter)
+        
+    def test_parse_success_with_filter(self):
+        args = ['2', 'info']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = infocommand.InfoCommandParser()
+        command = parser.parse(mock_context, args)
+
+        self.assertIsInstance(command, infocommand.InfoCommand)
+        self.assertEqual(mock_filter, command.filter)
