@@ -9,9 +9,11 @@ class HelpCommandTests(unittest.TestCase):
     def test_execute_prints_help(self):
         parsers = []
         mock_parser1 = mock.Mock()
+        mock_parser1.command_name = 'parser1'
         mock_parser1.print_help = mock.MagicMock()
         parsers.append(mock_parser1)
         mock_parser2 = mock.Mock()
+        mock_parser2.command_name = 'parser2'
         mock_parser2.print_help = mock.MagicMock()
         parsers.append(mock_parser2)
 

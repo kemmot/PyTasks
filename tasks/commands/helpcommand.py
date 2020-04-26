@@ -9,7 +9,9 @@ class HelpCommand(commandbase.CommandBase):
         super().__init__(context)
 
     def execute(self):
-        for command_parser in self.context.command_factory.types:
+        sort = lambda t: t.command_name
+        sorted_parsers = sorted(self.context.command_factory.types, key=sort)
+        for command_parser in sorted_parsers:
             command_parser.print_help()
 
 
