@@ -1,0 +1,21 @@
+import commands.commandbase as commandbase
+import entities
+import filters.allbatchfilter as allbatchfilter
+import filters.confirmfilter as confirmfilter
+
+
+class InfoCommand(commandbase.FilterCommandBase):
+    def __init__(self, context, batch_filter):
+        super().__init__(context, batch_filter)
+
+    def execute(self):
+        '''
+        Executes the logic of this command.
+        '''
+        for task in self.get_filtered_tasks():
+            print('Name        Value')
+            print('ID          {}'.format(task.index))
+            print('Description {}'.format(task.name))
+            print('Status      {}'.format(task.status))
+            print('Entered     {}'.format(task.created))
+            print('UUID        {}'.format(task.id_number))
