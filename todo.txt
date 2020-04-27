@@ -16,7 +16,6 @@
 [description:"FEAT-0033: Add import command" entry:"0" status:"pending" uuid:"55ad17fb-5ed6-4868-a26b-3f68413552a6"]
 [description:"FEAT-0034: Add export command" entry:"0" status:"pending" uuid:"f35e6fc0-d0e9-41b0-ae94-2828361c6195"]
 [description:"FEAT-0035: Add columns command to list available attributes" entry:"0" status:"pending" uuid:"deef5e7a-2157-41b4-933c-77635896f3dc"]
-[annotation_1586000089:"Should list annotations" description:"FEAT-0036: Add info command" entry:"0" status:"pending" uuid:"818989a8-9e43-4a3c-9a22-138407ab7d03"]
 [description:"FEAT-0038: Have option for modify confirmation to only appear on multiple changes" entry:"0" status:"pending" uuid:"8a7616b0-dc75-4a2a-b917-02d04aa09f03"]
 [description:"FEAT-0039: Settings should be able to inherit from global scope" entry:"1584483622" status:"pending" uuid:"39bcef95-1ae5-461d-af44-dde3eb81b36d"]
 [description:"FEAT-0044: Add git hook to check style on pre-commit" entry:"1586000340" status:"pending" uuid:"b87683da-da64-446a-a7d3-2fe4a4cc012b"]

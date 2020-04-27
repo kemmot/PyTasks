@@ -17,6 +17,7 @@ The following commands are available:
 * [annotate](#annotate-command)
 * [done](#done-command)
 * [help](#help-command)
+* [info](#info-command)
 * [list](#list-command)
 * [modify](#modify-command)
 
@@ -107,6 +108,16 @@ Lists usage of available commands.
 ### Usage
 ```
 tasks help
+```
+
+-----------------------------------------------------------------------------------------------------
+
+## Info Command
+Displays all information for a task or tasks.
+
+### Usage
+```
+tasks [filter] info
 ```
 
 -----------------------------------------------------------------------------------------------------

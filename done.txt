@@ -8,4 +8,6 @@
 [description:"FEAT-0040: Add git hooks to repo" entry:"1586005535" status:"pending" uuid:"db4072fd-8e7f-49cf-b02f-7885fea431b1"]
 [description:"FEAT-0041: Add git hook to run unit tests on commit" entry:"1586005462" status:"pending" uuid:"9c90f45e-a6fc-435d-b979-4bf954841d0c"]
 [description:"FEAT-0042: Add git hook to check test coverage on commit" entry:"1586005473" status:"pending" uuid:"feebfa8c-1110-4f5a-983e-d5ff3fe9d80c"]
+[description:"FEAT-0043: Add git hooks to generate read me on commit" entry:"1586000322" status:"pending" uuid:"d7d9163a-bb03-46db-8951-8158ade7fef6"]
 [description:"FEAT-0046: add help command" entry:"1587246037" status:"pending" uuid:"1390b376-c26a-4445-bf68-e879f0d5a358"]
+[annotation_1586000089:"Should list annotations" description:"FEAT-0036: Add info command" entry:"0" status:"pending" uuid:"818989a8-9e43-4a3c-9a22-138407ab7d03"]

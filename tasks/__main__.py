@@ -21,6 +21,7 @@ import commands.addcommand
 import commands.annotatecommand
 import commands.donecommand
 import commands.helpcommand
+import commands.infocommand
 import commands.listcommand
 import commands.modifycommand
 import filters.filterfactory as filterfactory
