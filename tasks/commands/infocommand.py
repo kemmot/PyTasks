@@ -22,7 +22,7 @@ class InfoCommand(commandbase.FilterCommandBase):
 
             if len(task.annotations) > 0:
                 print('')
-                print('Date                Modification')
+                print('Date             Modification')
                 for annotation in task.annotations:
                     print('{} {}'.format(annotation.created.strftime('%Y-%m-%d %H:%M'), annotation.message))
 

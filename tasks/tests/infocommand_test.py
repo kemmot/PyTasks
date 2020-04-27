@@ -69,7 +69,7 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('Entered     {}'.format(task.created)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
         calls.append(mock.call(''))
-        calls.append(mock.call('Date                Modification'))
+        calls.append(mock.call('Date             Modification'))
         calls.append(mock.call('{} {}'.format(task.annotations[0].created.strftime('%Y-%m-%d %H:%M'), task.annotations[0].message)))
         self.assertEqual(calls, mock_print.mock_calls)
 
