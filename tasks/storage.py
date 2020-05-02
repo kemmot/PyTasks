@@ -21,16 +21,25 @@ class TaskWarriorFormatter:
         '''
         Formats the task.
         '''
-        output = '['
+
+        output_key_values = {}
+        output_key_values['description'] = task.name
+        output_key_values['entry'] = calendar.timegm(task.created.utctimetuple())
+        output_key_values['status'] = task.status
+        output_key_values['uuid'] = task.id_number
 
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
-            output += 'annotation_{}:"{}" '.format(created_output, annotation.message)
+            output_key_values['annotation_{}'.format(created_output)] = annotation.message
 
-        output += 'description:"{}"'.format(task.name)
-        output += ' entry:"{}"'.format(calendar.timegm(task.created.utctimetuple()))
-        output += ' status:"{}"'.format(task.status)
-        output += ' uuid:"{}"'.format(task.id_number)
+        output = '['
+        first_value = True
+        for key,value in sorted(output_key_values.items()):
+            if first_value:
+                first_value = False
+            else:
+                output += ' '
+            output += '{}:"{}"'.format(key, value)
         output += ']'
         return output
 
