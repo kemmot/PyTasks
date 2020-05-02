@@ -22,6 +22,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         annotation2 = entities.TaskAnnotation('annotation 2', annotation2_date)
         task.annotations.append(annotation1)
         task.annotations.append(annotation2)
+        task.attributes['project'] = 'project 1'
+        task.attributes['priority'] = 'high'
         task.created = datetime.datetime(2019, 11, 29, 20, 59, 18)
         task.id_number = uuid.UUID('a0bde7e1-21b5-4378-9e06-1f72e0336c28')
         task.name = 'task name'
@@ -32,6 +34,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         expected += ' annotation_1575320358:"annotation 2"'
         expected += ' description:"task name"'
         expected += ' entry:"1575061158"'
+        expected += ' priority:"high"'
+        expected += ' project:"project 1"'
         expected += ' status:"pending"'
         expected += ' uuid:"' + str(task.id_number) + '"'
         expected += ']'
@@ -47,6 +51,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         line += ' annotation_1575320358:"annotation 2"'
         line += ' description:"new"'
         line += ' entry:"1575061158"'
+        line += ' priority:"low"'
+        line += ' project:"project 2"'
         line += ' status:"pending"'
         line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
         line += ']'
@@ -64,6 +70,11 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.annotations[0].message, 'annotation 1')
         self.assertEqual(task.annotations[1].created, datetime.datetime(2019, 12, 2, 20, 59, 18))
         self.assertEqual(task.annotations[1].message, 'annotation 2')
+        self.assertEqual(len(task.attributes), 2)
+        self.assertTrue('project' in task.attributes)
+        self.assertEqual(task.attributes['project'], 'project 2')
+        self.assertTrue('priority' in task.attributes)
+        self.assertEqual(task.attributes['priority'], 'low')
 
 
 class TextFileStorageTests(unittest.TestCase):

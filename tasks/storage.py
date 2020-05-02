@@ -31,6 +31,9 @@ class TaskWarriorFormatter:
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
             output_key_values['annotation_{}'.format(created_output)] = annotation.message
+        
+        for attribute_name, attribute_value in task.attributes.items():
+            output_key_values[attribute_name] = attribute_value
 
         output = '['
         first_value = True
@@ -66,6 +69,8 @@ class TaskWarriorFormatter:
                 annotation_created = self._parse_datetime(created_timestamp)
                 annotation = entities.TaskAnnotation(value, annotation_created)
                 task.annotations.append(annotation)
+            else:
+                task.attributes[key] = value
         return task
 
     def _parse_datetime(self, seconds_since_epoc_string):

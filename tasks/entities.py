@@ -25,6 +25,7 @@ class Task:
     '''
     def __init__(self):
         self._annotations = []
+        self._attributes = {}
         self._created = datetime.datetime.now()
         self._id_number = ''
         self._index = -1
@@ -33,7 +34,17 @@ class Task:
     
     @property
     def annotations(self):
+        '''
+        The annotations attached to this task.
+        '''
         return self._annotations
+    
+    @property
+    def attributes(self):
+        '''
+        The extra attributes associated with this task.
+        '''
+        return self._attributes
 
     @property
     def id_number(self):
