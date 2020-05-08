@@ -121,9 +121,19 @@ class ModifyCommandParserTests(unittest.TestCase):
 
     def test_parse_parse_success_with_confirmation(self):
         self._test_parse_parse_success(True)
+
+    def test_parse_parse_success_with_project_and_priority(self):
+        command = self._test_parse_parse_success(False, ['project:test', 'priority:H'])
+        self.assertEqual(len(command.template_task.attributes), 2)
+        self.assertTrue('project' in command.template_task.attributes)
+        self.assertEqual(command.template_task.attributes['project'], 'test')
+        self.assertTrue('priority' in command.template_task.attributes)
+        self.assertEqual(command.template_task.attributes['priority'], 'H')
         
-    def _test_parse_parse_success(self, with_confirmation):
-        args = ['2', 'modify', 'new name']
+    def _test_parse_parse_success(self, with_confirmation, extra_args=[]):
+        args = ['2', 'modify', 'new', 'name']
+        for extra_arg in extra_args:
+            args.append(extra_arg)
 
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
@@ -151,3 +161,4 @@ class ModifyCommandParserTests(unittest.TestCase):
 
         self.assertIsNotNone(command.template_task)
         self.assertEqual(command.template_task.name, 'new name')
+        return command

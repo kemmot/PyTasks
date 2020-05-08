@@ -48,10 +48,15 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
             if context.settings.command_modify_confirm:
                 batch_filter.add_filter(confirmfilter.ConfirmFilter('Modify'))
             
-            name = args[2:]
-
             template_task = entities.Task()
-            template_task.name = ' '.join(name)
+            for arg in args[2:]:
+                if ':' in arg:
+                    attribute_parts = arg.split(':')
+                    template_task.attributes[attribute_parts[0]] = attribute_parts[1]
+                else:
+                    if len(template_task.name) > 0:
+                        template_task.name += ' '
+                    template_task.name += arg
 
             command = ModifyCommand(context, batch_filter)
             command.template_task = template_task
