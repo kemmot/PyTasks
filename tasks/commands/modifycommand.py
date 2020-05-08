@@ -66,3 +66,6 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
         else:
             command = None
         return command
+
+    def get_usage(self):
+        return super().get_usage() + ' [attribute:value]'

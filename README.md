@@ -143,15 +143,16 @@ Modifies an existing command.
 
 ### Usage
 ```
-tasks <filter> modify <name> [name ...]
+tasks <filter> modify <name> [name ...] [attribute:value ...]
 ```
 
 ### Positional Arguments
 
-|Name  |Description|
-|:-----|:----------|
-|filter|The optional task filter.|
-|name  |The new name of the item.|
+|Name     |Description|
+|:--------|:----------|
+|attribute|Any number of optional attribute key value pairs.|
+|filter   |The optional task filter.|
+|name     |The new name of the item.|
 
 ### Applicable Settings
 

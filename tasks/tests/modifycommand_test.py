@@ -228,3 +228,7 @@ class ModifyCommandParserTests(unittest.TestCase):
         self.assertIsNotNone(command.template_task)
         self.assertEqual(command.template_task.name, 'new name')
         return command
+
+    def test_get_usage(self):
+        parser = modifycommand.ModifyCommandParser()
+        self.assertEqual('tasks [filter] modify [attribute:value]', parser.get_usage())

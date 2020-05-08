@@ -50,12 +50,15 @@ class CommandParserBase:
         raise Exception('parse not implemented in {}'.format(__class__.__name__))
 
     def print_help(self):
-        print('tasks {}'.format(self._command_name))
+        print(self.get_usage())
+
+    def get_usage(self):
+        return 'tasks {}'.format(self._command_name)
 
 
 class FilterCommandParserBase(CommandParserBase):
     def __init__(self, command_name):
         super().__init__(command_name)
 
-    def print_help(self):
-        print('tasks [filter] {}'.format(self.command_name))
+    def get_usage(self):
+        return 'tasks [filter] {}'.format(self.command_name)

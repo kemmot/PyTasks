@@ -32,6 +32,7 @@ class CommandParserBaseTests(unittest.TestCase):
 
         mock_print.assert_called_with('tasks base')
 
+
 class FilterCommandParserBaseTests(unittest.TestCase):
     def test_constructor_args(self):
         command_name = 'command name'
