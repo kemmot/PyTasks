@@ -23,14 +23,17 @@ class ModifyCommand(commandbase.FilterCommandBase):
     @template_task.setter
     def template_task(self, value):
         self._template_task = value
-        
+
     def execute(self):
         '''
         Executes the logic of this command.
         '''
         filtered_tasks = self.get_filtered_tasks()
         for task in filtered_tasks:
-            task.name = self.template_task.name
+            if self.template_task.name:
+                task.name = self.template_task.name
+            for attribute_name, attribute_value in self.template_task.attributes.items():
+                task.attributes[attribute_name] = attribute_value
         self.context.storage.update(filtered_tasks)
 
 
@@ -47,14 +50,14 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
 
             if context.settings.command_modify_confirm:
                 batch_filter.add_filter(confirmfilter.ConfirmFilter('Modify'))
-            
+
             template_task = entities.Task()
             for arg in args[2:]:
                 if ':' in arg:
                     attribute_parts = arg.split(':')
                     template_task.attributes[attribute_parts[0]] = attribute_parts[1]
                 else:
-                    if len(template_task.name) > 0:
+                    if template_task.name:
                         template_task.name += ' '
                     template_task.name += arg
 

@@ -15,14 +15,13 @@ class ModifyCommandTests(unittest.TestCase):
         self.assertEqual(mock_filter, command.filter)
 
     def test_execute_calls_read_all_on_storage(self):
-        tasks = self._create_tasks(3)
-        mock_context = self._create_context(tasks)
+        mock_context = self._create_context()
+
+        template_task = self._create_tasks(1)[0]
+        template_task.name = 'new name'
 
         mock_filter = mock.MagicMock()
         mock_filter.is_match = mock.MagicMock(return_value=True)
-
-        template_task = mock.Mock()
-        template_task.name = 'new name'
 
         command = modifycommand.ModifyCommand(mock_context, mock_filter)
         command.template_task = template_task
@@ -32,13 +31,14 @@ class ModifyCommandTests(unittest.TestCase):
 
     def test_execute_sets_task_name(self):
         tasks = self._create_tasks(3)
+
+        template_task = self._create_tasks(1)[0]
+        template_task.name = 'new name'
+
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
         mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
-
-        template_task = mock.Mock()
-        template_task.name = 'new name'
 
         command = modifycommand.ModifyCommand(mock_context, mock_filter)
         command.template_task = template_task
@@ -46,15 +46,79 @@ class ModifyCommandTests(unittest.TestCase):
 
         self.assertEqual('new name', tasks[1].name)
 
-    def test_execute_calls_update_on_storage(self):
+    def test_execute_does_not_alter_name_when_not_specified(self):
         tasks = self._create_tasks(3)
+        tasks[1].name = 'original name'
+
+        template_task = self._create_tasks(1)[0]
+        template_task.name = ''
+
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
         mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
-        template_task = mock.Mock()
+        command = modifycommand.ModifyCommand(mock_context, mock_filter)
+        command.template_task = template_task
+        command.execute()
+
+        self.assertEqual('original name', tasks[1].name)
+
+    def test_execute_adds_new_attributes(self):
+        attribute_name = 'project'
+        attribute_value = 'test'
+        tasks = self._create_tasks(3)
+
+        template_task = self._create_tasks(1)[0]
+        template_task.name = ''
+        template_task.attributes[attribute_name] = attribute_value
+
+        mock_context = self._create_context(tasks)
+
+        mock_filter = mock.MagicMock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
+
+        command = modifycommand.ModifyCommand(mock_context, mock_filter)
+        command.template_task = template_task
+        command.execute()
+
+        self.assertEqual(1, len(tasks[1].attributes))
+        self.assertTrue(attribute_name in tasks[1].attributes)
+        self.assertEqual(attribute_value, tasks[1].attributes[attribute_name])
+
+    def test_execute_updates_existing_attributes(self):
+        attribute_name = 'project'
+        attribute_value = 'test'
+        attribute_value2 = 'new value'
+        tasks = self._create_tasks(3)
+        tasks[1].attributes[attribute_name] = attribute_value
+
+        template_task = self._create_tasks(1)[0]
+        template_task.name = ''
+        template_task.attributes[attribute_name] = attribute_value2
+
+        mock_context = self._create_context(tasks)
+
+        mock_filter = mock.MagicMock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
+
+        command = modifycommand.ModifyCommand(mock_context, mock_filter)
+        command.template_task = template_task
+        command.execute()
+
+        self.assertEqual(1, len(tasks[1].attributes))
+        self.assertTrue(attribute_name in tasks[1].attributes)
+        self.assertEqual(attribute_value2, tasks[1].attributes[attribute_name])
+
+    def test_execute_calls_update_on_storage(self):
+        tasks = self._create_tasks(3)
+        mock_context = self._create_context(tasks)
+
+        template_task = self._create_tasks(1)[0]
         template_task.name = 'new name'
+
+        mock_filter = mock.MagicMock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         command = modifycommand.ModifyCommand(mock_context, mock_filter)
         command.template_task = template_task
@@ -68,7 +132,7 @@ class ModifyCommandTests(unittest.TestCase):
 
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
-        
+
         mock_storage = mock.Mock()
         mock_storage.delete = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
@@ -83,6 +147,7 @@ class ModifyCommandTests(unittest.TestCase):
         tasks = []
         for index in range(count):
             task = mock.Mock()
+            task.attributes = {}
             task.index = index + 1
             task.name = 'task {}'.format(task.index)
             tasks.append(task)
@@ -129,11 +194,12 @@ class ModifyCommandParserTests(unittest.TestCase):
         self.assertEqual(command.template_task.attributes['project'], 'test')
         self.assertTrue('priority' in command.template_task.attributes)
         self.assertEqual(command.template_task.attributes['priority'], 'H')
-        
-    def _test_parse_parse_success(self, with_confirmation, extra_args=[]):
+
+    def _test_parse_parse_success(self, with_confirmation, extra_args=None):
         args = ['2', 'modify', 'new', 'name']
-        for extra_arg in extra_args:
-            args.append(extra_arg)
+        if extra_args:
+            for extra_arg in extra_args:
+                args.append(extra_arg)
 
         mock_filter_factory = mock.Mock()
         mock_filter = mock.Mock()
