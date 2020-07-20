@@ -30,6 +30,7 @@ class Task:
         self._id_number = ''
         self._index = -1
         self._name = ''
+        self._started = None
         self._status = ''
     
     @property
@@ -100,3 +101,14 @@ class Task:
     @status.setter
     def status(self, value):
         self._status = value
+
+    @property
+    def started(self):
+        '''
+        The time the task was started.  None if not started.
+        '''
+        return self._started
+
+    @started.setter
+    def started(self, value):
+        self._started = value

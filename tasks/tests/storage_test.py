@@ -14,7 +14,13 @@ class Empty:
 
 
 class TaskWarriorFormatterTests(unittest.TestCase):
-    def test_format_gives_correct_output(self):
+    def test_format_gives_correct_output_with_started(self):
+        self.output_test(True)
+
+    def test_format_gives_correct_output_without_started(self):
+        self.output_test(False)
+
+    def output_test(self, include_started):
         task = entities.Task()
         annotation1_date = datetime.datetime(2019, 12, 1, 20, 59, 18)
         annotation2_date = datetime.datetime(2019, 12, 2, 20, 59, 18)
@@ -28,6 +34,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         task.id_number = uuid.UUID('a0bde7e1-21b5-4378-9e06-1f72e0336c28')
         task.name = 'task name'
         task.status = 'pending'
+        if include_started:
+            task.started = datetime.datetime(2019, 11, 29, 20, 59, 18)
 
         expected = '['
         expected += 'annotation_1575233958:"annotation 1"'
@@ -36,6 +44,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         expected += ' entry:"1575061158"'
         expected += ' priority:"high"'
         expected += ' project:"project 1"'
+        if include_started:
+            expected += ' start:"1575061158"'
         expected += ' status:"pending"'
         expected += ' uuid:"' + str(task.id_number) + '"'
         expected += ']'
@@ -45,7 +55,13 @@ class TaskWarriorFormatterTests(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_parse_parses_details(self):
+    def test_parse_parses_details_with_started(self):
+        self.parse_test(True)
+
+    def test_parse_parses_details_without_started(self):
+        self.parse_test(False)
+
+    def parse_test(self, include_started):
         line = '['
         line += 'annotation_1575233958:"annotation 1"'
         line += ' annotation_1575320358:"annotation 2"'
@@ -53,6 +69,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         line += ' entry:"1575061158"'
         line += ' priority:"low"'
         line += ' project:"project 2"'
+        if include_started:
+            line += ' start:"1575061158"'
         line += ' status:"pending"'
         line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
         line += ']'
@@ -75,6 +93,10 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.attributes['project'], 'project 2')
         self.assertTrue('priority' in task.attributes)
         self.assertEqual(task.attributes['priority'], 'low')
+        if include_started:
+            self.assertEqual(task.started, datetime.datetime(2019, 11, 29, 20, 59, 18))
+        else:
+            self.assertIsNone(task.started)
 
 
 class TextFileStorageTests(unittest.TestCase):
