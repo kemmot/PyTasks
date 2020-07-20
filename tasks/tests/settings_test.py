@@ -55,6 +55,11 @@ class SettingTests(unittest.TestCase):
             'command.modify.confirm', 'woble', 'command_modify_confirm')
 
     @mock.patch('settings.os.path')
+    def test_read_command_modify_confirm_exists(self, mock_path):
+        self._test_setting_exists(mock_path, \
+            'command.start.confirm', 'woble', 'command_start_confirm')
+
+    @mock.patch('settings.os.path')
     def test_read_command_default_not_exists(self, mock_path):
         self._test_setting_not_exists(mock_path, 'command.modify.confirm')
 

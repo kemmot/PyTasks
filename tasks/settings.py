@@ -22,14 +22,18 @@ class Settings:
     @property
     def command_done_confirm(self):
         return self._get_value('command.done.confirm')
-
-    @property
-    def data_done_filename(self):
-        return self._get_value('data.done.filename')
     
     @property
     def command_modify_confirm(self):
         return self._get_value('command.modify.confirm')
+    
+    @property
+    def command_start_confirm(self):
+        return self._get_value('command.start.confirm')
+
+    @property
+    def data_done_filename(self):
+        return self._get_value('data.done.filename')
 
     @property
     def data_location(self):
