@@ -20,6 +20,7 @@ The following commands are available:
 * [info](#info-command)
 * [list](#list-command)
 * [modify](#modify-command)
+* [start](#start-command)
 
 The following additional information is available.
 
@@ -160,6 +161,26 @@ tasks <filter> modify <name> [name ...] [attribute:value ...]
 
 -----------------------------------------------------------------------------------------------------
 
+## Start Command
+Sets the start time of an existing command.
+
+### Usage
+```
+tasks <filter> start
+```
+
+### Positional Arguments
+
+|Name     |Description|
+|:--------|:----------|
+|filter   |The optional task filter.|
+
+### Applicable Settings
+
+* [command.start.confirm](#commandstartconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
 # Exit Codes
 The following is a description of the exit codes that the application can produce.
 
@@ -249,6 +270,16 @@ Default value: True
 
 ## command.modify.confirm
 Whether the modify command should request confirmation before making changes.
+
+Possible values
+
+* False
+* True
+
+Default value: True
+
+## command.start.confirm
+Whether the start command should request confirmation before making changes.
 
 Possible values
 

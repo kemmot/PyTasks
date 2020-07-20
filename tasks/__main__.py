@@ -24,6 +24,7 @@ import commands.helpcommand
 import commands.infocommand
 import commands.listcommand
 import commands.modifycommand
+import commands.startcommand
 import filters.filterfactory as filterfactory
 import filters.taskindexfilter as taskindexfilter
 import filters.tasknamefilter as tasknamefilter
