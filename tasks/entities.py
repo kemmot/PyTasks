@@ -112,3 +112,6 @@ class Task:
     @started.setter
     def started(self, value):
         self._started = value
+    
+    def start(self):
+        self.started = datetime.datetime.now()
