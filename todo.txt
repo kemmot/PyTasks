@@ -23,5 +23,4 @@
 [description:"FEAT-0049 List output should alternate colours" entry:"1595274010" status:"pending" uuid:"5df655ab-660c-47b2-87e8-80ef697e8a5b"]
 [description:"FEAT-0050 Info command should separate entries" entry:"1595274085" status:"pending" uuid:"3905248f-cfdf-4a31-aac6-ffc547b820c8"]
 [description:"FEAT-0051 Default action should be info for a single item" entry:"1595274246" status:"pending" uuid:"5ee7dc49-1388-4721-b56d-e5d16baf08d2"]
-[description:"FEAT-0052 Add start command" entry:"1595274278" status:"pending" uuid:"662f8480-82c8-491a-b7f6-acf9a2c3db3b"]
 [description:"FEAT-0053 Add stop command" entry:"1595274282" status:"pending" uuid:"99655c79-8345-4c1d-8c9e-45a2183b0e08"]

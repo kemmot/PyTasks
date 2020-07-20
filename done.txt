@@ -13,3 +13,4 @@
 [annotation_1586000089:"Should list annotations" description:"FEAT-0036: Add info command" entry:"0" status:"pending" uuid:"818989a8-9e43-4a3c-9a22-138407ab7d03"]
 [annotation_1588446747:"This was done as the modify command" description:"FEAT-0005: Add update command" entry:"0" status:"pending" uuid:"77b70d35-c0a6-4f14-9cee-e3dee61773e3"]
 [description:"FEAT-0031 Add attribute support to modify command" entry:"0" status:"pending" uuid:"1114f570-14de-42c6-8783-7a40ff1c372d"]
+[description:"FEAT-0052 Add start command" entry:"1595274278" start:"1595280702" status:"pending" uuid:"662f8480-82c8-491a-b7f6-acf9a2c3db3b"]
