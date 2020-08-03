@@ -30,6 +30,10 @@ class Settings:
     @property
     def command_start_confirm(self):
         return self._get_value('command.start.confirm')
+    
+    @property
+    def command_stop_confirm(self):
+        return self._get_value('command.stop.confirm')
 
     @property
     def data_done_filename(self):

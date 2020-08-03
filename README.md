@@ -21,6 +21,7 @@ The following commands are available:
 * [list](#list-command)
 * [modify](#modify-command)
 * [start](#start-command)
+* [stop](#stop-command)
 
 The following additional information is available.
 
@@ -162,7 +163,7 @@ tasks <filter> modify <name> [name ...] [attribute:value ...]
 -----------------------------------------------------------------------------------------------------
 
 ## Start Command
-Sets the start time of an existing command.
+Sets the start time of existing tasks.
 
 ### Usage
 ```
@@ -178,6 +179,26 @@ tasks <filter> start
 ### Applicable Settings
 
 * [command.start.confirm](#commandstartconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
+## Stop Command
+Clears the start time of existing tasks.
+
+### Usage
+```
+tasks <filter> stop
+```
+
+### Positional Arguments
+
+|Name     |Description|
+|:--------|:----------|
+|filter   |The optional task filter.|
+
+### Applicable Settings
+
+* [command.stop.confirm](#commandstopconfirm)
 
 -----------------------------------------------------------------------------------------------------
 
@@ -280,6 +301,16 @@ Default value: True
 
 ## command.start.confirm
 Whether the start command should request confirmation before making changes.
+
+Possible values
+
+* False
+* True
+
+Default value: True
+
+## command.stop.confirm
+Whether the stop command should request confirmation before making changes.
 
 Possible values
 

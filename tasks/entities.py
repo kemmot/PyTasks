@@ -115,3 +115,6 @@ class Task:
     
     def start(self):
         self.started = datetime.datetime.now()
+    
+    def stop(self):
+        self.started = None
