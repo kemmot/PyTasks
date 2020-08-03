@@ -26,11 +26,11 @@ class Task:
     def __init__(self):
         self._annotations = []
         self._attributes = {}
-        self._created = datetime.datetime.now()
+        self._created_time = datetime.datetime.now()
         self._id_number = ''
         self._index = -1
         self._name = ''
-        self._started = None
+        self._started_time = None
         self._status = ''
     
     @property
@@ -46,6 +46,17 @@ class Task:
         The extra attributes associated with this task.
         '''
         return self._attributes
+
+    @property
+    def created_time(self):
+        '''
+        The time the task was created.
+        '''
+        return self._created_time
+
+    @created_time.setter
+    def created_time(self, value):
+        self._created_time = value
 
     @property
     def id_number(self):
@@ -68,17 +79,10 @@ class Task:
     @index.setter
     def index(self, value):
         self._index = value
-
+    
     @property
-    def created(self):
-        '''
-        The time the task was created.
-        '''
-        return self._created
-
-    @created.setter
-    def created(self, value):
-        self._created = value
+    def is_started(self):
+        return self.started_time != None
 
     @property
     def name(self):
@@ -103,18 +107,18 @@ class Task:
         self._status = value
 
     @property
-    def started(self):
+    def started_time(self):
         '''
         The time the task was started.  None if not started.
         '''
-        return self._started
+        return self._started_time
 
-    @started.setter
-    def started(self, value):
-        self._started = value
+    @started_time.setter
+    def started_time(self, value):
+        self._started_time = value
     
     def start(self):
-        self.started = datetime.datetime.now()
+        self.started_time = datetime.datetime.now()
     
     def stop(self):
-        self.started = None
+        self.started_time = None

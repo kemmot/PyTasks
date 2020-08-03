@@ -30,12 +30,12 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         task.annotations.append(annotation2)
         task.attributes['project'] = 'project 1'
         task.attributes['priority'] = 'high'
-        task.created = datetime.datetime(2019, 11, 29, 20, 59, 18)
+        task.created_time = datetime.datetime(2019, 11, 29, 20, 59, 18)
         task.id_number = uuid.UUID('a0bde7e1-21b5-4378-9e06-1f72e0336c28')
         task.name = 'task name'
         task.status = 'pending'
         if include_started:
-            task.started = datetime.datetime(2019, 11, 29, 20, 59, 18)
+            task.started_time = datetime.datetime(2019, 11, 29, 20, 59, 18)
 
         expected = '['
         expected += 'annotation_1575233958:"annotation 1"'
@@ -81,7 +81,7 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.index, 1)
         self.assertEqual(task.name, 'new')
         self.assertEqual(task.status, 'pending')
-        self.assertEqual(task.created, datetime.datetime(2019, 11, 29, 20, 59, 18))
+        self.assertEqual(task.created_time, datetime.datetime(2019, 11, 29, 20, 59, 18))
         self.assertEqual(task.id_number, '43462153-2313-4fc0-b1a4-f6c4b1501d8f')
         self.assertEqual(len(task.annotations), 2)
         self.assertEqual(task.annotations[0].created, datetime.datetime(2019, 12, 1, 20, 59, 18))
@@ -94,9 +94,9 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertTrue('priority' in task.attributes)
         self.assertEqual(task.attributes['priority'], 'low')
         if include_started:
-            self.assertEqual(task.started, datetime.datetime(2019, 11, 29, 20, 59, 18))
+            self.assertEqual(task.started_time, datetime.datetime(2019, 11, 29, 20, 59, 18))
         else:
-            self.assertIsNone(task.started)
+            self.assertIsNone(task.started_time)
 
 
 class TextFileStorageTests(unittest.TestCase):

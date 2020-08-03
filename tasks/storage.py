@@ -24,12 +24,12 @@ class TaskWarriorFormatter:
 
         output_key_values = {}
         output_key_values['description'] = task.name
-        output_key_values['entry'] = calendar.timegm(task.created.utctimetuple())
+        output_key_values['entry'] = calendar.timegm(task.created_time.utctimetuple())
         output_key_values['status'] = task.status
         output_key_values['uuid'] = task.id_number
 
-        if task.started:
-            output_key_values['start'] = calendar.timegm(task.started.utctimetuple())
+        if task.is_started:
+            output_key_values['start'] = calendar.timegm(task.started_time.utctimetuple())
 
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
@@ -62,9 +62,9 @@ class TaskWarriorFormatter:
             if key == 'description':
                 task.name = value
             elif key == 'entry':
-                task.created = self._parse_datetime(value)
+                task.created_time = self._parse_datetime(value)
             elif key == 'start':
-                task.started = self._parse_datetime(value)
+                task.started_time = self._parse_datetime(value)
             elif key == 'status':
                 task.status = value
             elif key == 'uuid':
