@@ -1,4 +1,5 @@
 import datetime
+import time
 import unittest
 from unittest import mock
 
@@ -8,6 +9,7 @@ import entities
 class TaskTests(unittest.TestCase):
     def test_constructor_sets_properties(self):
         test_start_time = datetime.datetime.now()
+        time.sleep(0.1)
         task = entities.Task()
         self.assertIsNotNone(task.created_time)
         self.assertGreater(task.created_time, test_start_time)
@@ -21,6 +23,7 @@ class TaskTests(unittest.TestCase):
     
     def test_start_sets_started_field(self):
         test_start_time = datetime.datetime.now()
+        time.sleep(0.1)
         task = entities.Task()
         task.start()
         self.assertIsNotNone(task.started_time)
