@@ -25,13 +25,17 @@ class CommandBase:
 
 
 class FilterCommandBase(CommandBase):
-    def __init__(self, context, filter):
+    def __init__(self, context, filter=None):
         super().__init__(context)
         self._filter = filter
 
     @property
     def filter(self):
         return self._filter
+    
+    @filter.setter
+    def filter(self, value):
+        self._filter = value
 
     def get_filtered_tasks(self):
         return self.filter.filter_items(self.context.storage.read_all())
@@ -51,6 +55,9 @@ class CommandParserBase:
 
     def print_help(self):
         print(self.get_usage())
+
+    def get_confirm_filter(self, context):
+        return None
 
     def get_usage(self):
         return 'tasks {}'.format(self._command_name)
