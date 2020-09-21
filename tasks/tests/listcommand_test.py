@@ -110,14 +110,8 @@ class ListTaskCommandTests(unittest.TestCase):
 
 
 class ListTaskCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = listcommand.ListTaskCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
-
     def test_parse_success_no_filter(self):
-        args = ['list']
+        args = []
 
         mock_filter = mock.Mock()
         mock_filter_factory = mock.Mock()
@@ -130,20 +124,3 @@ class ListTaskCommandParserTests(unittest.TestCase):
 
         self.assertIsInstance(command, listcommand.ListTaskCommand)
         self.assertEqual(command.context, mock_context)
-        self.assertIsInstance(command.filter, alwaysfilter.AlwaysFilter)
-
-    def test_parse_success_with_filter(self):
-        args = ['filter', 'list']
-
-        mock_filter = mock.Mock()
-        mock_filter_factory = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
-
-        mock_context = mock.Mock()
-        mock_context.filter_factory = mock_filter_factory
-
-        command = listcommand.ListTaskCommandParser().parse(mock_context, args)
-
-        self.assertIsInstance(command, listcommand.ListTaskCommand)
-        self.assertEqual(command.context, mock_context)
-        self.assertEqual(command.filter, mock_filter)
