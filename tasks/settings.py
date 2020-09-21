@@ -17,23 +17,23 @@ class Settings:
 
     @property
     def command_annotate_confirm(self):
-        return self._get_value('command.annotate.confirm')
-
+        return self._get_value_boolean('command.annotate.confirm')
+    
     @property
     def command_done_confirm(self):
-        return self._get_value('command.done.confirm')
-
+        return self._get_value_boolean('command.done.confirm')
+    
     @property
     def command_modify_confirm(self):
-        return self._get_value('command.modify.confirm')
-
+        return self._get_value_boolean('command.modify.confirm')
+    
     @property
     def command_start_confirm(self):
-        return self._get_value('command.start.confirm')
-
+        return self._get_value_boolean('command.start.confirm')
+    
     @property
     def command_stop_confirm(self):
-        return self._get_value('command.stop.confirm')
+        return self._get_value_boolean('command.stop.confirm')
 
     @property
     def data_done_filename(self):
@@ -46,7 +46,16 @@ class Settings:
     @property
     def data_pending_filename(self):
         return self._get_value('data.pending.filename')
-
+    
+    @property
+    def debug_command_parser(self):
+        return self._get_value('debug.command.parser')
+    
+    def _get_value_boolean(self, key):
+        if not self._config.has_option(self._category, key):
+            raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
+        return self._config[self._category].getboolean(key)
+    
     def _get_value(self, key):
         if not self._config.has_option(self._category, key):
             message = 'Config element not found, category: [{}], key: [{}]'
