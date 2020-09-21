@@ -1,11 +1,10 @@
 import commands.commandbase as commandbase
 import entities
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 
 
 class DoneCommand(commandbase.FilterCommandBase):
-    def __init__(self, context, filter):
+    def __init__(self, context, filter=None):
         super().__init__(context, filter)
 
     def execute(self):
@@ -20,14 +19,9 @@ class DoneCommandParser(commandbase.FilterCommandParserBase):
         super().__init__(DoneCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if len(args) == 2 and args[1] == DoneCommandParser.COMMAND_NAME:
-            batch_filter = allbatchfilter.AllBatchFilter()
-            batch_filter.add_filter(context.filter_factory.parse(args[0]))
-
-            if context.settings.command_done_confirm:
-                batch_filter.add_filter(confirmfilter.ConfirmFilter('Mark as done'))
-
-            command = DoneCommand(context, batch_filter)
-        else:
-            command = None
-        return command
+        return DoneCommand(context)
+    
+    def get_confirm_filter(self, context):
+        if context.settings.command_done_confirm:
+            return confirmfilter.ConfirmFilter('Mark as done')
+        return None

@@ -41,20 +41,12 @@ class AddTaskCommandParser(commandbase.CommandParserBase):
         super().__init__(AddTaskCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if args[0] == AddTaskCommandParser.COMMAND_NAME:
-            if len(args) < 2:
-                raise Exception('Add command requires task description')
+        task = entities.Task()
+        task.created = datetime.datetime.now()
+        task.id_number = uuid.uuid4()
+        task.name = ' '.join(args)
+        task.status = 'pending'
 
-            name = args[1:]
-
-            task = entities.Task()
-            task.created = datetime.datetime.now()
-            task.id_number = uuid.uuid4()
-            task.name = ' '.join(name)
-            task.status = 'pending'
-
-            command = AddTaskCommand(context)
-            command.task = task
-        else:
-            command = None
+        command = AddTaskCommand(context)
+        command.task = task
         return command
