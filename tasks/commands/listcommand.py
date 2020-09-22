@@ -1,3 +1,4 @@
+import asciitable as asciitable
 import commands.commandbase as commandbase
 import filters.alwaysfilter as alwaysfilter
 import filters.filterfactory as filterfactory
@@ -8,21 +9,22 @@ class ListTaskCommand(commandbase.FilterCommandBase):
     A command that will list tasks.
     '''
 
-    def __init__(self, context, filter):
+    def __init__(self, context, filter, table=None):
         super().__init__(context, filter)
+        if table == None:
+            table = asciitable.AsciiTable()
+        self._table = table
         
     def execute(self):
         '''
         Executes the logic of this command.
         '''
-        print('ID   Status  Description')
-        print('------------------------')
+        self._table.add_column('ID')
+        self._table.add_column('Status')
+        self._table.add_column('Description')
         for task in self.get_filtered_tasks():
-            format_string = '{} {} {}'
-            print(format_string.format( \
-                    task.index, \
-                    task.status, \
-                    task.name))
+            self._table.add_row(task.index, task.status, task.name)
+        print(self._table.create_output())
 
 
 class ListTaskCommandParser(commandbase.FilterCommandParserBase):

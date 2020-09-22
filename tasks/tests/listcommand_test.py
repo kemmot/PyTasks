@@ -43,6 +43,9 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
+        tasks[1].index = 2
+        tasks[1].status = 'this status'
+        tasks[1].name = 'some name'
 
         mock_storage = mock.Mock()
         mock_storage.read_all = MagicMock(return_value=tasks)
@@ -53,18 +56,30 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_filter = mock.Mock()
         mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
-        command = listcommand.ListTaskCommand(mock_context, mock_filter)
+        mock_table = mock.Mock()
+        mock_table.add_column = mock.MagicMock()
+        mock_table.add_row = mock.MagicMock()
+        mock_table.create_output = MagicMock(return_value='')
+
+        command = listcommand.ListTaskCommand(mock_context, mock_filter, mock_table)
 
         mock_print = mock.MagicMock()
         with mock.patch('commands.listcommand.print', mock_print):
             command.execute()
 
         mock_filter.filter_items.assert_called()
-        call1 = mock.call('ID   Status  Description')
-        call2 = mock.call('------------------------')
-        call3 = mock.call(mock.ANY)
-        calls = [call1, call2, call3]
-        self.assertEqual(calls, mock_print.mock_calls)
+
+        add_column_call1 = mock.call('ID')
+        add_column_call2 = mock.call('Status')
+        add_column_call3 = mock.call('Description')
+        add_column_calls = [add_column_call1, add_column_call2, add_column_call3]
+        self.assertEqual(add_column_calls, mock_table.add_column.mock_calls)
+
+        add_row_call1 = mock.call(2, 'this status', 'some name')
+        add_row_calls = [add_row_call1]
+        self.assertEqual(add_row_calls, mock_table.add_row.mock_calls)
+
+        mock_print.assert_called()
 
     def test_execute_prints_content(self):
         task = mock.MagicMock()
