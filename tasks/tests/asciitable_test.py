@@ -120,6 +120,38 @@ class AsciiTableTests(unittest.TestCase):
             'cell C1        | cell C2  | cell C3 ',
         ]
         self._run_test(columns, rows, output, column_separator = ' | ', add_header_underline = True)
+    
+    def test_more_row_cells_than_columns(self):
+        columns = ['column 1', 'column 2']
+        rows = [
+            ['cell A1','cell A2','cell A3'],
+            ['cell B1','cell B2','cell B3'],
+            ['cell C1','cell C2','cell C3']
+        ]
+        output = [
+            'column 1 | column 2 |        ',
+            '-----------------------------',
+            'cell A1  | cell A2  | cell A3',
+            'cell B1  | cell B2  | cell B3',
+            'cell C1  | cell C2  | cell C3',
+        ]
+        self._run_test(columns, rows, output, column_separator = ' | ', add_header_underline = True)
+    
+    def test_more_columns_than_row_cells(self):
+        columns = ['column 1', 'column 2', 'column 3']
+        rows = [
+            ['cell A1','cell A2'],
+            ['cell B1','cell B2'],
+            ['cell C1','cell C2']
+        ]
+        output = [
+            'column 1 | column 2 | column 3',
+            '------------------------------',
+            'cell A1  | cell A2  |         ',
+            'cell B1  | cell B2  |         ',
+            'cell C1  | cell C2  |         ',
+        ]
+        self._run_test(columns, rows, output, column_separator = ' | ', add_header_underline = True)
 
     def _run_test(self, columns, rows, output, column_separator = ' ', add_header_underline = False):
         table = asciitable.AsciiTable()
