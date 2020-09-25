@@ -9,7 +9,7 @@ class TaskAnnotation:
     def __init__(self, message, created=datetime.datetime.now()):
         self._message = message
         self._created = created
-    
+
     @property
     def created(self):
         return self._created
@@ -17,7 +17,7 @@ class TaskAnnotation:
     @property
     def message(self):
         return self._message
-    
+
 
 class Task:
     '''
@@ -32,14 +32,14 @@ class Task:
         self._name = ''
         self._started_time = None
         self._status = ''
-    
+
     @property
     def annotations(self):
         '''
         The annotations attached to this task.
         '''
         return self._annotations
-    
+
     @property
     def attributes(self):
         '''
@@ -79,10 +79,10 @@ class Task:
     @index.setter
     def index(self, value):
         self._index = value
-    
+
     @property
     def is_started(self):
-        return self.started_time != None
+        return self.started_time is not None
 
     @property
     def name(self):
@@ -116,9 +116,9 @@ class Task:
     @started_time.setter
     def started_time(self, value):
         self._started_time = value
-    
+
     def start(self):
         self.started_time = datetime.datetime.now()
-    
+
     def stop(self):
         self.started_time = None
