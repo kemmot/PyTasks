@@ -4,18 +4,7 @@
 The main module for the tasks program.
 '''
 
-import logging
-import logging.config
-import os
-import sys
-import yaml
-
-import commandcontext as commandcontext
 import commands.commandfactory as commandfactory
-import commandline as cli
-import settings
-import storage
-
 # modules used by reflection
 import commands.addcommand
 import commands.annotatecommand
@@ -26,13 +15,26 @@ import commands.listcommand
 import commands.modifycommand
 import commands.startcommand
 import commands.stopcommand
+
+import logging
+import logging.config
+import os
+import sys
+import yaml
+
+import commandcontext
+import commandline as cli
+# modules used by reflection
 import filters.filterfactory as filterfactory
 import filters.taskindexfilter as taskindexfilter
 import filters.tasknamefilter as tasknamefilter
 
+import settings
+import storage
+
 
 class OneLineExceptionFormatter(logging.Formatter):
-    def formatException(self, exc_info):
+    def formatException(self, exception_info):
         """Format an exception so that it prints on a single line."""
         return ''
 
@@ -44,15 +46,15 @@ class OneLineExceptionFormatter(logging.Formatter):
 
 
 def create_app_folder_log_handler( \
-        maxBytes=10485760, backupCount=10, encoding='utf8', \
+        max_bytes=10485760, backup_count=10, encoding='utf8', \
         filename='timesheet.log', level='DEBUG'):
     path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(path, filename)
     handler = logging.handlers.RotatingFileHandler(path)
-    handler.backupCount = backupCount
+    handler.backupCount = backup_count
     handler.encoding = encoding
     handler.level = level
-    handler.maxBytes = maxBytes
+    handler.maxBytes = max_bytes
     return handler
 
 
@@ -85,7 +87,7 @@ try:
 
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
-    
+
     CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY)
 
     COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT)
