@@ -34,13 +34,13 @@ class TaskWarriorFormatter:
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
             output_key_values['annotation_{}'.format(created_output)] = annotation.message
-        
+
         for attribute_name, attribute_value in task.attributes.items():
             output_key_values[attribute_name] = attribute_value
 
         output = '['
         first_value = True
-        for key,value in sorted(output_key_values.items()):
+        for key, value in sorted(output_key_values.items()):
             if first_value:
                 first_value = False
             else:
@@ -93,7 +93,7 @@ class TextFileStorage:
     def __init__(self, path, formatter):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._path = path
-        self._formatter = formatter       
+        self._formatter = formatter
 
     @property
     def formatter(self):
@@ -102,7 +102,7 @@ class TextFileStorage:
     @property
     def path(self):
         return self._path
-    
+
     def delete(self, task):
         tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
         self._write_all(tasks_to_keep)
@@ -125,7 +125,7 @@ class TextFileStorage:
         tasks = self.read_all()
         tasks.append(task)
         self._write_all(tasks)
-    
+
     def update(self, tasks):
         original_tasks = self.read_all()
         tasks_to_keep = []
@@ -160,7 +160,7 @@ class TaskWarriorStorage:
         self._logger = logging.getLogger(self.__class__.__name__)
         self._pending_storage = pending_storage
         self._done_storage = done_storage
-    
+
     @property
     def done_storage(self):
         return self._done_storage
@@ -186,14 +186,16 @@ class TaskWarriorStorage:
 class TaskWarriorStorageCreator:
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
-    
+
     def create(self, settings):
         data_location = settings.data_location
 
         if not os.path.isabs(data_location):
-            data_location = os.path.abspath(os.path.join(os.path.dirname(__main__.__file__), data_location))
-            self._logger.debug('Converted relative data location [{}] to: [{}]'.format(settings.data_location, data_location))
-        
+            relative_path = os.path.join(os.path.dirname(__main__.__file__), data_location)
+            data_location = os.path.abspath(relative_path)
+            message = 'Converted relative data location [{}] to: [{}]'
+            self._logger.debug(message.format(settings.data_location, data_location))
+
         pending_filename = settings.data_pending_filename
         pending_path = os.path.join(data_location, pending_filename)
         pending_storage = TextFileStorage(pending_path, TaskWarriorFormatter())
