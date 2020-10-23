@@ -46,15 +46,15 @@ class OneLineExceptionFormatter(logging.Formatter):
 
 
 def create_app_folder_log_handler( \
-        max_bytes=10485760, backup_count=10, encoding='utf8', \
+        maxBytes=10485760, backupCount=10, encoding='utf8', \
         filename='timesheet.log', level='DEBUG'):
     path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(path, filename)
     handler = logging.handlers.RotatingFileHandler(path)
-    handler.backupCount = backup_count
+    handler.backupCount = backupCount
     handler.encoding = encoding
     handler.level = level
-    handler.maxBytes = max_bytes
+    handler.maxBytes = maxBytes
     return handler
 
 
