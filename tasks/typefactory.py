@@ -1,7 +1,11 @@
+import logging
+
+
 class TypeFactory:
     def __init__(self, base_class):
         self._types = []
         self._base_class = base_class
+        self._logger = logging.getLogger(__class__.__name__)
 
     @property
     def types(self):
@@ -22,3 +26,4 @@ class TypeFactory:
 
     def register_type(self, cla):
         self._types.append(cla)
+        self._logger.debug('Type registered: {}'.format(str(cla)))

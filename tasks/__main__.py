@@ -13,6 +13,7 @@ import commands.helpcommand
 import commands.infocommand
 import commands.listcommand
 import commands.modifycommand
+import commands.shellcommand
 import commands.startcommand
 import commands.stopcommand
 
@@ -102,6 +103,8 @@ try:
         EXIT_CODE = cli.ExitCodes.command_line_argument_error
         raise cli.ExitCodeException(message=str(ex), exit_code=EXIT_CODE) from ex
 
+    os.system('color') # needed for colour console output on windows
+    
     COMMAND.execute()
     EXIT_CODE = cli.ExitCodes.success
 except cli.ExitCodeException as ex:
