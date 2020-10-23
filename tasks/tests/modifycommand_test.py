@@ -155,37 +155,23 @@ class ModifyCommandTests(unittest.TestCase):
 
 
 class ModifyCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = modifycommand.ModifyCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
+    def test_get_confirm_filter_no_confirmation(self):
+        filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(filter)
 
-    def test_parse_no_filter(self):
-        args = ['modify']
+    def test_get_confirm_filter_with_confirmation(self):
+        filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(filter)
+        self.assertIsInstance(filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Modify', filter.action_name)
+        
+    def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_modify_confirm = with_confirmation
+
         parser = modifycommand.ModifyCommandParser()
-        result = parser.parse(mock_context, args)
-        self.assertIsNone(result)
-
-    def test_parse_no_filter_parsed(self):
-        args = ['text', 'modify', 'new name']
-
-        mock_filter_factory = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock()
-        mock_filter_factory.parse.side_effect = Exception
-
-        mock_context = mock.Mock()
-        mock_context.filter_factory = mock_filter_factory
-
-        with self.assertRaises(Exception):
-            modifycommand.ModifyCommandParser().parse(mock_context, args)
-
-    def test_parse_parse_success_no_confirmation(self):
-        self._test_parse_parse_success(False)
-
-    def test_parse_parse_success_with_confirmation(self):
-        self._test_parse_parse_success(True)
+        return parser.get_confirm_filter(mock_context)
 
     def test_parse_parse_success_with_project_and_priority(self):
         command = self._test_parse_parse_success(False, ['project:test', 'priority:H'])
@@ -196,35 +182,17 @@ class ModifyCommandParserTests(unittest.TestCase):
         self.assertEqual(command.template_task.attributes['priority'], 'H')
 
     def _test_parse_parse_success(self, with_confirmation, extra_args=None):
-        args = ['2', 'modify', 'new', 'name']
+        args = ['new', 'name']
         if extra_args:
             for extra_arg in extra_args:
                 args.append(extra_arg)
 
-        mock_filter_factory = mock.Mock()
-        mock_filter = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
-
         mock_context = mock.Mock()
-        mock_context.settings = mock.Mock()
-        mock_context.settings.command_modify_confirm = with_confirmation
-        mock_context.filter_factory = mock_filter_factory
-
         parser = modifycommand.ModifyCommandParser()
         command = parser.parse(mock_context, args)
 
         self.assertIsInstance(command, modifycommand.ModifyCommand)
         self.assertEqual(mock_context, command.context)
-        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
-        self.assertEqual(mock_filter, command.filter._filters[0])
-
-        if with_confirmation:
-            self.assertEqual(2, len(command.filter._filters))
-            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
-            self.assertIn('Modify', command.filter._filters[1].action_name)
-        else:
-            self.assertEqual(1, len(command.filter._filters))
-
         self.assertIsNotNone(command.template_task)
         self.assertEqual(command.template_task.name, 'new name')
         return command
