@@ -15,3 +15,5 @@
 [description:"FEAT-0031 Add attribute support to modify command" entry:"0" status:"pending" uuid:"1114f570-14de-42c6-8783-7a40ff1c372d"]
 [description:"FEAT-0052 Add start command" entry:"1595274278" start:"1595280702" status:"pending" uuid:"662f8480-82c8-491a-b7f6-acf9a2c3db3b"]
 [description:"FEAT-0053 Add stop command" entry:"1595274282" status:"pending" uuid:"99655c79-8345-4c1d-8c9e-45a2183b0e08"]
+[description:"FEAT-0012 Correct column widths on list command" entry:"0" status:"pending" uuid:"b3b6c607-8934-495a-9abd-52bc80b5b4e3"]
+[description:"FEAT-0054 List command should align column widths" entry:"1598551600" status:"pending" uuid:"923f94e7-6859-4032-828c-d0887eccf1d1"]
