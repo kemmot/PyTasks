@@ -5,7 +5,7 @@ import filters.alwaysfilter as alwaysfilter
 
 
 class InfoCommand(commandbase.FilterCommandBase):
-    def __init__(self, context, batch_filter):
+    def __init__(self, context, batch_filter=None):
         super().__init__(context, batch_filter)
 
     def execute(self):
@@ -34,11 +34,4 @@ class InfoCommandParser(commandbase.FilterCommandParserBase):
         super().__init__(InfoCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if len(args) == 1 and args[0] == InfoCommandParser.COMMAND_NAME:
-            command = InfoCommand(context, alwaysfilter.AlwaysFilter())
-        elif len(args) > 1 and args[1] == InfoCommandParser.COMMAND_NAME:
-            filter = context.filter_factory.parse(args[0])
-            command = InfoCommand(context, filter)
-        else:
-            command = None
-        return command
+        return InfoCommand(context)
