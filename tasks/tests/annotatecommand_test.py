@@ -82,48 +82,33 @@ class AnnotateCommandTests(unittest.TestCase):
         return tasks
 
 
-class DoneCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = annotatecommand.AnnotateCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
+class AnnotateCommandParserTests(unittest.TestCase):
+    def test_get_confirm_filter_no_confirmation(self):
+        filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(filter)
 
-    def test_parse_no_filter_specified(self):
-        args = ['annotate']
+    def test_get_confirm_filter_with_confirmation(self):
+        filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(filter)
+        self.assertIsInstance(filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Annotate', filter.action_name)
+        
+    def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_annotate_confirm = with_confirmation
+
         parser = annotatecommand.AnnotateCommandParser()
-        result = parser.parse(mock_context, args)
-        self.assertIsNone(result)
+        return parser.get_confirm_filter(mock_context)
 
     def test_parse_no_message(self):
-        args = ['2', 'annotate']
         mock_context = mock.Mock()
         parser = annotatecommand.AnnotateCommandParser()
-        result = parser.parse(mock_context, args)
-        self.assertIsNone(result)
-
-    def test_parse_filter_not_found(self):
-        args = ['text', 'annotate', 'message']
-
-        mock_filter_factory = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock()
-        mock_filter_factory.parse.side_effect = Exception
-
-        mock_context = mock.Mock()
-        mock_context.filter_factory = mock_filter_factory
-
         with self.assertRaises(Exception):
-            annotatecommand.AnnotateCommandParser().parse(mock_context, args)
-
-    def test_parse_parse_success_no_confirmation(self):
-        self._test_parse_parse_success(False)
-
-    def test_parse_parse_success_with_confirmation(self):
-        self._test_parse_parse_success(True)
+            parser.parse(mock_context, [])
         
-    def _test_parse_parse_success(self, with_confirmation):
-        args = ['2', 'annotate', 'this', 'is', 'a', 'multi-word', 'message']
+    def test_parse_success(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message']
 
         mock_filter = mock.Mock()
 
@@ -133,20 +118,10 @@ class DoneCommandParserTests(unittest.TestCase):
         mock_context = mock.Mock()
         mock_context.filter_factory = mock_filter_factory
         mock_context.settings = mock.Mock()
-        mock_context.settings.command_annotate_confirm = with_confirmation
 
         parser = annotatecommand.AnnotateCommandParser()
         command = parser.parse(mock_context, args)
 
         self.assertIsInstance(command, annotatecommand.AnnotateCommand)
         self.assertEqual(mock_context, command.context)
-        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
-        self.assertEqual(mock_filter, command.filter._filters[0])
         self.assertEqual(command.message, 'this is a multi-word message')
-
-        if with_confirmation:
-            self.assertEqual(2, len(command.filter._filters))
-            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
-            self.assertIn('Annotate', command.filter._filters[1].action_name)
-        else:
-            self.assertEqual(1, len(command.filter._filters))
