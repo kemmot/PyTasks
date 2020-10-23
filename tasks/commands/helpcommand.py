@@ -22,8 +22,4 @@ class HelpCommandParser(commandbase.CommandParserBase):
         super().__init__(HelpCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if len(args) == 1 and args[0] == HelpCommandParser.COMMAND_NAME:
-            command = HelpCommand(context)
-        else:
-            command = None
-        return command
+        return HelpCommand(context)

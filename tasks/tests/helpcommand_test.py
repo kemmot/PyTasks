@@ -29,14 +29,8 @@ class HelpCommandTests(unittest.TestCase):
 
 
 class HelpCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = helpcommand.HelpCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
-
-    def test_parse_no_filter(self):
-        args = ['help']
+    def test_parse_success(self):
+        args = ['this', 'can', 'be', 'anything']
         mock_context = mock.Mock()
         command = helpcommand.HelpCommandParser().parse(mock_context, args)
         self.assertNotEqual(None, command)
