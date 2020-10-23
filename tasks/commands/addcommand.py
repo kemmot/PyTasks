@@ -41,6 +41,9 @@ class AddTaskCommandParser(commandbase.CommandParserBase):
         super().__init__(AddTaskCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
+        if len(args) < 1:
+            raise Exception('Adding new task requires at least one word in name')
+
         task = entities.Task()
         task.created = datetime.datetime.now()
         task.id_number = uuid.uuid4()

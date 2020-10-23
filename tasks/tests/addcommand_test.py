@@ -50,20 +50,14 @@ class AddTaskCommandTests(unittest.TestCase):
 
 
 class AddTaskCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = addcommand.AddTaskCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
-
     def test_parse_no_name(self):
-        args = ['add']
+        args = []
         mock_context = mock.Mock()
         with self.assertRaises(Exception):
             addcommand.AddTaskCommandParser().parse(mock_context, args)
 
     def test_parse_returns_correct_command(self):
-        args = ['add', 'first', 'task']
+        args = ['first', 'task']
 
         mock_context = mock.Mock()
         command = addcommand.AddTaskCommandParser().parse(mock_context, args)
