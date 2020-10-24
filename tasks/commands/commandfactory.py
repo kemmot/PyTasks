@@ -29,13 +29,13 @@ class CommandFactory(typefactory.TypeFactory):
         for parsed_argument in parsed_command.arguments:
             self._logger.debug(parsed_argument)
         
-        verb_argument = parsed_command.get_verb()
+        verb_argument = parsed_command.get_verb_value()
 
         # TODO: if filters return 1 task use info command
 
         # TODO: if filters return multiple tasks use list command
 
-        parsers = [p for p in self.types if p.command_name == verb_argument.text]
+        parsers = [p for p in self.types if p.command_name == verb_argument]
         if parsers == None:
             raise Exception('Parser not found for verb: [{}]'.format(verb_argument))
         parser = parsers[0]
@@ -91,8 +91,8 @@ class ParsedCommand:
     def arguments(self):
         return self._arguments
     
-    def get_verb(self):
-        verb_arguments = self._get_arguments_by_type(ArgumentType.verb)
+    def get_verb_value(self):
+        verb_arguments = self._get_argument_values_by_type(ArgumentType.verb)
         if len(verb_arguments) == 0:
             exit_code = commandline.ExitCodes.unknown_command_error
             raise commandline.ExitCodeException(exit_code=exit_code)
