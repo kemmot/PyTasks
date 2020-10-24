@@ -47,10 +47,6 @@ class Settings:
     def data_pending_filename(self):
         return self._get_value('data.pending.filename')
     
-    @property
-    def debug_command_parser(self):
-        return self._get_value('debug.command.parser')
-    
     def _get_value_boolean(self, key):
         if not self._config.has_option(self._category, key):
             raise Exception('Config element not found, category: [{}], key: [{}]'.format(self._category, key))
