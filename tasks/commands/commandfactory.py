@@ -57,10 +57,16 @@ class CommandFactory(typefactory.TypeFactory):
 
 class CommandParser:
     def __init__(self, command_names):
+        if command_names is None:
+            raise Exception('command_names cannot be None')
+        if len(command_names) == 0:
+            raise Exception('command_names cannot be empty')
         self._command_names = command_names
         self._logger = logging.getLogger(__class__.__name__)
     
     def parse(self, args):
+        if args is None:
+            raise Exception('args cannot be None')
         verb_index = self._find_verb_index(args)
         parsed_command = ParsedCommand()
         for arg_index in range(0, len(args)):

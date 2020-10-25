@@ -9,6 +9,56 @@ class CommandFactoryTests(unittest.TestCase):
     pass
 
 
+class CommandParserTests(unittest.TestCase):
+    def test_constructor_none_commands_raises(self):
+        with self.assertRaises(Exception):
+            commandfactory.CommandParser(None)
+
+    def test_constructor_empty_commands_raises(self):
+        with self.assertRaises(Exception):
+            commandfactory.CommandParser([])
+    
+    def test_constructor_succeeds(self):
+        commandfactory.CommandParser(['one'])
+    
+    def test_parse_none_args_raises(self):
+        parser = commandfactory.CommandParser(['one'])
+        with self.assertRaises(Exception):
+            parser.parse(None)
+    
+    def test_parse_empty_args(self):
+        self._test_parse(['v1'], [])
+    
+    def test_parse_only_verb(self):
+        self._test_parse(['v1'], ['v1'])
+    
+    def test_parse_filter_verb(self):
+        self._test_parse(['v1'], ['f1', 'v1'])
+    
+    def test_parse_verb_cmd(self):
+        self._test_parse(['v1'], ['v1', 'c1'])
+    
+    def test_parse_filter_verb_cmd(self):
+        self._test_parse(['v1'], ['f1', 'v1', 'c1'])
+    
+    def _test_parse(self, verbs, input):
+        parser = commandfactory.CommandParser(verbs)
+        command = parser.parse(input)
+        self.assertIsNotNone(command)
+        self.assertEqual(len(input), len(command.arguments))
+        arg_index = 0
+        for arg_string in input:
+            arg = command.arguments[arg_index]
+            arg_type = ArgumentTypeDecoder.decode(arg_string)
+            self._assert_argument(arg, arg_index, arg_type, arg_string)
+            arg_index += 1
+    
+    def _assert_argument(self, arg, arg_index, arg_type, text):
+        self.assertEqual(arg_index, arg.arg_index)
+        self.assertEqual(arg_type, arg.arg_type)
+        self.assertEqual(text, arg.text)
+
+
 class ParsedCommandTests(unittest.TestCase):
     def test_arguments_getter(self):
         args = ['one', 'two']
@@ -62,6 +112,19 @@ class ParsedCommandTests(unittest.TestCase):
         self.assertEqual(output, args)
 
     def _create_command(self, args_string):
+        command = commandfactory.ParsedCommand()
+        arg_index = 1
+        for arg_string in args_string.split():
+            arg_type = ArgumentTypeDecoder.decode(arg_string)
+            arg = commandfactory.ParsedArgument(arg_index, arg_string, arg_type)
+            command.arguments.append(arg)
+            arg_index += 1
+        return command
+
+
+class ArgumentTypeDecoder:
+    @staticmethod
+    def decode(arg_string):
         '''
         Creates a command with arguments decoded from args_string.
         Arguments are separated by spaces.
@@ -69,21 +132,16 @@ class ParsedCommandTests(unittest.TestCase):
         Arguments beginning with 'f' will be added as filters.
         Arguments beginning with 'v' will be added as verbs.
         '''
-        command = commandfactory.ParsedCommand()
-        arg_index = 1
-        for arg_string in args_string.split():
-            if arg_string[0] == 'c':
-                arg_type = commandfactory.ArgumentType.command_argument
-            elif arg_string[0] == 'f':
-                arg_type = commandfactory.ArgumentType.filter
-            elif arg_string[0] == 'v':
-                arg_type = commandfactory.ArgumentType.verb
-            else:
-                raise Exception(f'Unknown test argument type: [{arg_string[0]}]')
-            arg = commandfactory.ParsedArgument(arg_index, arg_string, arg_type)
-            command.arguments.append(arg)
-            arg_index += 1
-        return command
+        if arg_string[0] == 'c':
+            arg_type = commandfactory.ArgumentType.command_argument
+        elif arg_string[0] == 'f':
+            arg_type = commandfactory.ArgumentType.filter
+        elif arg_string[0] == 'v':
+            arg_type = commandfactory.ArgumentType.verb
+        else:
+            raise Exception(f'Unknown test argument type: [{arg_string[0]}]')
+        return arg_type
+
 
 class ParsedArgumentTests(unittest.TestCase):
     def test_str(self):
