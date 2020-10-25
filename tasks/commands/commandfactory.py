@@ -11,8 +11,9 @@ import typefactory
 
 
 class CommandFactory(typefactory.TypeFactory):
-    def __init__(self, command_context):
+    def __init__(self, parser, command_context):
         super().__init__(commandbase.CommandParserBase)
+        self._parser = parser
         self._command_context = command_context
         self._logger = logging.getLogger(__class__.__name__)
 
@@ -25,9 +26,10 @@ class CommandFactory(typefactory.TypeFactory):
             raise commandline.ExitCodeException(exit_code=exit_code)
 
         command_names = [a.command_name for a in self.types]
-        parsed_command = CommandParser(command_names).parse(args)
-        for parsed_argument in parsed_command.arguments:
-            self._logger.debug(parsed_argument)
+        for command_name in command_names:
+            self._parser.add_command_name(command_name)
+        parsed_command = self._parser.parse(args)
+        self._logger.debug(parsed_command)
         
         verb_argument = parsed_command.get_verb_value()
 
@@ -36,7 +38,7 @@ class CommandFactory(typefactory.TypeFactory):
         # TODO: if filters return multiple tasks use list command
 
         parsers = [p for p in self.types if p.command_name == verb_argument]
-        if parsers == None:
+        if len(parsers) == 0:
             raise Exception('Parser not found for verb: [{}]'.format(verb_argument))
         parser = parsers[0]
 
@@ -45,8 +47,8 @@ class CommandFactory(typefactory.TypeFactory):
 
         batch_filter = allbatchfilter.AllBatchFilter()
         filter_arguments = parsed_command.get_filter_argument_values()
-        for filter_arguments in filter_arguments:
-            batch_filter.add_filter(self._command_context.filter_factory.parse(args[0]))
+        for filter_argument in filter_arguments:
+            batch_filter.add_filter(self._command_context.filter_factory.parse(filter_argument))
         confirm_filter = parser.get_confirm_filter(self._command_context)
         if confirm_filter:
             batch_filter.add_filter(confirm_filter)
@@ -56,13 +58,12 @@ class CommandFactory(typefactory.TypeFactory):
     
 
 class CommandParser:
-    def __init__(self, command_names):
-        if command_names is None:
-            raise Exception('command_names cannot be None')
-        if len(command_names) == 0:
-            raise Exception('command_names cannot be empty')
-        self._command_names = command_names
+    def __init__(self):
+        self._command_names = []
         self._logger = logging.getLogger(__class__.__name__)
+    
+    def add_command_name(self, name):
+        self._command_names.append(name)
     
     def parse(self, args):
         if args is None:
@@ -115,6 +116,12 @@ class ParsedCommand:
     
     def _get_arguments_by_type(self, argument_type):
         return [a for a in self.arguments if a.arg_type == argument_type]
+    
+    def __str__(self):
+        description = ''
+        for arg in self.arguments:
+            description += f'[{arg}]'
+        return description
 
 
 class ParsedArgument:

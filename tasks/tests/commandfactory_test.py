@@ -3,26 +3,57 @@ from unittest import mock
 
 import commands.commandfactory as commandfactory
 import commandline
+import filters.allbatchfilter as allbatchfilter
 
 
 class CommandFactoryTests(unittest.TestCase):
-    pass
+    def test_constructor_success(self):
+        commandfactory.CommandFactory(mock.Mock(), mock.Mock())
+
+    def test_get_command(self):
+        command = mock.Mock()
+        filter = mock.Mock()
+
+        command_name = 'test'
+        command_type = mock.Mock()
+        command_type.command_name = command_name
+        command_type.parse = mock.MagicMock(return_value=command)
+
+        context = mock.Mock()
+        context.filter_factory = mock.Mock()
+        context.filter_factory.parse = mock.MagicMock(return_value=filter)
+
+        args = ['f1', 'v1', 'c1', 'c2']
+        command_args = ['c1', 'c2']
+        filter_args = ['f1']
+
+        parsed_command = mock.Mock()
+        parsed_command.get_verb_value = mock.MagicMock(return_value=command_name)
+        parsed_command.get_command_argument_values = mock.MagicMock(return_value=command_args)
+        parsed_command.get_filter_argument_values = mock.MagicMock(return_value=filter_args)
+
+        parser = mock.Mock()
+        parser.add_command_name = mock.Mock()
+        parser.parse = mock.MagicMock(return_value=parsed_command)
+        
+        factory = commandfactory.CommandFactory(parser, context)
+        factory.register_type(command_type)
+
+        result = factory.get_command(args)
+
+        self.assertEqual(command, result)
+        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
+
+        parser.add_command_name.assert_called_once_with(command_name)
+        parser.parse.assert_called_once_with(args)
+        command_type.parse.assert_called_once_with(context, command_args)
+        context.filter_factory.parse.assert_called_once_with(filter_args[0])
 
 
 class CommandParserTests(unittest.TestCase):
-    def test_constructor_none_commands_raises(self):
-        with self.assertRaises(Exception):
-            commandfactory.CommandParser(None)
-
-    def test_constructor_empty_commands_raises(self):
-        with self.assertRaises(Exception):
-            commandfactory.CommandParser([])
-    
-    def test_constructor_succeeds(self):
-        commandfactory.CommandParser(['one'])
     
     def test_parse_none_args_raises(self):
-        parser = commandfactory.CommandParser(['one'])
+        parser = commandfactory.CommandParser()
         with self.assertRaises(Exception):
             parser.parse(None)
     
@@ -42,7 +73,9 @@ class CommandParserTests(unittest.TestCase):
         self._test_parse(['v1'], ['f1', 'v1', 'c1'])
     
     def _test_parse(self, verbs, input):
-        parser = commandfactory.CommandParser(verbs)
+        parser = commandfactory.CommandParser()
+        for verb in verbs:
+            parser.add_command_name(verb)
         command = parser.parse(input)
         self.assertIsNotNone(command)
         self.assertEqual(len(input), len(command.arguments))
