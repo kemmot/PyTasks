@@ -1,7 +1,4 @@
 import commands.commandbase as commandbase
-import entities
-import filters.allbatchfilter as allbatchfilter
-import filters.alwaysfilter as alwaysfilter
 
 
 class InfoCommand(commandbase.FilterCommandBase):
@@ -20,11 +17,12 @@ class InfoCommand(commandbase.FilterCommandBase):
             print('Entered     {}'.format(task.created))
             print('UUID        {}'.format(task.id_number))
 
-            if len(task.annotations) > 0:
+            if task.annotations:
                 print('')
                 print('Date             Modification')
                 for annotation in task.annotations:
-                    print('{} {}'.format(annotation.created.strftime('%Y-%m-%d %H:%M'), annotation.message))
+                    date = annotation.created.strftime('%Y-%m-%d %H:%M')
+                    print('{} {}'.format(date, annotation.message))
 
 
 class InfoCommandParser(commandbase.FilterCommandParserBase):

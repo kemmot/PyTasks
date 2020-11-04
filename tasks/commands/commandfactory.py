@@ -30,21 +30,22 @@ class CommandFactory(typefactory.TypeFactory):
             self._parser.add_command_name(command_name)
         parsed_command = self._parser.parse(args)
         self._logger.debug(parsed_command)
-        
+
         verb_argument = parsed_command.get_verb_value()
 
-        # TODO: if filters return 1 task use info command
-
-        # TODO: if filters return multiple tasks use list command
-
         parsers = [p for p in self.types if p.command_name == verb_argument]
-        if len(parsers) == 0:
+        if not parsers:
             raise Exception('Parser not found for verb: [{}]'.format(verb_argument))
         parser = parsers[0]
 
         command_arguments = parsed_command.get_command_argument_values()
         command = parser.parse(self._command_context, command_arguments)
 
+        command.filter = self._get_filters(parsed_command, parser)
+
+        return command
+
+    def _get_filters(self, parsed_command, parser):
         batch_filter = allbatchfilter.AllBatchFilter()
         filter_arguments = parsed_command.get_filter_argument_values()
         for filter_argument in filter_arguments:
@@ -52,19 +53,17 @@ class CommandFactory(typefactory.TypeFactory):
         confirm_filter = parser.get_confirm_filter(self._command_context)
         if confirm_filter:
             batch_filter.add_filter(confirm_filter)
-        command.filter = batch_filter
-        
-        return command
-    
+        return batch_filter
+
 
 class CommandParser:
     def __init__(self):
         self._command_names = []
         self._logger = logging.getLogger(__class__.__name__)
-    
+
     def add_command_name(self, name):
         self._command_names.append(name)
-    
+
     def parse(self, args):
         if args is None:
             raise Exception('args cannot be None')
@@ -81,42 +80,44 @@ class CommandParser:
             parsed_command.arguments.append(parsed_argument)
             self._logger.debug(parsed_argument)
         return parsed_command
-    
+
     def _find_verb_index(self, args):
-        for arg_index in range(0, len(args)):
+        arg_index = 0
+        for arg in args:
             for command_name in self._command_names:
-                if command_name == args[arg_index]:
+                if command_name == arg:
                     return arg_index
+            arg_index += 1
         return -1
 
 
 class ParsedCommand:
     def __init__(self):
         self._arguments = []
-    
+
     @property
     def arguments(self):
         return self._arguments
-    
+
     def get_verb_value(self):
         verb_arguments = self._get_argument_values_by_type(ArgumentType.verb)
-        if len(verb_arguments) == 0:
+        if not verb_arguments:
             exit_code = commandline.ExitCodes.unknown_command_error
             raise commandline.ExitCodeException(exit_code=exit_code)
         return verb_arguments[0]
-    
+
     def get_command_argument_values(self):
         return self._get_argument_values_by_type(ArgumentType.command_argument)
-    
+
     def get_filter_argument_values(self):
         return self._get_argument_values_by_type(ArgumentType.filter)
-    
+
     def _get_argument_values_by_type(self, argument_type):
         return [a.text for a in self._get_arguments_by_type(argument_type)]
-    
+
     def _get_arguments_by_type(self, argument_type):
         return [a for a in self.arguments if a.arg_type == argument_type]
-    
+
     def __str__(self):
         description = ''
         for arg in self.arguments:

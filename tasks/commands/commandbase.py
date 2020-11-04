@@ -1,5 +1,4 @@
 import logging
-import abc
 
 
 class CommandBase:
@@ -25,14 +24,14 @@ class CommandBase:
 
 
 class FilterCommandBase(CommandBase):
-    def __init__(self, context, filter=None):
+    def __init__(self, context, command_filter=None):
         super().__init__(context)
-        self._filter = filter
+        self._filter = command_filter
 
     @property
     def filter(self):
         return self._filter
-    
+
     @filter.setter
     def filter(self, value):
         self._filter = value
@@ -45,7 +44,7 @@ class CommandParserBase:
     def __init__(self, command_name):
         self._command_name = command_name
         super().__init__()
-    
+
     @property
     def command_name(self):
         return self._command_name
@@ -64,8 +63,5 @@ class CommandParserBase:
 
 
 class FilterCommandParserBase(CommandParserBase):
-    def __init__(self, command_name):
-        super().__init__(command_name)
-
     def get_usage(self):
         return 'tasks [filter] {}'.format(self.command_name)

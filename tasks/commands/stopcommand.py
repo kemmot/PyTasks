@@ -1,7 +1,5 @@
 import commands.commandbase as commandbase
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
-import entities
 
 
 class StopCommand(commandbase.FilterCommandBase):
@@ -9,8 +7,8 @@ class StopCommand(commandbase.FilterCommandBase):
     A command that will unset the start time of existing tasks.
     '''
 
-    def __init__(self, context, filter=None):
-        super().__init__(context, filter)
+    def __init__(self, context, command_filter=None):
+        super().__init__(context, command_filter)
         self._template_task = None
 
     def execute(self):
@@ -31,7 +29,7 @@ class StopCommandParser(commandbase.FilterCommandParserBase):
 
     def parse(self, context, args):
         return StopCommand(context)
-    
+
     def get_confirm_filter(self, context):
         if context.settings.command_stop_confirm:
             return confirmfilter.ConfirmFilter('Stop')

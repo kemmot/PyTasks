@@ -1,5 +1,4 @@
 import commands.commandbase as commandbase
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 import entities
 
@@ -9,8 +8,8 @@ class ModifyCommand(commandbase.FilterCommandBase):
     A command that will modify existing tasks.
     '''
 
-    def __init__(self, context, filter=None):
-        super().__init__(context, filter)
+    def __init__(self, context, command_filter=None):
+        super().__init__(context, command_filter)
         self._template_task = None
 
     @property
@@ -57,7 +56,7 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
         command = ModifyCommand(context)
         command.template_task = template_task
         return command
-    
+
     def get_confirm_filter(self, context):
         if context.settings.command_modify_confirm:
             return confirmfilter.ConfirmFilter('Modify')

@@ -5,9 +5,6 @@ class HelpCommand(commandbase.CommandBase):
     '''
     A command that will display command help.
     '''
-    def __init__(self, context):
-        super().__init__(context)
-
     def execute(self):
         sort = lambda t: t.command_name
         sorted_parsers = sorted(self.context.command_factory.types, key=sort)
