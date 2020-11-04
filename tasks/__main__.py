@@ -105,7 +105,8 @@ try:
         EXIT_CODE = cli.ExitCodes.command_line_argument_error
         raise cli.ExitCodeException(message=str(ex), exit_code=EXIT_CODE) from ex
 
-    os.system('color') # needed for colour console output on windows
+    if os.name != 'posix':
+        os.system('color') # needed for colour console output on windows
     
     COMMAND.execute()
     EXIT_CODE = cli.ExitCodes.success
