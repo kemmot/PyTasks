@@ -101,18 +101,11 @@ class ShellCommandParserTests(unittest.TestCase):
     def test_constructor_succeeds(self):
         shellcommand.ShellCommandParser()
 
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = shellcommand.ShellCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
-
     def test_parse_success(self):
-        args = ['shell']
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
         parser = shellcommand.ShellCommandParser()
-        command = parser.parse(mock_context, args)
+        command = parser.parse(mock_context, [])
         self.assertIsInstance(command, shellcommand.ShellCommand)
         self.assertEqual(mock_context, command.context)
 
