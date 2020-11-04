@@ -20,6 +20,7 @@ The following commands are available:
 * [info](#info-command)
 * [list](#list-command)
 * [modify](#modify-command)
+* [shell](#shell-command)
 * [start](#start-command)
 * [stop](#stop-command)
 
@@ -159,6 +160,23 @@ tasks <filter> modify <name> [name ...] [attribute:value ...]
 ### Applicable Settings
 
 * [command.modify.confirm](#commandmodifyconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
+## Shell Command
+Enters an interactive prompt allowing for multiple commands to be entered without being prefixed with
+the application name.
+
+### Usage
+```
+tasks shell
+```
+
+### Positional Arguments
+None.
+
+### Applicable Settings
+None.
 
 -----------------------------------------------------------------------------------------------------
 
