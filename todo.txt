@@ -23,4 +23,3 @@
 [description:"FEAT-0050 Info command should separate entries" entry:"1595274085" status:"pending" uuid:"3905248f-cfdf-4a31-aac6-ffc547b820c8"]
 [description:"FEAT-0051 Default action should be info for a single item" entry:"1595274246" status:"pending" uuid:"5ee7dc49-1388-4721-b56d-e5d16baf08d2"]
 [description:"FEAT-0055 Support hook scripts for add command" entry:"1603472616" status:"pending" uuid:"dda9ea30-ae9d-4f16-ad78-0364a6170304"]
-[description:"FEAT-0056 Add shell command" entry:"1603473020" status:"pending" uuid:"a51ea15f-65bd-41c8-9954-fc169efff0bd"]
