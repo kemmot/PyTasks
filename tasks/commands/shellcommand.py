@@ -77,8 +77,4 @@ class ShellCommandParser(commandbase.CommandParserBase):
         super().__init__(ShellCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if args and args[0] == ShellCommandParser.COMMAND_NAME:
-            command = ShellCommand(context)
-        else:
-            command = None
-        return command
+        return ShellCommand(context)
