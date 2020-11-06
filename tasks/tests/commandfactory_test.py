@@ -2,6 +2,7 @@ import unittest
 from unittest import mock
 
 import commands.commandfactory as commandfactory
+import commands.multicommand as multicommand
 import commandline
 import filters.allbatchfilter as allbatchfilter
 
@@ -12,9 +13,7 @@ class CommandFactoryTests(unittest.TestCase):
         self.mock_command = mock.Mock()
         self.mock_filter = mock.Mock()
 
-        self.mock_command_type = mock.Mock()
-        self.mock_command_type.command_name = self.command_name
-        self.mock_command_type.parse = mock.MagicMock(return_value=self.mock_command)
+        self.mock_command_type = self.create_mock_command_parser(self.command_name, self.mock_command)
         
         self.mock_context = mock.Mock()
         self.mock_context.filter_factory = mock.Mock()
@@ -31,12 +30,37 @@ class CommandFactoryTests(unittest.TestCase):
         commandfactory.CommandFactory(mock.Mock(), mock.Mock())
 
     def test_get_command_empty_args_no_default(self):
-        context = mock.Mock()
-        context.settings = mock.Mock()
-        context.settings.command_default = ''
-        factory = commandfactory.CommandFactory(mock.Mock(), context)
-        with self.assertRaises(Exception):
-            factory.get_command(None)
+        self.mock_context.settings.command_default = ''
+        self.mock_context.settings.command_default_zero_items = 'zero'
+        self.mock_context.settings.command_default_one_item = 'one'
+        self.mock_context.settings.command_default_multi_items = 'multi'
+        parsed_command = self.create_parsed_command('', '', '')
+        self.mock_parser.parse = mock.MagicMock(return_value=parsed_command)
+        
+        zero_command = mock.Mock()
+        zero_parser = self.create_mock_command_parser( \
+            self.mock_context.settings.command_default_zero_items, \
+            zero_command)
+        self.factory.register_type(zero_parser)
+        
+        one_command = mock.Mock()
+        one_parser = self.create_mock_command_parser( \
+            self.mock_context.settings.command_default_one_item, \
+            one_command)
+        self.factory.register_type(one_parser)
+        
+        multi_command = mock.Mock()
+        multi_parser = self.create_mock_command_parser( \
+            self.mock_context.settings.command_default_multi_items, \
+            multi_command)
+        self.factory.register_type(multi_parser)
+
+        result = self.factory.get_command('')
+
+        self.assertIsInstance(result, multicommand.MultiCommand)
+        self.assertEqual(zero_command, result._zero_item_action)
+        self.assertEqual(one_command, result._one_item_action)
+        self.assertEqual(multi_command, result._multi_item_action)
 
     def test_get_command_none_args(self):
         args = None
@@ -87,9 +111,17 @@ class CommandFactoryTests(unittest.TestCase):
         self.mock_command_type.parse.assert_called_once_with(self.mock_context, command_args)
         self.mock_context.filter_factory.parse.assert_called_once_with(filter_args[0])
 
-    def create_parsed_command(self, filter_args, command_args):
+    def create_mock_command_parser(self, command_name, command):
+        parser = mock.Mock()
+        parser.command_name = command_name
+        parser.parse = mock.MagicMock(return_value=command)
+        return parser
+
+    def create_parsed_command(self, filter_args, command_args, command_name='?'):
+        if command_name == '?':
+            command_name = self.command_name
         parsed_command = mock.Mock()
-        parsed_command.get_verb_value = mock.MagicMock(return_value=self.command_name)
+        parsed_command.get_verb_value = mock.MagicMock(return_value=command_name)
         parsed_command.get_command_argument_values = mock.MagicMock(return_value=command_args)
         parsed_command.get_filter_argument_values = mock.MagicMock(return_value=filter_args)
         return parsed_command

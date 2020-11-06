@@ -28,8 +28,8 @@ class CommandFactory(typefactory.TypeFactory):
         parsed_command = self._parser.parse(args)
         self._logger.debug(parsed_command)
 
-        verb_argument = parsed_command.get_verb_value()
         batch_filter = self._get_filters(parsed_command)
+        verb_argument = parsed_command.get_verb_value()
         if verb_argument:
             command_arguments = parsed_command.get_command_argument_values()
             parser,command = self._get_command(verb_argument, command_arguments)
@@ -38,7 +38,11 @@ class CommandFactory(typefactory.TypeFactory):
                 if confirm_filter:
                     batch_filter.add_filter(confirm_filter)
         else:
-            raise Exception('Parser not found for verb: [{}]'.format(verb_argument))
+            zero_item_command = self._get_command(self._command_context.settings.command_default_zero_items)[1]
+            one_item_command = self._get_command(self._command_context.settings.command_default_one_item)[1]
+            multi_item_command = self._get_command(self._command_context.settings.command_default_multi_items)[1]
+            command = multicommand.MultiCommand(self._command_context, zero_item_command, one_item_command, multi_item_command)
+
         command.filter = batch_filter
         return command
     
@@ -104,8 +108,7 @@ class ParsedCommand:
     def get_verb_value(self):
         verb_arguments = self._get_argument_values_by_type(ArgumentType.verb)
         if not verb_arguments:
-            exit_code = commandline.ExitCodes.unknown_command_error
-            raise commandline.ExitCodeException(exit_code=exit_code)
+            return ''
         return verb_arguments[0]
 
     def get_command_argument_values(self):
