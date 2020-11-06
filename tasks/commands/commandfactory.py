@@ -5,6 +5,7 @@ A module providing task commands.
 import logging
 
 import commands.commandbase as commandbase
+import commands.multicommand as multicommand
 import commandline
 import filters.allbatchfilter as allbatchfilter
 import typefactory
@@ -21,10 +22,6 @@ class CommandFactory(typefactory.TypeFactory):
         if not args:
             args = self._command_context.settings.command_default.split()
 
-        if not args:
-            exit_code = commandline.ExitCodes.no_command_specified_error
-            raise commandline.ExitCodeException(exit_code=exit_code)
-
         command_names = [a.command_name for a in self.types]
         for command_name in command_names:
             self._parser.add_command_name(command_name)
@@ -32,27 +29,32 @@ class CommandFactory(typefactory.TypeFactory):
         self._logger.debug(parsed_command)
 
         verb_argument = parsed_command.get_verb_value()
-
-        parsers = [p for p in self.types if p.command_name == verb_argument]
-        if not parsers:
+        batch_filter = self._get_filters(parsed_command)
+        if verb_argument:
+            command_arguments = parsed_command.get_command_argument_values()
+            parser,command = self._get_command(verb_argument, command_arguments)
+            if parser:
+                confirm_filter = parser.get_confirm_filter(self._command_context)
+                if confirm_filter:
+                    batch_filter.add_filter(confirm_filter)
+        else:
             raise Exception('Parser not found for verb: [{}]'.format(verb_argument))
-        parser = parsers[0]
-
-        command_arguments = parsed_command.get_command_argument_values()
-        command = parser.parse(self._command_context, command_arguments)
-
-        command.filter = self._get_filters(parsed_command, parser)
-
+        command.filter = batch_filter
         return command
+    
+    def _get_command(self, verb, command_arguments=[]):
+        parsers = [p for p in self.types if p.command_name == verb]
+        if not parsers:
+            raise Exception('Parser not found for verb: [{}]'.format(verb))
+        parser = parsers[0]
+        command = parser.parse(self._command_context, command_arguments)
+        return parser,command
 
-    def _get_filters(self, parsed_command, parser):
+    def _get_filters(self, parsed_command):
         batch_filter = allbatchfilter.AllBatchFilter()
         filter_arguments = parsed_command.get_filter_argument_values()
         for filter_argument in filter_arguments:
             batch_filter.add_filter(self._command_context.filter_factory.parse(filter_argument))
-        confirm_filter = parser.get_confirm_filter(self._command_context)
-        if confirm_filter:
-            batch_filter.add_filter(confirm_filter)
         return batch_filter
 
 
