@@ -17,7 +17,7 @@ class MultiCommandTests(unittest.TestCase):
         self.multi_item_command.execute = mock.MagicMock()
 
     def test_constructor(self):
-        multicommand.MultiCommand(self.mock_context, self.mock_filter, None, None, None)
+        multicommand.MultiCommand(self.mock_context, None, None, None)
 
     def test_execute_no_zero_item_command(self):
         self.zero_item_command = None
@@ -35,8 +35,9 @@ class MultiCommandTests(unittest.TestCase):
         tasks = self._create_tasks(task_count)
         self.mock_filter.filter_items = mock.MagicMock(return_value=tasks)
         
-        command = multicommand.MultiCommand(self.mock_context, self.mock_filter, \
+        command = multicommand.MultiCommand(self.mock_context, \
             self.zero_item_command, self.one_item_command, self.multi_item_command)
+        command.filter = self.mock_filter
         with self.assertRaises(Exception):
             command.execute()
 
@@ -53,8 +54,9 @@ class MultiCommandTests(unittest.TestCase):
         tasks = self._create_tasks(task_count)
         self.mock_filter.filter_items = mock.MagicMock(return_value=tasks)
         
-        command = multicommand.MultiCommand(self.mock_context, self.mock_filter, \
+        command = multicommand.MultiCommand(self.mock_context, \
             self.zero_item_command, self.one_item_command, self.multi_item_command)
+        command.filter = self.mock_filter
         command.execute()
 
         zero_item_calls = []

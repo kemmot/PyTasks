@@ -5,8 +5,8 @@ import filters.alwaysfilter as alwaysfilter
 
 
 class MultiCommand(commandbase.FilterCommandBase):
-    def __init__(self, context, filter, zero_item_action, one_item_action, multi_item_action):
-        super().__init__(context, filter)
+    def __init__(self, context, zero_item_action, one_item_action, multi_item_action):
+        super().__init__(context)
         self._zero_item_action = zero_item_action
         self._one_item_action = one_item_action
         self._multi_item_action = multi_item_action
