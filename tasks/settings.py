@@ -16,6 +16,18 @@ class Settings:
         return self._get_value('command.default')
 
     @property
+    def command_default_zero_items(self):
+        return self._get_value('command.default.zero_items')
+
+    @property
+    def command_default_one_item(self):
+        return self._get_value('command.default.one_item')
+
+    @property
+    def command_default_multi_items(self):
+        return self._get_value('command.default.multi_items')
+
+    @property
     def command_annotate_confirm(self):
         return self._get_value_boolean('command.annotate.confirm')
     

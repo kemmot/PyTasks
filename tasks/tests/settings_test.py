@@ -21,6 +21,34 @@ class SettingTests(unittest.TestCase):
         self._test_setting_not_exists(mock_path, 'command.default')
 
     @mock.patch('settings.os.path')
+    def test_read_command_default_zero_items_exists(self, mock_path):
+        self._test_setting_exists(mock_path, \
+            'command.default.zero_items', 'woble', 'command_default_zero_items')
+
+    @mock.patch('settings.os.path')
+    def test_read_command_default_zero_items_not_exists(self, mock_path):
+        self._test_setting_not_exists(mock_path, 'command.default.zero_items')
+
+    @mock.patch('settings.os.path')
+    def test_read_command_default_one_item_exists(self, mock_path):
+        self._test_setting_exists(mock_path, \
+            'command.default.one_item', 'woble', 'command_default_one_item')
+
+    @mock.patch('settings.os.path')
+    def test_read_command_default_one_item_not_exists(self, mock_path):
+        self._test_setting_not_exists(mock_path, 'command.default.one_item')
+
+
+    @mock.patch('settings.os.path')
+    def test_read_command_default_multi_items_exists(self, mock_path):
+        self._test_setting_exists(mock_path, \
+            'command.default.multi_items', 'woble', 'command_default_multi_items')
+
+    @mock.patch('settings.os.path')
+    def test_read_command_default_multi_items_not_exists(self, mock_path):
+        self._test_setting_not_exists(mock_path, 'command.default.multi_items')
+
+    @mock.patch('settings.os.path')
     def test_read_command_done_confirm_exists(self, mock_path):
         self._test_read_boolean(mock_path, \
             'command.done.confirm', 'command_done_confirm')
