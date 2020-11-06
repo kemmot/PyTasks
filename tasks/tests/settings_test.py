@@ -21,10 +21,6 @@ class SettingTests(unittest.TestCase):
         self._test_setting_not_exists(mock_path, 'command.default')
 
     @mock.patch('settings.os.path')
-    def test_read_command_default_not_exists(self, mock_path):
-        self._test_setting_not_exists(mock_path, 'command.default')
-
-    @mock.patch('settings.os.path')
     def test_read_command_done_confirm_exists(self, mock_path):
         self._test_read_boolean(mock_path, \
             'command.done.confirm', 'command_done_confirm')
