@@ -5,11 +5,11 @@ class InfoCommand(commandbase.FilterCommandBase):
     def __init__(self, context, batch_filter=None):
         super().__init__(context, batch_filter)
 
-    def execute(self):
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        for task in self.get_filtered_tasks():
+        for task in tasks:
             print('Name        Value')
             print('ID          {}'.format(task.index))
             print('Description {}'.format(task.name))

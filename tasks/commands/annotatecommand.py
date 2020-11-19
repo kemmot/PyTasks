@@ -19,11 +19,10 @@ class AnnotateCommand(commandbase.FilterCommandBase):
     def message(self, value):
         self._message = value
 
-    def execute(self):
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        tasks = self.get_filtered_tasks()
         for task in tasks:
             annotation = entities.TaskAnnotation(self.message)
             task.annotations.append(annotation)

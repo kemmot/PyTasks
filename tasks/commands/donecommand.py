@@ -3,8 +3,8 @@ import filters.confirmfilter as confirmfilter
 
 
 class DoneCommand(commandbase.FilterCommandBase):
-    def execute(self):
-        for task in self.get_filtered_tasks():
+    def execute_tasks(self, tasks):
+        for task in tasks:
             self.context.storage.delete(task)
 
 

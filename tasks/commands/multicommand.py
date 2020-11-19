@@ -27,4 +27,7 @@ class MultiCommand(commandbase.FilterCommandBase):
     def _execute_command(self, tasks, command):
         if command is None:
             raise Exception(f'Cannot process {len(tasks)} items in default command')
-        command.execute(tasks)
+        try:
+            command.execute_tasks(tasks)
+        except Exception as ex:
+            raise Exception(f'Failed executing {command}') from ex

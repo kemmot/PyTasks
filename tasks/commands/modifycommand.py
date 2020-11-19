@@ -23,17 +23,16 @@ class ModifyCommand(commandbase.FilterCommandBase):
     def template_task(self, value):
         self._template_task = value
 
-    def execute(self):
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        filtered_tasks = self.get_filtered_tasks()
-        for task in filtered_tasks:
+        for task in tasks:
             if self.template_task.name:
                 task.name = self.template_task.name
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 task.attributes[attribute_name] = attribute_value
-        self.context.storage.update(filtered_tasks)
+        self.context.storage.update(tasks)
 
 
 class ModifyCommandParser(commandbase.FilterCommandParserBase):

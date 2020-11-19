@@ -11,14 +11,13 @@ class StartCommand(commandbase.FilterCommandBase):
         super().__init__(context, command_filter)
         self._template_task = None
 
-    def execute(self):
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        filtered_tasks = self.get_filtered_tasks()
-        for task in filtered_tasks:
+        for task in tasks:
             task.start()
-        self.context.storage.update(filtered_tasks)
+        self.context.storage.update(tasks)
 
 
 class StartCommandParser(commandbase.FilterCommandParserBase):

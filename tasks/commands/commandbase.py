@@ -35,6 +35,18 @@ class FilterCommandBase(CommandBase):
     @filter.setter
     def filter(self, value):
         self._filter = value
+        
+    def execute(self):
+        '''
+        Executes the logic of this command.
+        '''
+        self.execute_tasks(self.get_filtered_tasks())
+
+    def execute_tasks(self, tasks):
+        '''
+        Executes the logic of this command.
+        '''
+        raise Exception('Execute(tasks) not implemented in {}'.format(__class__.__name__))
 
     def get_filtered_tasks(self):
         return self.filter.filter_items(self.context.storage.read_all())

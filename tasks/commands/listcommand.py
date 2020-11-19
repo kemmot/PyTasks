@@ -12,14 +12,14 @@ class ListTaskCommand(commandbase.FilterCommandBase):
             table = asciitable.AsciiTable()
         self._table = table
 
-    def execute(self):
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
         self._table.add_column('ID')
         self._table.add_column('Status')
         self._table.add_column('Description')
-        for task in self.get_filtered_tasks():
+        for task in tasks:
             self._table.add_row(task.index, task.status, task.name)
         print(self._table.create_output())
 
