@@ -18,7 +18,9 @@ class MultiCommand(commandbase.FilterCommandBase):
         tasks = self.get_filtered_tasks()
         task_count = len(tasks)
         if task_count == 0:
-            self._execute_command(tasks, self._zero_item_action)
+            if self._zero_item_action is None:
+                raise Exception(f'Cannot process {len(tasks)} items in default command')
+            self._zero_item_action.execute()
         elif task_count == 1:
             self._execute_command(tasks, self._one_item_action)
         else:

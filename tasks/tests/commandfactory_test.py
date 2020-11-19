@@ -263,4 +263,4 @@ class ArgumentTypeDecoder:
 class ParsedArgumentTests(unittest.TestCase):
     def test_str(self):
         arg = commandfactory.ParsedArgument(1, 'test 1', 'arg type')
-        self.assertEqual('1 arg type: test 1', str(arg))
+        self.assertEqual('Argument: 1, type: arg type, value: test 1', str(arg))

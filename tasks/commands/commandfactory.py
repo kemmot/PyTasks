@@ -3,6 +3,7 @@ A module providing task commands.
 '''
 
 import logging
+import sys
 
 import commands.commandbase as commandbase
 import commands.multicommand as multicommand
@@ -84,7 +85,6 @@ class CommandParser:
                 arg_type = ArgumentType.command_argument
             parsed_argument = ParsedArgument(arg_index, args[arg_index], arg_type)
             parsed_command.arguments.append(parsed_argument)
-            self._logger.debug(parsed_argument)
         return parsed_command
 
     def _find_verb_index(self, args):
@@ -94,7 +94,7 @@ class CommandParser:
                 if command_name == arg:
                     return arg_index
             arg_index += 1
-        return -1
+        return sys.maxsize
 
 
 class ParsedCommand:
@@ -137,10 +137,10 @@ class ParsedArgument:
         self.arg_type = arg_type
 
     def __str__(self):
-        return '{} {}: {}'.format(self.arg_index, self.arg_type, self.text)
+        return 'Argument: {}, type: {}, value: {}'.format(self.arg_index, self.arg_type, self.text)
 
 
 class ArgumentType:
-    command_argument = 'argument'
+    command_argument = 'command argument'
     filter = 'filter'
     verb = 'verb'

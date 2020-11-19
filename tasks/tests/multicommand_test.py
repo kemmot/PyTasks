@@ -63,12 +63,12 @@ class MultiCommandTests(unittest.TestCase):
         one_item_calls = []
         multi_item_calls = []
         if task_count == 0:
-            zero_item_calls.append(mock.call(tasks))
+            zero_item_calls.append(mock.call())
         elif task_count == 1:
             one_item_calls.append(mock.call(tasks))
         else:
             multi_item_calls.append(mock.call(tasks))
-        self.zero_item_command.execute_tasks.assert_has_calls(zero_item_calls)
+        self.zero_item_command.execute.assert_has_calls(zero_item_calls)
         self.one_item_command.execute_tasks.assert_has_calls(one_item_calls)
         self.multi_item_command.execute_tasks.assert_has_calls(multi_item_calls)
 
