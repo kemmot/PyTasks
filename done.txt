@@ -18,3 +18,4 @@
 [description:"FEAT-0012 Correct column widths on list command" entry:"0" status:"pending" uuid:"b3b6c607-8934-495a-9abd-52bc80b5b4e3"]
 [description:"FEAT-0054 List command should align column widths" entry:"1598551600" status:"pending" uuid:"923f94e7-6859-4032-828c-d0887eccf1d1"]
 [description:"FEAT-0056 Add shell command" entry:"1603473020" status:"pending" uuid:"a51ea15f-65bd-41c8-9954-fc169efff0bd"]
+[description:"FEAT-0057 Support different default commands based on number of dislayed tasks" entry:"1604580870" status:"pending" uuid:"38e123bb-3ae4-4c6f-b988-19953d28c3da"]

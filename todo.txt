@@ -24,4 +24,3 @@
 [description:"FEAT-0051 Default action should be info for a single item" entry:"1595274246" status:"pending" uuid:"5ee7dc49-1388-4721-b56d-e5d16baf08d2"]
 [description:"FEAT-0054 Make task IDs stable" entry:"1596490026" status:"pending" uuid:"f28d797f-975e-47b6-bdfd-e9d8df31910d"]
 [description:"FEAT-0055 Support hook scripts for add command" entry:"1603472616" status:"pending" uuid:"dda9ea30-ae9d-4f16-ad78-0364a6170304"]
-[description:"FEAT-0057 Support different default commands based on number of dislayed tasks" entry:"1604580870" status:"pending" uuid:"38e123bb-3ae4-4c6f-b988-19953d28c3da"]
