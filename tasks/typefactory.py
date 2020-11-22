@@ -16,7 +16,7 @@ class TypeFactory:
 
     def _register_known_types(self, specific_base_class):
         for cla in specific_base_class.__subclasses__():
-            if len(cla.__subclasses__()) > 0:
+            if cla.__subclasses__():
                 self._register_known_types(cla)
             else:
                 try:

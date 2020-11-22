@@ -8,13 +8,13 @@ class FilterFactory(typefactory.TypeFactory):
         super().__init__(filterbase.FilterParserBase)
 
     def parse(self, arg):
-        filter = None
+        task_filter = None
         for parser in self.types:
-            filter = parser.parse(arg)
-            if filter is not None:
+            task_filter = parser.parse(arg)
+            if task_filter is not None:
                 break
 
-        if filter is None:
+        if task_filter is None:
             raise Exception('Unknown filter: [{}]'.format(arg))
 
-        return filter
+        return task_filter

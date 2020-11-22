@@ -4,7 +4,7 @@ import filters.filterbase as filterbase
 class TaskIndexFilter(filterbase.FilterBase):
     def __init__(self, index):
         self._index = index
-    
+
     @property
     def index(self):
         return self._index
@@ -16,7 +16,7 @@ class TaskIndexFilter(filterbase.FilterBase):
 class TaskIndexFilterParser(filterbase.FilterParserBase):
     def parse(self, arg):
         if arg.isnumeric():
-            filter = TaskIndexFilter(int(arg))
+            task_filter = TaskIndexFilter(int(arg))
         else:
-            filter = None
-        return filter
+            task_filter = None
+        return task_filter

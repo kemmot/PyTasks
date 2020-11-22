@@ -7,7 +7,6 @@ import sys
 
 import commands.commandbase as commandbase
 import commands.multicommand as multicommand
-import commandline
 import filters.allbatchfilter as allbatchfilter
 import typefactory
 
@@ -33,27 +32,34 @@ class CommandFactory(typefactory.TypeFactory):
         verb_argument = parsed_command.get_verb_value()
         if verb_argument:
             command_arguments = parsed_command.get_command_argument_values()
-            parser,command = self._get_command(verb_argument, command_arguments)
+            parser, command = self._get_command(verb_argument, command_arguments)
             if parser:
                 confirm_filter = parser.get_confirm_filter(self._command_context)
                 if confirm_filter:
                     batch_filter.add_filter(confirm_filter)
         else:
-            zero_item_command = self._get_command(self._command_context.settings.command_default_zero_items)[1]
-            one_item_command = self._get_command(self._command_context.settings.command_default_one_item)[1]
-            multi_item_command = self._get_command(self._command_context.settings.command_default_multi_items)[1]
-            command = multicommand.MultiCommand(self._command_context, zero_item_command, one_item_command, multi_item_command)
+            zero_item_command = self._get_command( \
+                self._command_context.settings.command_default_zero_items)[1]
+            one_item_command = self._get_command( \
+                self._command_context.settings.command_default_one_item)[1]
+            multi_item_command = self._get_command( \
+                self._command_context.settings.command_default_multi_items)[1]
+            command = multicommand.MultiCommand( \
+                self._command_context, \
+                zero_item_command, \
+                one_item_command, \
+                multi_item_command)
 
         command.filter = batch_filter
         return command
-    
+
     def _get_command(self, verb, command_arguments=[]):
         parsers = [p for p in self.types if p.command_name == verb]
         if not parsers:
             raise Exception('Parser not found for verb: [{}]'.format(verb))
         parser = parsers[0]
         command = parser.parse(self._command_context, command_arguments)
-        return parser,command
+        return parser, command
 
     def _get_filters(self, parsed_command):
         batch_filter = allbatchfilter.AllBatchFilter()
@@ -76,15 +82,18 @@ class CommandParser:
             raise Exception('args cannot be None')
         verb_index = self._find_verb_index(args)
         parsed_command = ParsedCommand()
-        for arg_index in range(0, len(args)):
+
+        arg_index = 0
+        for arg in args:
             if arg_index == verb_index:
                 arg_type = ArgumentType.verb
             elif arg_index < verb_index:
                 arg_type = ArgumentType.filter
             else:
                 arg_type = ArgumentType.command_argument
-            parsed_argument = ParsedArgument(arg_index, args[arg_index], arg_type)
+            parsed_argument = ParsedArgument(arg_index, arg, arg_type)
             parsed_command.arguments.append(parsed_argument)
+            arg_index += 1
         return parsed_command
 
     def _find_verb_index(self, args):

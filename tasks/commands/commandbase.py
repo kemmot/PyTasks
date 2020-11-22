@@ -35,7 +35,7 @@ class FilterCommandBase(CommandBase):
     @filter.setter
     def filter(self, value):
         self._filter = value
-        
+
     def execute(self):
         '''
         Executes the logic of this command.

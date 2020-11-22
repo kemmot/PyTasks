@@ -1,7 +1,4 @@
 import commands.commandbase as commandbase
-import entities
-import filters.allbatchfilter as allbatchfilter
-import filters.alwaysfilter as alwaysfilter
 
 
 class MultiCommand(commandbase.FilterCommandBase):
@@ -25,7 +22,7 @@ class MultiCommand(commandbase.FilterCommandBase):
             self._execute_command(tasks, self._one_item_action)
         else:
             self._execute_command(tasks, self._multi_item_action)
-    
+
     def _execute_command(self, tasks, command):
         if command is None:
             raise Exception(f'Cannot process {len(tasks)} items in default command')
