@@ -44,7 +44,7 @@ class FilterCommandBase(CommandBase):
 
     def execute_tasks(self, tasks):
         '''
-        Executes the logic of this command.
+        Executes the logic of this command against the filtered tasks.
         '''
         raise Exception('Execute(tasks) not implemented in {}'.format(__class__.__name__))
 

@@ -12,6 +12,10 @@ class ListTaskCommand(commandbase.FilterCommandBase):
             table = asciitable.AsciiTable()
         self._table = table
 
+    def execute(self):
+        self.context.storage.garbage_collect()
+        super().execute()
+
     def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
@@ -20,7 +24,8 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         self._table.add_column('Status')
         self._table.add_column('Description')
         for task in tasks:
-            self._table.add_row(task.index, task.status, task.name)
+            if not task.is_ended:
+                self._table.add_row(task.index, task.status, task.name)
         print(self._table.create_output())
 
 

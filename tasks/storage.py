@@ -32,10 +32,7 @@ class TaskWarriorFormatter:
             output_key_values['start'] = calendar.timegm(task.started_time.utctimetuple())
 
         if task.is_ended:
-            print('ended: {}'.format(calendar.timegm(task.end_time.utctimetuple())))
             output_key_values['end'] = calendar.timegm(task.end_time.utctimetuple())
-        else:
-            print('not ended')
 
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
