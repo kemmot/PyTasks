@@ -31,6 +31,12 @@ class TaskWarriorFormatter:
         if task.is_started:
             output_key_values['start'] = calendar.timegm(task.started_time.utctimetuple())
 
+        if task.is_ended:
+            print('ended: {}'.format(calendar.timegm(task.end_time.utctimetuple())))
+            output_key_values['end'] = calendar.timegm(task.end_time.utctimetuple())
+        else:
+            print('not ended')
+
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
             output_key_values['annotation_{}'.format(created_output)] = annotation.message
@@ -61,6 +67,8 @@ class TaskWarriorFormatter:
             value = match.group('value')
             if key == 'description':
                 task.name = value
+            elif key == 'end':
+                task.end_time = self._parse_datetime(value)
             elif key == 'entry':
                 task.created_time = self._parse_datetime(value)
             elif key == 'start':
@@ -103,9 +111,17 @@ class TextFileStorage:
     def path(self):
         return self._path
 
-    def delete(self, task):
-        tasks_to_keep = [t for t in self.read_all() if t.id_number != task.id_number]
-        self._write_all(tasks_to_keep)
+    def delete(self, tasks):
+        tasks_to_keep = []
+        for existing_task in self.read_all():
+            keep = True
+            for task in tasks:
+                if task.id_number == existing_task.id_number:
+                    keep = False
+                    break
+            if keep:
+                tasks_to_keep.append(existing_task)
+        self._replace_all(tasks_to_keep)
 
     def read_all(self):
         tasks = []
@@ -121,10 +137,11 @@ class TextFileStorage:
             self._logger.warning('File not found: [{}]'.format(self._path))
         return tasks
 
-    def write(self, task):
-        tasks = self.read_all()
-        tasks.append(task)
-        self._write_all(tasks)
+    def write(self, tasks):
+        existing_tasks = self.read_all()
+        for task in tasks:
+            existing_tasks.append(task)
+        self._replace_all(existing_tasks)
 
     def update(self, tasks):
         original_tasks = self.read_all()
@@ -136,9 +153,9 @@ class TextFileStorage:
                     task_to_keep = task_to_update
                     break
             tasks_to_keep.append(task_to_keep)
-        self._write_all(tasks_to_keep)
+        self._replace_all(tasks_to_keep)
 
-    def _write_all(self, tasks):
+    def _replace_all(self, tasks):
         temp_path = self._path + '.tmp'
         if os.path.isfile(temp_path):
             os.remove(temp_path)
@@ -168,10 +185,14 @@ class TaskWarriorStorage:
     @property
     def pending_storage(self):
         return self._pending_storage
-
-    def delete(self, task):
-        self._done_storage.write(task)
-        self._pending_storage.delete(task)
+    
+    def garbage_collect(self):
+        done_tasks = []
+        for task in self._pending_storage.read_all():
+            if task.is_ended:
+                done_tasks.append(task)
+        self._done_storage.write(done_tasks)
+        self._pending_storage.delete(done_tasks)
 
     def read_all(self):
         return self._pending_storage.read_all()
@@ -180,7 +201,9 @@ class TaskWarriorStorage:
         self._pending_storage.update(tasks)
 
     def write(self, task):
-        self._pending_storage.write(task)
+        tasks = []
+        tasks.append(task)
+        self._pending_storage.write(tasks)
 
 
 class TaskWarriorStorageCreator:

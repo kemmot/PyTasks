@@ -27,6 +27,7 @@ class Task:
         self._annotations = []
         self._attributes = {}
         self._created_time = datetime.datetime.now()
+        self._end_time = None
         self._id_number = ''
         self._index = -1
         self._name = ''
@@ -59,6 +60,17 @@ class Task:
         self._created_time = value
 
     @property
+    def end_time(self):
+        '''
+        The time the task was completed.
+        '''
+        return self._end_time
+
+    @end_time.setter
+    def end_time(self, value):
+        self._end_time = value
+
+    @property
     def id_number(self):
         '''
         The id of the task.
@@ -79,6 +91,10 @@ class Task:
     @index.setter
     def index(self, value):
         self._index = value
+
+    @property
+    def is_ended(self):
+        return self.end_time is not None
 
     @property
     def is_started(self):
@@ -116,6 +132,9 @@ class Task:
     @started_time.setter
     def started_time(self, value):
         self._started_time = value
+
+    def end(self):
+        self.end_time = datetime.datetime.now()
 
     def start(self):
         self.started_time = datetime.datetime.now()

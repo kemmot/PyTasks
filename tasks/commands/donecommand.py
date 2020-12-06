@@ -4,8 +4,12 @@ import filters.confirmfilter as confirmfilter
 
 class DoneCommand(commandbase.FilterCommandBase):
     def execute_tasks(self, tasks):
+        '''
+        Executes the logic of this command.
+        '''
         for task in tasks:
-            self.context.storage.delete(task)
+            task.end()
+        self.context.storage.update(tasks)
 
 
 class DoneCommandParser(commandbase.FilterCommandParserBase):

@@ -14,13 +14,19 @@ class Empty:
 
 
 class TaskWarriorFormatterTests(unittest.TestCase):
+    def test_format_gives_correct_output_without_started_or_ended(self):
+        self.output_test(False, False)
+
     def test_format_gives_correct_output_with_started(self):
-        self.output_test(True)
+        self.output_test(True, False)
 
-    def test_format_gives_correct_output_without_started(self):
-        self.output_test(False)
+    def test_format_gives_correct_output_with_ended(self):
+        self.output_test(False, True)
 
-    def output_test(self, include_started):
+    def test_format_gives_correct_output_with_started_and_ended(self):
+        self.output_test(True, True)
+
+    def output_test(self, include_started, include_ended):
         task = entities.Task()
         annotation1_date = datetime.datetime(2019, 12, 1, 20, 59, 18)
         annotation2_date = datetime.datetime(2019, 12, 2, 20, 59, 18)
@@ -36,11 +42,15 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         task.status = 'pending'
         if include_started:
             task.started_time = datetime.datetime(2019, 11, 29, 20, 59, 18)
+        if include_ended:
+            task.end_time = datetime.datetime(2020, 11, 29, 20, 59, 18)
 
         expected = '['
         expected += 'annotation_1575233958:"annotation 1"'
         expected += ' annotation_1575320358:"annotation 2"'
         expected += ' description:"task name"'
+        if include_ended:
+            expected += ' end:"1606683558"'
         expected += ' entry:"1575061158"'
         expected += ' priority:"high"'
         expected += ' project:"project 1"'
@@ -55,17 +65,25 @@ class TaskWarriorFormatterTests(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
+    def test_parse_parses_details_without_started_or_ended(self):
+        self.parse_test(False, False)
+
     def test_parse_parses_details_with_started(self):
-        self.parse_test(True)
+        self.parse_test(True, False)
 
-    def test_parse_parses_details_without_started(self):
-        self.parse_test(False)
+    def test_parse_parses_details_with_ended(self):
+        self.parse_test(False, True)
 
-    def parse_test(self, include_started):
+    def test_parse_parses_details_with_started_and_ended(self):
+        self.parse_test(True, True)
+
+    def parse_test(self, include_started, include_ended):
         line = '['
         line += 'annotation_1575233958:"annotation 1"'
         line += ' annotation_1575320358:"annotation 2"'
         line += ' description:"new"'
+        if include_ended:
+            line += ' end:"1606683558"'
         line += ' entry:"1575061158"'
         line += ' priority:"low"'
         line += ' project:"project 2"'
@@ -97,6 +115,10 @@ class TaskWarriorFormatterTests(unittest.TestCase):
             self.assertEqual(task.started_time, datetime.datetime(2019, 11, 29, 20, 59, 18))
         else:
             self.assertIsNone(task.started_time)
+        if include_ended:
+            self.assertEqual(task.end_time, datetime.datetime(2020, 11, 29, 20, 59, 18))
+        else:
+            self.assertIsNone(task.end_time)
 
 
 class TextFileStorageTests(unittest.TestCase):
@@ -112,7 +134,7 @@ class TextFileStorageTests(unittest.TestCase):
 
     @mock.patch('storage.os.path')
     @mock.patch('storage.os')
-    def test_delete_deletes_correct_task(self, mock_os, mock_path):
+    def test_delete_deletes_correct_tasks(self, mock_os, mock_path):
         tasks = self._create_tasks(3)
 
         self._formatter.format = mock.Mock(return_value='')
@@ -123,7 +145,7 @@ class TextFileStorageTests(unittest.TestCase):
         mock_path.isfile.return_value = True
         mock_open = mock.mock_open(read_data='task1\ntask2\ntask3\n')
         with mock.patch('storage.open', mock_open):
-            target.delete(tasks[1])
+            target.delete([tasks[1]])
         handle = mock_open()
         calls = [mock.call(tasks[0]), mock.call(tasks[2])]
         self.assertEqual(calls, self._formatter.format.mock_calls)
@@ -238,7 +260,7 @@ class TextFileStorageTests(unittest.TestCase):
         mock_open = mock.mock_open()
         with mock.patch('storage.open', mock_open):
             target = storage.TextFileStorage(test_path, self._formatter)
-            target.write(task)
+            target.write([task])
 
         calls = [mock.call(test_path), mock.call(temp_path), mock.call(test_path)]
         self.assertEqual(calls, mock_path.isfile.mock_calls)
@@ -273,25 +295,6 @@ class TaskWarriorStorageTests(unittest.TestCase):
         self.assertEqual(mock_pending_storage, target.pending_storage)
         self.assertEqual(mock_done_storage, target.done_storage)
 
-    def test_delete_calls_write_on_done_storage(self):
-        mock_pending_storage = mock.Mock()
-        mock_pending_storage.delete = mock.MagicMock()
-        mock_done_storage = mock.Mock()
-        mock_done_storage.write = mock.MagicMock()
-        mock_task = mock.Mock()
-        target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
-        target.delete(mock_task)
-        mock_done_storage.write.assert_called_once_with(mock_task)
-
-    def test_delete_calls_delete_on_pending_storage(self):
-        mock_pending_storage = mock.Mock()
-        mock_pending_storage.delete = mock.MagicMock()
-        mock_done_storage = mock.Mock()
-        mock_task = mock.Mock()
-        target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
-        target.delete(mock_task)
-        mock_pending_storage.delete.assert_called_once_with(mock_task)
-
     def test_read_all_calls_read_all_on_pending_storage(self):
         tasks = [mock.Mock(), mock.Mock()]
         mock_pending_storage = mock.Mock()
@@ -317,7 +320,29 @@ class TaskWarriorStorageTests(unittest.TestCase):
         mock_task = mock.Mock()
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         target.write(mock_task)
-        mock_pending_storage.write.assert_called_once_with(mock_task)
+        mock_pending_storage.write.assert_called_once_with([mock_task])
+
+    def test_garbage_collect(self):
+        tasks = []
+        for index in range(0, 4):
+            mock_task = mock.Mock()
+            mock_task.is_ended = False
+            tasks.append(mock_task)
+        tasks[1].is_ended = True
+        done_tasks = [tasks[1]]
+
+        mock_pending_storage = mock.Mock()
+        mock_pending_storage.read_all = mock.MagicMock(return_value=tasks)
+        mock_pending_storage.delete = mock.MagicMock()
+        mock_done_storage = mock.Mock()
+        mock_done_storage.write = mock.MagicMock()
+
+        target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
+        target.garbage_collect()
+
+        mock_pending_storage.read_all.assert_called_once()
+        mock_done_storage.write.assert_called_once_with(done_tasks)
+        mock_pending_storage.delete.assert_called_once_with(done_tasks)
 
 
 class TaskWarriorStorageCreatorTests(unittest.TestCase):

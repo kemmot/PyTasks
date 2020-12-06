@@ -25,7 +25,12 @@ class DoneCommandTests(unittest.TestCase):
         command.execute()
 
         mock_context.storage.read_all.assert_called_once()
-        mock_context.storage.delete.assert_called_once_with(tasks[1])
+        tasks[0].end.assert_not_called()
+        tasks[1].end.assert_called_once()
+        tasks[2].end.assert_not_called()
+        expected = []
+        expected.append(tasks[1])
+        mock_context.storage.update.assert_called_once_with(expected)
 
     def _create_context(self, tasks=None):
         if not tasks:
@@ -35,7 +40,7 @@ class DoneCommandTests(unittest.TestCase):
         mock_settings.command_done_confirm = False
         
         mock_storage = mock.Mock()
-        mock_storage.delete = mock.MagicMock()
+        mock_storage.update = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
 
         mock_context = mock.Mock()
@@ -50,6 +55,7 @@ class DoneCommandTests(unittest.TestCase):
             task = mock.Mock()
             task.index = index + 1
             task.name = 'task {}'.format(task.index)
+            task.end = mock.MagicMock()
             tasks.append(task)
         return tasks
 
