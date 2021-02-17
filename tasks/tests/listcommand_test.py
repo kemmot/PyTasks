@@ -61,6 +61,7 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
         tasks[1].index = 2
+        tasks[1].is_ended = False
         tasks[1].status = 'this status'
         tasks[1].name = 'some name'
 
