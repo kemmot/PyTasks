@@ -23,3 +23,5 @@
 [description:"FEAT-0050 Info command should separate entries" entry:"1595274085" status:"pending" uuid:"3905248f-cfdf-4a31-aac6-ffc547b820c8"]
 [description:"FEAT-0051 Default action should be info for a single item" entry:"1595274246" status:"pending" uuid:"5ee7dc49-1388-4721-b56d-e5d16baf08d2"]
 [description:"FEAT-0055 Support hook scripts for add command" entry:"1603472616" status:"pending" uuid:"dda9ea30-ae9d-4f16-ad78-0364a6170304"]
+[description:"FEAT-0058 support multiple files with easy switching" entry:"1613572256" status:"pending" uuid:"8ba687fa-ea86-4c66-adb0-e657be2d513d"]
+[description:"FEAT-0059 support specific annotation creation dates" end:"1613577332" entry:"1613572283" status:"pending" uuid:"2a3aabd9-ee85-444b-8380-1b9bbf4a4f83"]
