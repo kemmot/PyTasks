@@ -1,3 +1,4 @@
+import datetime
 import unittest
 from unittest import mock
 
@@ -27,7 +28,8 @@ class AnnotateCommandTests(unittest.TestCase):
 
         mock_context.storage.read_all.assert_called_once()
 
-    def test_execute_adds_annotation(self):
+    def test_execute_adds_annotation_without_date(self):
+        test_start_time = datetime.datetime.now()
         tasks = self._create_tasks(3)
         mock_context = self._create_context(tasks)
 
@@ -38,8 +40,28 @@ class AnnotateCommandTests(unittest.TestCase):
         command.message = 'message'
         command.execute()
 
+        test_end_time = datetime.datetime.now()
         self.assertEqual(1, len(tasks[1].annotations))
         self.assertEqual('message', tasks[1].annotations[0].message)
+        self.assertGreaterEqual(tasks[1].annotations[0].created, test_start_time)
+        self.assertLessEqual(tasks[1].annotations[0].created, test_end_time)
+
+    def test_execute_adds_annotation_with_date(self):
+        tasks = self._create_tasks(3)
+        mock_context = self._create_context(tasks)
+
+        mock_filter = mock.MagicMock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
+
+        annotation_created_date = datetime.datetime(2019, 1, 1)
+        command = annotatecommand.AnnotateCommand(mock_context, mock_filter)
+        command.created = annotation_created_date
+        command.message = 'message'
+        command.execute()
+
+        self.assertEqual(1, len(tasks[1].annotations))
+        self.assertEqual('message', tasks[1].annotations[0].message)
+        self.assertEqual(annotation_created_date, tasks[1].annotations[0].created)
 
     def test_execute_calls_update_on_storage(self):
         tasks = self._create_tasks(3)
@@ -125,3 +147,75 @@ class AnnotateCommandParserTests(unittest.TestCase):
         self.assertIsInstance(command, annotatecommand.AnnotateCommand)
         self.assertEqual(mock_context, command.context)
         self.assertEqual(command.message, 'this is a multi-word message')
+        
+    def test_parse_success_with_created_date(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'created:2021-01-01']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        command = parser.parse(mock_context, args)
+
+        self.assertIsInstance(command, annotatecommand.AnnotateCommand)
+        self.assertEqual(mock_context, command.context)
+        self.assertEqual(command.created, datetime.datetime(2021, 1, 1))
+        self.assertEqual(command.message, 'this is a multi-word message')
+
+        
+    def test_parse_duplicate_attribute(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'created:2021-01-01', 'created:2021-01-02']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        with self.assertRaises(Exception):
+            command = parser.parse(mock_context, args)
+
+        
+    def test_parse_invalid_created_attribute(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'created:baddate']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        with self.assertRaises(Exception):
+            command = parser.parse(mock_context, args)
+
+        
+    def test_parse_unknown_attribute(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'invalid:wobbly']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        with self.assertRaises(Exception):
+            command = parser.parse(mock_context, args)
+

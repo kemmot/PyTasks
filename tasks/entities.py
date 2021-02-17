@@ -6,7 +6,7 @@ import datetime
 
 
 class TaskAnnotation:
-    def __init__(self, message, created=datetime.datetime.now()):
+    def __init__(self, message, created):
         self._message = message
         self._created = created
 
