@@ -1,3 +1,4 @@
+import asciitable
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock
@@ -67,19 +68,20 @@ class ListTaskCommandTests(unittest.TestCase):
 
         mock_storage = mock.Mock()
         mock_storage.read_all = MagicMock(return_value=tasks)
-        
-        mock_context = mock.Mock()
-        mock_context.storage = mock_storage
-
-        mock_filter = mock.Mock()
-        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         mock_table = mock.Mock()
         mock_table.add_column = mock.MagicMock()
         mock_table.add_row = mock.MagicMock()
         mock_table.create_output = MagicMock(return_value='')
+        
+        mock_context = mock.Mock()
+        mock_context.create_table = mock.MagicMock(return_value=mock_table)
+        mock_context.storage = mock_storage
 
-        command = listcommand.ListTaskCommand(mock_context, mock_filter, mock_table)
+        mock_filter = mock.Mock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
+
+        command = listcommand.ListTaskCommand(mock_context, mock_filter)
 
         mock_print = mock.MagicMock()
         with mock.patch('commands.listcommand.print', mock_print):

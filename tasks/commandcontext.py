@@ -1,3 +1,6 @@
+import asciitable
+
+
 class CommandContext:
     def __init__(self, settings, storage, filter_factory):
         self._settings = settings
@@ -24,3 +27,7 @@ class CommandContext:
     @property
     def storage(self):
         return self._storage
+
+    def create_table(self):
+        table = asciitable.AsciiTable()
+        return table

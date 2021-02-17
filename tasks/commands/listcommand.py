@@ -6,11 +6,8 @@ class ListTaskCommand(commandbase.FilterCommandBase):
     '''
     A command that will list tasks.
     '''
-    def __init__(self, context, command_filter=None, table=None):
+    def __init__(self, context, command_filter=None):
         super().__init__(context, command_filter)
-        if table is None:
-            table = asciitable.AsciiTable()
-        self._table = table
 
     def execute(self):
         self.context.storage.garbage_collect()
@@ -20,13 +17,14 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         '''
         Executes the logic of this command.
         '''
-        self._table.add_column('ID')
-        self._table.add_column('Status')
-        self._table.add_column('Description')
+        table = self.context.create_table()
+        table.add_column('ID')
+        table.add_column('Status')
+        table.add_column('Description')
         for task in tasks:
             if not task.is_ended:
-                self._table.add_row(task.index, task.status, task.name)
-        print(self._table.create_output())
+                table.add_row(task.index, task.status, task.name)
+        print(table.create_output())
 
 
 class ListTaskCommandParser(commandbase.FilterCommandParserBase):
