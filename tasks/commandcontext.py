@@ -30,4 +30,5 @@ class CommandContext:
 
     def create_table(self):
         table = asciitable.AsciiTable()
+        table.column_separator = self._settings.table_column_separator
         return table

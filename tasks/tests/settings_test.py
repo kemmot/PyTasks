@@ -127,6 +127,16 @@ class SettingTests(unittest.TestCase):
         with self.assertRaises(Exception):
             settings.Settings(config=mock_config).read(test_path)
 
+    @mock.patch('settings.os.path')
+    def test_read_command_table_column_separator_without_quotes(self, mock_path):
+        self._test_setting_exists(mock_path, \
+            'table.column.separator', '|', 'table_column_separator')
+
+    @mock.patch('settings.os.path')
+    def test_read_command_table_column_separator_with_quotes(self, mock_path):
+        self._test_setting_exists(mock_path, \
+            'table.column.separator', ' | ', 'table_column_separator', '" | "')
+
     def _test_read_boolean(self, mock_path, key, test_property_name):
         self._test_setting_exists(mock_path, key, False, test_property_name)
         self._test_setting_exists(mock_path, key, True, test_property_name)
@@ -146,11 +156,14 @@ class SettingTests(unittest.TestCase):
         with self.assertRaises(Exception):
             getattr(target, test_property_name)
 
-    def _test_setting_exists(self, mock_path, key, expected_value, test_property_name):
+    def _test_setting_exists(self, mock_path, key, expected_value, test_property_name, configured_value=None):
         mock_path.isfile.return_value = True
         config = configparser.ConfigParser()
         config['general'] = {}
-        config['general'][key] = str(expected_value)
+        if configured_value is None:
+            config['general'][key] = str(expected_value)
+        else:
+            config['general'][key] = str(configured_value)
         target = settings.Settings(config=config)
         target.read('test path')
         result = getattr(target, test_property_name)

@@ -148,6 +148,10 @@ tasks [filter] list
 |:-----|:----------|
 |filter|The optional task filter.|
 
+### Applicable Settings
+
+* [table.column.separator](#tablecolumnseparator)
+
 -----------------------------------------------------------------------------------------------------
 
 ## Modify Command
@@ -360,3 +364,8 @@ Default value: done.txt
 The filename to use for in-progress tasks.  Appended to data.location.
 
 Default value: todo.txt
+
+## table.column.separator
+The string to use to separate columns when printing tables.  Any double quotes will be stripped to allow leading and trailing spaces.
+
+Default value: " | "
