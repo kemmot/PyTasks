@@ -44,7 +44,7 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('ID          {}'.format(task.index)))
         calls.append(mock.call('Description {}'.format(task.name)))
         calls.append(mock.call('Status      {}'.format(task.status)))
-        calls.append(mock.call('Entered     {}'.format(task.created)))
+        calls.append(mock.call('Entered     {}'.format(task.created_time)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
         self.assertEqual(calls, mock_print.mock_calls)
 
@@ -66,7 +66,7 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('ID          {}'.format(task.index)))
         calls.append(mock.call('Description {}'.format(task.name)))
         calls.append(mock.call('Status      {}'.format(task.status)))
-        calls.append(mock.call('Entered     {}'.format(task.created)))
+        calls.append(mock.call('Entered     {}'.format(task.created_time)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
         calls.append(mock.call(''))
         calls.append(mock.call('Date             Modification'))

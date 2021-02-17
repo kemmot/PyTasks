@@ -14,7 +14,7 @@ class InfoCommand(commandbase.FilterCommandBase):
             print('ID          {}'.format(task.index))
             print('Description {}'.format(task.name))
             print('Status      {}'.format(task.status))
-            print('Entered     {}'.format(task.created))
+            print('Entered     {}'.format(task.created_time))
             print('UUID        {}'.format(task.id_number))
 
             if task.annotations:
