@@ -31,4 +31,5 @@ class CommandContext:
     def create_table(self):
         table = asciitable.AsciiTable()
         table.column_separator = self._settings.table_column_separator
+        table.add_header_underline = self._settings.table_header_underline
         return table

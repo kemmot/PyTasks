@@ -151,6 +151,7 @@ tasks [filter] list
 ### Applicable Settings
 
 * [table.column.separator](#tablecolumnseparator)
+* [table.header.underline](#tableheaderunderline)
 
 -----------------------------------------------------------------------------------------------------
 
@@ -369,3 +370,8 @@ Default value: todo.txt
 The string to use to separate columns when printing tables.  Any double quotes will be stripped to allow leading and trailing spaces.
 
 Default value: " | "
+
+## table.header.underline
+Whether to underline table headers to separate them from the rows.
+
+Default value: True

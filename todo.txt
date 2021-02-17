@@ -25,3 +25,4 @@
 [description:"FEAT-0055 Support hook scripts for add command" entry:"1603472616" status:"pending" uuid:"dda9ea30-ae9d-4f16-ad78-0364a6170304"]
 [description:"FEAT-0058 support multiple files with easy switching" entry:"1613572256" status:"pending" uuid:"8ba687fa-ea86-4c66-adb0-e657be2d513d"]
 [description:"FEAT-0059 support specific annotation creation dates" end:"1613577332" entry:"1613572283" status:"pending" uuid:"2a3aabd9-ee85-444b-8380-1b9bbf4a4f83"]
+[description:"FEAT-0060 List command output table should be customizable" end:"1613580042" entry:"1613578169" status:"pending" uuid:"0e01a64a-200a-4dd8-b05b-d631946e043e"]

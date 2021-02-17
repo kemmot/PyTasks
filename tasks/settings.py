@@ -63,6 +63,10 @@ class Settings:
     def table_column_separator(self):
         return self._get_value('table.column.separator').replace('"', '')
 
+    @property
+    def table_header_underline(self):
+        return self._get_value_boolean('table.header.underline')
+
     def _get_value_boolean(self, key):
         if not self._config.has_option(self._category, key):
             message_format = 'Config element not found, category: [{}], key: [{}]'
