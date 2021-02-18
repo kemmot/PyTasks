@@ -28,5 +28,6 @@ class MultiCommand(commandbase.FilterCommandBase):
             raise Exception(f'Cannot process {len(tasks)} items in default command')
         try:
             command.execute_tasks(tasks)
+            self._logger.debug('Executed {} command on {} tasks'.format(command.__class__.__name__, len(tasks)))
         except Exception as ex:
             raise Exception(f'Failed executing {command}') from ex

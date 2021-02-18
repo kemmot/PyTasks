@@ -190,6 +190,7 @@ class TaskWarriorStorage:
                 done_tasks.append(task)
         self._done_storage.write(done_tasks)
         self._pending_storage.delete(done_tasks)
+        self._logger.debug('Garbage collected {} complete tasks to done file'.format(len(done_tasks)))
 
     def read_all(self):
         return self._pending_storage.read_all()
