@@ -15,6 +15,9 @@ class CommandBase:
         The command context.
         '''
         return self._context
+    
+    def before_execute(self):
+        pass
 
     def execute(self):
         '''

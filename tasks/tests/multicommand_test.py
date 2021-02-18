@@ -10,10 +10,13 @@ class MultiCommandTests(unittest.TestCase):
         self.mock_context = mock.Mock()
         self.mock_filter = mock.Mock()
         self.zero_item_command = mock.Mock()
+        self.zero_item_command.before_execute = mock.MagicMock()
         self.zero_item_command.execute = mock.MagicMock()
         self.one_item_command = mock.Mock()
+        self.one_item_command.before_execute = mock.MagicMock()
         self.one_item_command.execute = mock.MagicMock()
         self.multi_item_command = mock.Mock()
+        self.multi_item_command.before_execute = mock.MagicMock()
         self.multi_item_command.execute = mock.MagicMock()
 
     def test_constructor(self):
@@ -59,18 +62,30 @@ class MultiCommandTests(unittest.TestCase):
         command.filter = self.mock_filter
         command.execute()
 
-        zero_item_calls = []
-        one_item_calls = []
-        multi_item_calls = []
+        zero_item_before_execute_calls = []
+        zero_item_execute_calls = []
+        one_item_before_execute_calls = []
+        one_item_execute_calls = []
+        multi_item_before_execute_calls = []
+        multi_item_execute_calls = []
         if task_count == 0:
-            zero_item_calls.append(mock.call())
+            zero_item_before_execute_calls.append(mock.call())
+            zero_item_execute_calls.append(mock.call())
         elif task_count == 1:
-            one_item_calls.append(mock.call(tasks))
+            one_item_before_execute_calls.append(mock.call())
+            one_item_execute_calls.append(mock.call(tasks))
         else:
-            multi_item_calls.append(mock.call(tasks))
-        self.zero_item_command.execute.assert_has_calls(zero_item_calls)
-        self.one_item_command.execute_tasks.assert_has_calls(one_item_calls)
-        self.multi_item_command.execute_tasks.assert_has_calls(multi_item_calls)
+            multi_item_before_execute_calls.append(mock.call())
+            multi_item_execute_calls.append(mock.call(tasks))
+
+        self.zero_item_command.before_execute.assert_has_calls(zero_item_before_execute_calls)
+        self.zero_item_command.execute.assert_has_calls(zero_item_execute_calls)
+
+        self.one_item_command.before_execute.assert_has_calls(one_item_before_execute_calls)
+        self.one_item_command.execute_tasks.assert_has_calls(one_item_execute_calls)
+
+        self.multi_item_command.before_execute.assert_has_calls(multi_item_before_execute_calls)
+        self.multi_item_command.execute_tasks.assert_has_calls(multi_item_execute_calls)
 
     def _create_tasks(self, count, annotation_count=0):
         tasks = []

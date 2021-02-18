@@ -108,6 +108,7 @@ try:
     if os.name != 'posix':
         os.system('color') # needed for colour console output on windows
     
+    COMMAND.before_execute()
     COMMAND.execute()
     EXIT_CODE = cli.ExitCodes.success
 except cli.ExitCodeException as ex:

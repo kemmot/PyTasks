@@ -20,7 +20,7 @@ class ListTaskCommandTests(unittest.TestCase):
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
         self.assertEqual(mock_filter, command.filter)
     
-    def test_execute_calls_garbage_collect_on_storage(self):
+    def test_before_execute_calls_garbage_collect_on_storage(self):
         mock_storage = mock.MagicMock()
         mock_storage.garbage_collect = mock.MagicMock()
         mock_storage.read_all = MagicMock(return_value=[])
@@ -29,10 +29,9 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.storage = mock_storage
 
         mock_filter = mock.Mock()
-        mock_filter.filter_items = mock.MagicMock(return_value=[])
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
-        command.execute()
+        command.before_execute()
 
         mock_storage.garbage_collect.assert_called_once()
 

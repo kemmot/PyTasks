@@ -17,6 +17,7 @@ class MultiCommand(commandbase.FilterCommandBase):
         if task_count == 0:
             if self._zero_item_action is None:
                 raise Exception(f'Cannot process {len(tasks)} items in default command')
+            self._zero_item_action.before_execute()
             self._zero_item_action.execute()
         elif task_count == 1:
             self._execute_command(tasks, self._one_item_action)
@@ -27,6 +28,7 @@ class MultiCommand(commandbase.FilterCommandBase):
         if command is None:
             raise Exception(f'Cannot process {len(tasks)} items in default command')
         try:
+            command.before_execute()
             command.execute_tasks(tasks)
             self._logger.debug('Executed {} command on {} tasks'.format(command.__class__.__name__, len(tasks)))
         except Exception as ex:

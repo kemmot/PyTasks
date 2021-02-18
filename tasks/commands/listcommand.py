@@ -10,8 +10,10 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         super().__init__(context, command_filter)
 
     def execute(self):
-        self.context.storage.garbage_collect()
         super().execute()
+    
+    def before_execute(self):
+        self.context.storage.garbage_collect()
 
     def execute_tasks(self, tasks):
         '''
