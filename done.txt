@@ -20,3 +20,6 @@
 [description:"FEAT-0056 Add shell command" entry:"1603473020" status:"pending" uuid:"a51ea15f-65bd-41c8-9954-fc169efff0bd"]
 [description:"FEAT-0057 Support different default commands based on number of dislayed tasks" entry:"1604580870" status:"pending" uuid:"38e123bb-3ae4-4c6f-b988-19953d28c3da"]
 [description:"FEAT-0054 Make task IDs stable" end:"1607275114" entry:"1596490026" start:"1607191684" status:"pending" uuid:"f28d797f-975e-47b6-bdfd-e9d8df31910d"]
+[description:"FEAT-0059 support specific annotation creation dates" end:"1613577332" entry:"1613572283" status:"pending" uuid:"2a3aabd9-ee85-444b-8380-1b9bbf4a4f83"]
+[description:"FEAT-0060 List command output table should be customizable" end:"1613580042" entry:"1613578169" status:"pending" uuid:"0e01a64a-200a-4dd8-b05b-d631946e043e"]
+[description:"BUG-0003 garbage collection does not work with multicommand" end:"1613664394" entry:"1613663487" status:"pending" uuid:"ff8f2dcf-aae7-486e-85b2-dcd9b9cbb5c8"]
