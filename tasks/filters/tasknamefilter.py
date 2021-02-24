@@ -1,8 +1,10 @@
+import logging
 import filters.filterbase as filterbase
 
 
 class TaskNameFilter(filterbase.FilterBase):
     def __init__(self, name):
+        self._logger = logging.getLogger(__class__.__name__)
         self._name = name
 
     @property
@@ -10,7 +12,9 @@ class TaskNameFilter(filterbase.FilterBase):
         return self._name
 
     def is_match(self, task):
-        return self._name.upper() in task.name.upper()
+        result = self._name.upper() in task.name.upper()
+        self._logger.debug('is_match: {}, task: [{}]'.format(result, task))
+        return result
 
 
 class TaskNameFilterParser(filterbase.FilterParserBase):
