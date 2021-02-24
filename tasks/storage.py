@@ -119,6 +119,9 @@ class TextFileStorage:
             if keep:
                 tasks_to_keep.append(existing_task)
         self._replace_all(tasks_to_keep)
+    
+    def read_pending(self):
+        return [t for t in self.read_all() if not t.is_ended]
 
     def read_all(self):
         tasks = []
@@ -193,7 +196,7 @@ class TaskWarriorStorage:
         self._logger.debug('Garbage collected {} complete tasks to done file'.format(len(done_tasks)))
 
     def read_all(self):
-        return self._pending_storage.read_all()
+        return self._pending_storage.read_pending()
 
     def update(self, tasks):
         self._pending_storage.update(tasks)

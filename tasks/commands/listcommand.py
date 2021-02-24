@@ -24,8 +24,7 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         table.add_column('Status')
         table.add_column('Description')
         for task in tasks:
-            if not task.is_ended:
-                table.add_row(task.index, task.status, task.name)
+            table.add_row(task.index, task.status, task.name)
         print(table.create_output())
 
 

@@ -24,3 +24,4 @@
 [description:"FEAT-0051 Default action should be info for a single item" entry:"1595274246" status:"pending" uuid:"5ee7dc49-1388-4721-b56d-e5d16baf08d2"]
 [description:"FEAT-0055 Support hook scripts for add command" entry:"1603472616" status:"pending" uuid:"dda9ea30-ae9d-4f16-ad78-0364a6170304"]
 [description:"FEAT-0058 support multiple files with easy switching" entry:"1613572256" status:"pending" uuid:"8ba687fa-ea86-4c66-adb0-e657be2d513d"]
+[annotation_1614207862:"This is due to it including none garbage collected tasks" description:"BUG-0004: Done command filter shows incorrect count" entry:"1614207837" status:"pending" uuid:"28334192-0962-43ca-8328-1104b2d65353"]
