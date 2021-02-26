@@ -24,3 +24,5 @@
 [description:"FEAT-0051 Default action should be info for a single item" entry:"1595274246" status:"pending" uuid:"5ee7dc49-1388-4721-b56d-e5d16baf08d2"]
 [description:"FEAT-0055 Support hook scripts for add command" entry:"1603472616" status:"pending" uuid:"dda9ea30-ae9d-4f16-ad78-0364a6170304"]
 [description:"FEAT-0058 support multiple files with easy switching" entry:"1613572256" status:"pending" uuid:"8ba687fa-ea86-4c66-adb0-e657be2d513d"]
+[description:"Modify command should support wait property" entry:"1614268420" status:"pending" uuid:"591998cf-9326-4c38-86f7-20ea9829a7fd"]
+[description:"List command should respect wait property" entry:"1614268432" status:"pending" uuid:"f1b4c0cf-6d9a-435e-9f5b-07e76487a4ed"]
