@@ -48,6 +48,11 @@ tasks add <name> [name ...]
 
 Note: multiple names are concatenated together with spaces.
 
+### Applicable Settings
+
+* [command.add.format](#commandaddformat)
+* [command.add.next_key_id](#commandaddnext_key_id)
+
 ### Examples
 Example 1: add a task.
 ```
@@ -293,6 +298,21 @@ tasks /add/ list
 -----------------------------------------------------------------------------------------------------
 
 # Settings
+
+## command.add.format
+The format of the name of the text.
+
+The following substitution properties are available:
+* key_id: an auto incrementing ID stored in the command.add.next_key_id setting.
+* name: the name entered.
+
+The following example will prefix the name with an incrementing key ID.
+```
+FEAT-{key_id:04}: {name}
+```
+
+## command.add.next_key_id
+An auto incrementing key ID for use with the command.add.format setting.
 
 ## command.annotate.confirm
 Whether the annotate command should request confirmation before making changes.

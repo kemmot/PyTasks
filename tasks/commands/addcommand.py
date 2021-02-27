@@ -28,8 +28,16 @@ class AddTaskCommand(commandbase.CommandBase):
         '''
         Executes the logic of this command.
         '''
+        key_id = self.context.settings.command_add_next_key_id
+        mappings = {
+            'key_id': key_id,
+            'name': self.task.name
+        }
+        self.task.name = self.context.settings.command_add_format.format(**mappings)
+
         existing_tasks = self.context.storage.read_all()
         self.context.storage.write(self.task)
+        self.context.settings.command_add_next_key_id = key_id + 1
         self.task.index = len(existing_tasks) + 1
         print('Task created: {}'.format(self.task.index))
 

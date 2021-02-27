@@ -12,6 +12,18 @@ class Settings:
         self._logger = logging.getLogger(self.__class__.__name__)
 
     @property
+    def command_add_format(self):
+        return self._get_value('command.add.format')
+
+    @property
+    def command_add_next_key_id(self):
+        return self._get_value_integer('command.add.next_key_id')
+
+    @command_add_next_key_id.setter
+    def command_add_next_key_id(self, value):
+        self._config[self._category]['command.add.next_key_id'] = str(value)
+
+    @property
     def command_default(self):
         return self._get_value('command.default')
 
@@ -74,6 +86,13 @@ class Settings:
             raise Exception(message)
         return self._config[self._category].getboolean(key)
 
+    def _get_value_integer(self, key):
+        if not self._config.has_option(self._category, key):
+            message_format = 'Config element not found, category: [{}], key: [{}]'
+            message = message_format.format(self._category, key)
+            raise Exception(message)
+        return self._config[self._category].getint(key)
+
     def _get_value(self, key):
         if not self._config.has_option(self._category, key):
             message = 'Config element not found, category: [{}], key: [{}]'
@@ -89,3 +108,11 @@ class Settings:
             self._logger.debug('Read config from file: [{}]'.format(path))
         except Exception as ex:
             raise Exception('Failed to read config from file: [{}]'.format(path)) from ex
+
+    def save(self, path):
+        try:
+            with open(path, 'w') as config_file:
+                self._config.write(config_file, space_around_delimiters=False)
+            self._logger.debug('Wrote config to file: [{}]'.format(path))
+        except Exception as ex:
+            raise Exception('Failed to write config to file: [{}]'.format(path)) from ex
