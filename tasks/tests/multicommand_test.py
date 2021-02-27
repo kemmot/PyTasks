@@ -36,6 +36,7 @@ class MultiCommandTests(unittest.TestCase):
 
     def _execute_test_no_command(self, task_count):
         tasks = self._create_tasks(task_count)
+        self.mock_context.storage = mock.Mock()
         self.mock_filter.filter_items = mock.MagicMock(return_value=tasks)
         
         command = multicommand.MultiCommand(self.mock_context, \
@@ -55,6 +56,7 @@ class MultiCommandTests(unittest.TestCase):
     
     def _execute_calls_relevant_command(self, task_count):
         tasks = self._create_tasks(task_count)
+        self.mock_context.storage.read_all = mock.MagicMock(return_value=[])
         self.mock_filter.filter_items = mock.MagicMock(return_value=tasks)
         
         command = multicommand.MultiCommand(self.mock_context, \

@@ -298,7 +298,7 @@ class TaskWarriorStorageTests(unittest.TestCase):
     def test_read_all_calls_read_all_on_pending_storage(self):
         tasks = [mock.Mock(), mock.Mock()]
         mock_pending_storage = mock.Mock()
-        mock_pending_storage.read_all = mock.MagicMock(return_value=tasks)
+        mock_pending_storage.read_pending = mock.MagicMock(return_value=tasks)
         mock_done_storage = mock.Mock()
         target = storage.TaskWarriorStorage(mock_pending_storage, mock_done_storage)
         result = target.read_all()
