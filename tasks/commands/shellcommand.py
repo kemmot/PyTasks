@@ -4,13 +4,16 @@ import commands.commandbase as commandbase
 
 
 class Shell:
-    def __init__(self, command_callback):
+    def __init__(self, command_callback, console):
+        if not command_callback:
+            raise ValueError('command_callback cannot be None')
+        if not console:
+            raise ValueError('console cannot be None')
         self._exit_command = 'exit'
         self._prompt = '> '
         self._logger = logging.getLogger(__class__.__name__)
-        if not command_callback:
-            raise ValueError('command_callback cannot be None')
         self._command_callback = command_callback
+        self._console = console
 
     @property
     def exit_command(self):
@@ -29,9 +32,9 @@ class Shell:
         self._prompt = value
 
     def enter(self):
-        print('Entered shell, enter "{}" to exit'.format(self.exit_command))
+        self._console.print('Entered shell, enter "{}" to exit'.format(self.exit_command))
         while True:
-            command_string = input(self.prompt)
+            command_string = self._console.input(self.prompt)
             if command_string == self.exit_command:
                 break
 
@@ -55,7 +58,7 @@ class ShellCommand(commandbase.CommandBase):
         if shell:
             self._shell = shell
         else:
-            self._shell = Shell(self.handle_command)
+            self._shell = Shell(self.handle_command, context.console)
         self._shell.prompt = 'task> '
 
     def execute(self):

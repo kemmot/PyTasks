@@ -39,7 +39,7 @@ class AddTaskCommand(commandbase.CommandBase):
         self.context.storage.write(self.task)
         self.context.settings.command_add_next_key_id = key_id + 1
         self.task.index = len(existing_tasks) + 1
-        print('Task created: {}'.format(self.task.index))
+        self.context.console.print('Task created: {}'.format(self.task.index))
 
 
 class AddTaskCommandParser(commandbase.CommandParserBase):

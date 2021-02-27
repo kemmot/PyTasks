@@ -25,6 +25,7 @@ import yaml
 
 import commandcontext
 import commandline as cli
+import console
 # modules used by reflection
 import filters.filterfactory as filterfactory
 import filters.taskindexfilter as taskindexfilter
@@ -84,12 +85,14 @@ try:
     SETTINGS = settings.Settings()
     SETTINGS.read(SETTINGS_FILENAME)
 
-    STORAGE = storage.TaskWarriorStorageCreator().create(SETTINGS)
-
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
 
-    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY)
+    STORAGE = storage.TaskWarriorStorageCreator().create(SETTINGS)
+
+    CONSOLE = console.Console()
+
+    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY, CONSOLE)
 
     PARSER = commandfactory.CommandParser()
 

@@ -3,8 +3,8 @@ import filters.filterbase as filterbase
 
 
 class TaskNameFilter(filterbase.FilterBase):
-    def __init__(self, name):
-        self._logger = logging.getLogger(__class__.__name__)
+    def __init__(self, context, name):
+        super().__init__(context)
         self._name = name
 
     @property
@@ -18,12 +18,12 @@ class TaskNameFilter(filterbase.FilterBase):
 
 
 class TaskNameFilterParser(filterbase.FilterParserBase):
-    def parse(self, arg):
+    def parse(self, context, arg):
         if arg:
             search_term = arg
             if len(search_term) > 2 and search_term[0] == '/' and search_term[-1] == '/':
                 search_term = search_term[1:-1]
-            task_filter = TaskNameFilter(search_term)
+            task_filter = TaskNameFilter(context, search_term)
         else:
             task_filter = None
         return task_filter

@@ -72,8 +72,8 @@ class CommandParserBase:
     def parse(self, context, args):
         raise Exception('parse not implemented in {}'.format(__class__.__name__))
 
-    def print_help(self):
-        print(self.get_usage())
+    def print_help(self, console):
+        console.print(self.get_usage())
 
     def get_confirm_filter(self, context):
         return None

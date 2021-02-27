@@ -10,19 +10,19 @@ class InfoCommand(commandbase.FilterCommandBase):
         Executes the logic of this command.
         '''
         for task in tasks:
-            print('Name        Value')
-            print('ID          {}'.format(task.index))
-            print('Description {}'.format(task.name))
-            print('Status      {}'.format(task.status))
-            print('Entered     {}'.format(task.created_time))
-            print('UUID        {}'.format(task.id_number))
+            self.context.console.print('Name        Value')
+            self.context.console.print('ID          {}'.format(task.index))
+            self.context.console.print('Description {}'.format(task.name))
+            self.context.console.print('Status      {}'.format(task.status))
+            self.context.console.print('Entered     {}'.format(task.created_time))
+            self.context.console.print('UUID        {}'.format(task.id_number))
 
             if task.annotations:
-                print('')
-                print('Date             Modification')
+                self.context.console.print('')
+                self.context.console.print('Date             Modification')
                 for annotation in task.annotations:
                     date = annotation.created.strftime('%Y-%m-%d %H:%M')
-                    print('{} {}'.format(date, annotation.message))
+                    self.context.console.print('{} {}'.format(date, annotation.message))
 
 
 class InfoCommandParser(commandbase.FilterCommandParserBase):

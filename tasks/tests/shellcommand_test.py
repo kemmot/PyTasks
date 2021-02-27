@@ -8,66 +8,77 @@ import filters.confirmfilter as confirmfilter
 
 class ShellTests(unittest.TestCase):
     def test_constructor_handles_null_callback(self):
+        mock_console = mock.Mock()
         with self.assertRaises(ValueError):
-            shellcommand.Shell(None)
+            shellcommand.Shell(None, mock_console)
+
+    def test_constructor_handles_null_console(self):
+        mock_callback = mock.MagicMock()
+        with self.assertRaises(ValueError):
+            shellcommand.Shell(mock_callback, None)
 
     def test_constructor_succeeds(self):
         mock_callback = mock.MagicMock()
-        shellcommand.Shell(mock_callback)
+        mock_console = mock.Mock()
+        shellcommand.Shell(mock_callback, mock_console)
 
     def test_exit_command_default(self):
-        shell = shellcommand.Shell(mock.MagicMock())
+        mock_callback = mock.MagicMock()
+        mock_console = mock.Mock()
+        shell = shellcommand.Shell(mock_callback, mock_console)
         self.assertEqual('exit', shell.exit_command)
 
     def test_exit_command_setter(self):
         expected = 'new value'
-        shell = shellcommand.Shell(mock.MagicMock())
+        mock_callback = mock.MagicMock()
+        mock_console = mock.Mock()
+        shell = shellcommand.Shell(mock_callback, mock_console)
         shell.exit_command = expected
         self.assertEqual(expected, shell.exit_command)
 
     def test_prompt_default(self):
-        shell = shellcommand.Shell(mock.MagicMock())
+        mock_callback = mock.MagicMock()
+        mock_console = mock.Mock()
+        shell = shellcommand.Shell(mock_callback, mock_console)
         self.assertEqual('> ', shell.prompt)
 
     def test_prompt_setter(self):
         expected = 'new value'
-        shell = shellcommand.Shell(mock.MagicMock())
+        mock_callback = mock.MagicMock()
+        mock_console = mock.Mock()
+        shell = shellcommand.Shell(mock_callback, mock_console)
         shell.prompt = expected
         self.assertEqual(expected, shell.prompt)
     
     def test_enter_succeeds(self):
         prompt = 'new prompt'
         exit_command = 'quit'
-        mock_print = mock.MagicMock()
-        mock_input = mock.MagicMock()
-        mock_input.side_effect = ['test command', exit_command]
-        shell = shellcommand.Shell(mock.MagicMock())
+        mock_callback = mock.MagicMock()
+        mock_console = mock.Mock()
+        mock_console.input.side_effect = ['test command', exit_command]
+        shell = shellcommand.Shell(mock_callback, mock_console)
         shell.exit_command = exit_command
         shell.prompt = prompt
-        with mock.patch('commands.shellcommand.print', mock_print):
-            with mock.patch('commands.shellcommand.input', mock_input):
-                shell.enter()
-        mock_print.assert_called()
+        shell.enter()
         # ensure two prompts then exit
         input_calls = [mock.call(prompt), mock.call(prompt)]
-        self.assertEqual(input_calls, mock_input.mock_calls)
+        self.assertEqual(input_calls, mock_console.input.mock_calls)
     
     def test_enter_handles_callback_exception(self):
         prompt = 'new prompt'
         exit_command = 'exit'
-        mock_input = mock.MagicMock()
-        mock_input.side_effect = ['test command', exit_command]
         mock_callback = mock.MagicMock()
         mock_callback.side_effect = Exception()
-        shell = shellcommand.Shell(mock_callback)
+        mock_console = mock.Mock()
+        mock_console.input = mock.MagicMock()
+        mock_console.input.side_effect = ['test command', exit_command]
+        shell = shellcommand.Shell(mock_callback, mock_console)
         shell.exit_command = exit_command
         shell.prompt = prompt
-        with mock.patch('commands.shellcommand.print', mock.MagicMock()):
-            with mock.patch('commands.shellcommand.input', mock_input):
-                shell.enter()
+        shell.enter()
         # ensure still prompts after exception
         input_calls = [mock.call(prompt), mock.call(prompt)]
-        self.assertEqual(input_calls, mock_input.mock_calls)
+        self.assertEqual(input_calls, mock_console.input.mock_calls)
 
 
 class ShellCommandTests(unittest.TestCase):

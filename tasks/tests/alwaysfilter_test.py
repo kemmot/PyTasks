@@ -6,4 +6,4 @@ import filters.alwaysfilter as alwaysfilter
 
 class AlwaysFilterTests(unittest.TestCase):
     def test_is_match_returns_true(self):
-        self.assertTrue(alwaysfilter.AlwaysFilter().is_match(mock.Mock()))
+        self.assertTrue(alwaysfilter.AlwaysFilter(mock.Mock()).is_match(mock.Mock()))

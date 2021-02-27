@@ -31,5 +31,5 @@ class StartCommandParser(commandbase.FilterCommandParserBase):
 
     def get_confirm_filter(self, context):
         if context.settings.command_start_confirm:
-            return confirmfilter.ConfirmFilter('Start')
+            return confirmfilter.ConfirmFilter(context, 'Start')
         return None

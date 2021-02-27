@@ -9,7 +9,7 @@ class HelpCommand(commandbase.CommandBase):
         sort = lambda t: t.command_name
         sorted_parsers = sorted(self.context.command_factory.types, key=sort)
         for command_parser in sorted_parsers:
-            command_parser.print_help()
+            command_parser.print_help(self.context.console)
 
 
 class HelpCommandParser(commandbase.CommandParserBase):

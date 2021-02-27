@@ -2,10 +2,11 @@ import asciitable
 
 
 class CommandContext:
-    def __init__(self, settings, storage, filter_factory):
+    def __init__(self, settings, storage, filter_factory, console):
         self._settings = settings
         self._storage = storage
         self._filter_factory = filter_factory
+        self._console = console
         self._command_factory = None
 
     @property
@@ -15,6 +16,10 @@ class CommandContext:
     @command_factory.setter
     def command_factory(self, value):
         self._command_factory = value
+
+    @property
+    def console(self):
+        return self._console
 
     @property
     def filter_factory(self):

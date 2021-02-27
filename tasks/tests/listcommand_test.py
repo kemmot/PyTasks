@@ -64,6 +64,10 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks[1].is_ended = False
         tasks[1].status = 'this status'
         tasks[1].name = 'some name'
+        tasks[1].is_ended = False
+
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
 
         mock_storage = mock.Mock()
         mock_storage.read_all = MagicMock(return_value=tasks)
@@ -74,6 +78,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_table.create_output = MagicMock(return_value='')
         
         mock_context = mock.Mock()
+        mock_context.console = mock_console
         mock_context.create_table = mock.MagicMock(return_value=mock_table)
         mock_context.storage = mock_storage
 
@@ -81,10 +86,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
-
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.listcommand.print', mock_print):
-            command.execute()
+        command.execute()
 
         mock_filter.filter_items.assert_called()
 
@@ -98,7 +100,7 @@ class ListTaskCommandTests(unittest.TestCase):
         add_row_calls = [add_row_call1]
         self.assertEqual(add_row_calls, mock_table.add_row.mock_calls)
 
-        mock_print.assert_called()
+        mock_console.print.assert_called()
 
     def test_execute_prints_content(self):
         task = mock.MagicMock()
@@ -110,22 +112,23 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks = []
         tasks.append(task)
 
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
+
         mock_storage = mock.MagicMock()
         mock_storage.read_all = MagicMock(return_value=tasks)
         
         mock_context = mock.Mock()
+        mock_context.console = mock_console
         mock_context.storage = mock_storage
 
         mock_filter = mock.Mock()
         mock_filter.filter_items = mock.MagicMock(return_value=tasks)
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
+        command.execute()
 
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.listcommand.print', mock_print):
-            command.execute()
-
-        mock_print.assert_called()
+        mock_console.print.assert_called()
 
 
 class ListTaskCommandParserTests(unittest.TestCase):

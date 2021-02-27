@@ -23,7 +23,15 @@ class Console:
     def __init__(self):
         self._background_colour = bcolors.CBLACK
         self._foreground_colour = bcolors.CWHITE
+    
+    def input(self, prompt):
+        return input(prompt)
 
-    def print(self, text, colour):        
-        output = colour + text + self._foreground_colour
+    def print(self, text, colour=None):
+        output = ''
+        if colour:
+            output += colour
+        output += text
+        if colour:
+            output += self._foreground_colour
         print(output)

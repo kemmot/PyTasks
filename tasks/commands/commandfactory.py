@@ -62,10 +62,11 @@ class CommandFactory(typefactory.TypeFactory):
         return parser, command
 
     def _get_filters(self, parsed_command):
-        batch_filter = allbatchfilter.AllBatchFilter()
+        batch_filter = allbatchfilter.AllBatchFilter(self._command_context)
         filter_arguments = parsed_command.get_filter_argument_values()
         for filter_argument in filter_arguments:
-            batch_filter.add_filter(self._command_context.filter_factory.parse(filter_argument))
+            filter = self._command_context.filter_factory.parse(self._command_context, filter_argument)
+            batch_filter.add_filter(filter)
         return batch_filter
 
 

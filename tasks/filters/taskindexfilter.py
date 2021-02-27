@@ -3,7 +3,8 @@ import filters.filterbase as filterbase
 
 
 class TaskIndexFilter(filterbase.FilterBase):
-    def __init__(self, index):
+    def __init__(self, context, index):
+        super().__init__(context)
         self._index = index
         self._logger = logging.getLogger(__class__.__name__)
 
@@ -18,9 +19,9 @@ class TaskIndexFilter(filterbase.FilterBase):
 
 
 class TaskIndexFilterParser(filterbase.FilterParserBase):
-    def parse(self, arg):
+    def parse(self, context, arg):
         if arg.isnumeric():
-            task_filter = TaskIndexFilter(int(arg))
+            task_filter = TaskIndexFilter(context, int(arg))
         else:
             task_filter = None
         return task_filter
