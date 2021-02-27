@@ -54,7 +54,10 @@ class FilterCommandBase(CommandBase):
         raise Exception('Execute(tasks) not implemented in {}'.format(__class__.__name__))
 
     def get_filtered_tasks(self):
-        return self.filter.filter_items(self.context.storage.read_all())
+        items = self.context.storage.read_all()
+        filtered_items = self.filter.filter_items(items)
+        self._logger.debug('Filtered {} items to {}'.format(len(items), len(filtered_items)))
+        return filtered_items
 
 
 class CommandParserBase:
