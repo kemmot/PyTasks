@@ -5,6 +5,7 @@ import filters.filterbase as filterbase
 class TaskNameFilter(filterbase.FilterBase):
     def __init__(self, context, name):
         super().__init__(context)
+        self._logger = logging.getLogger(__class__.__name__)
         self._name = name
 
     @property
