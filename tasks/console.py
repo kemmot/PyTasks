@@ -26,12 +26,22 @@ class Console:
     
     def input(self, prompt):
         return input(prompt)
+    
+    def print_lines(self, lines, alt_foregound_colour=None):
+        line_number = 0
+        for line in lines:
+            if line_number % 2 == 1:
+                foreground_colour = alt_foregound_colour
+            else:
+                foreground_colour = None
+            self.print(line, foreground_colour)
+            line_number += 1
 
-    def print(self, text, colour=None):
+    def print(self, text, foreground_colour=None):
         output = ''
-        if colour:
-            output += colour
+        if foreground_colour:
+            output += foreground_colour
         output += text
-        if colour:
+        if foreground_colour:
             output += self._foreground_colour
         print(output)

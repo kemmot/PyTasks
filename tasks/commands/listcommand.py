@@ -1,5 +1,6 @@
 import commands.commandbase as commandbase
 import asciitable
+import console
 
 
 class ListTaskCommand(commandbase.FilterCommandBase):
@@ -26,7 +27,7 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         for task in tasks:
             if not task.is_ended:
                 table.add_row(task.index, task.status, task.name)
-        self.context.console.print(table.create_output())
+        self.context.console.print_lines(table.create_output_lines(), alt_foregound_colour=console.bcolors.CYELLOW)
 
 
 class ListTaskCommandParser(commandbase.FilterCommandParserBase):

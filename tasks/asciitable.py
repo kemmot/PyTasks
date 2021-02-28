@@ -30,15 +30,22 @@ class AsciiTable:
 
     def create_output(self):
         output = ''
-        column_widths = self._calculate_column_widths()
-        output = self._create_column_header(column_widths)
-        if self._rows:
-            output += self._row_separator
-            if self.add_header_underline:
-                output += self._create_line(column_widths)
+        for line in self.create_output_lines():
+            if output:
                 output += self._row_separator
-            output += self._create_rows_output(column_widths)
+            output += line
         return output
+
+    def create_output_lines(self):
+        lines = []
+        column_widths = self._calculate_column_widths()
+        lines.append(self._create_column_header(column_widths))
+        if self._rows:
+            if self.add_header_underline:
+                lines.append(self._create_line(column_widths))
+            for line in self._create_rows_output_lines(column_widths):
+                lines.append(line)
+        return lines
 
     def _calculate_column_widths(self):
         column_widths = []
@@ -84,15 +91,13 @@ class AsciiTable:
             line_width += column_width
         return line_width
 
-    def _create_rows_output(self, column_widths):
-        output = ''
+    def _create_rows_output_lines(self, column_widths):
+        lines = []
         for row in self._rows:
-            if output:
-                output += self._row_separator
-            output += self._create_row_output(row, column_widths)
-        return output
+            lines.append(self._create_row_output_line(row, column_widths))
+        return lines
 
-    def _create_row_output(self, row, column_widths):
+    def _create_row_output_line(self, row, column_widths):
         output = ''
         column_index = 0
         for column_width in column_widths:
