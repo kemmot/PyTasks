@@ -1,7 +1,6 @@
 [description:"FEAT-0004 Add task key generation" entry:"0" status:"pending" uuid:"da92a6fb-5959-4e9d-9dd3-f34e32b3371e"]
 [description:"FEAT-0010 Add change log" entry:"0" status:"pending" uuid:"2c06393b-42d9-41dd-b925-6c909c40a4ee"]
 [description:"FEAT-0015 List command should be capable of displaying done tasks" entry:"0" status:"pending" uuid:"95e88b6e-77c9-4a05-a069-56f0fb3cec7a"]
-[annotation_1603472718:"Use hook script for this" description:"FEAT-0016 Should auto allocate ticket numbers" entry:"0" status:"pending" uuid:"ce9abfdb-3623-4aea-9767-fe5bf0ed8e6b"]
 [description:"FEAT-0017 List command output should be sorted" entry:"0" status:"pending" uuid:"6bdcb644-7f0e-4f14-96df-427d3052f3b7"]
 [description:"FEAT-0023 support sqlite as alternate data store" entry:"0" status:"pending" uuid:"7ac3501b-b700-4931-a8cc-7f1fe36b6f72"]
 [description:"FEAT-0024 Add edit command" entry:"0" status:"pending" uuid:"2da1abb4-c851-45ed-a123-e05519277748"]
