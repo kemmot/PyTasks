@@ -28,3 +28,5 @@
 [description:"FEAT-0064: support setting to force line endings for cygwin cross compat" entry:"1614873971" status:"pending" uuid:"80662835-4428-49b6-8664-1809cfbcfdac"]
 [description:"FEAT-0065: support leaving ini comments when rewriting file" entry:"1614874004" status:"pending" uuid:"3c2f4d10-1ae6-4a35-a56a-05698e4a7f01"]
 [description:"FEAT-0066: only rewrite ini file when settings changed" entry:"1614874017" status:"pending" uuid:"eef6a461-fbf9-4423-ab69-68a2df189528"]
+[description:"FEAT-0067: setting defaults should be used if missing" entry:"1614876287" status:"pending" uuid:"81c00694-e33a-4b2b-8f33-1851899ec6ca"]
+[description:"FEAT-0068: support custom columns in reports" entry:"1614880069" status:"pending" uuid:"5a93c68d-9e07-47ba-9be8-2185b0a96e17"]
