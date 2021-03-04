@@ -25,3 +25,6 @@
 [description:"FEAT-0058 support multiple files with easy switching" entry:"1613572256" status:"pending" uuid:"8ba687fa-ea86-4c66-adb0-e657be2d513d"]
 [description:"Modify command should support wait property" entry:"1614268420" status:"pending" uuid:"591998cf-9326-4c38-86f7-20ea9829a7fd"]
 [description:"List command should respect wait property" entry:"1614268432" status:"pending" uuid:"f1b4c0cf-6d9a-435e-9f5b-07e76487a4ed"]
+[description:"FEAT-0064: support setting to force line endings for cygwin cross compat" entry:"1614873971" status:"pending" uuid:"80662835-4428-49b6-8664-1809cfbcfdac"]
+[description:"FEAT-0065: support leaving ini comments when rewriting file" entry:"1614874004" status:"pending" uuid:"3c2f4d10-1ae6-4a35-a56a-05698e4a7f01"]
+[description:"FEAT-0066: only rewrite ini file when settings changed" entry:"1614874017" status:"pending" uuid:"eef6a461-fbf9-4423-ab69-68a2df189528"]
