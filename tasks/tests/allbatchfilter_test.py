@@ -6,7 +6,7 @@ import filters.allbatchfilter as allbatchfilter
 
 class AllBatchFilterTests(unittest.TestCase):
     def test_constructor_succeeds(self):
-        allbatchfilter.AllBatchFilter()
+        allbatchfilter.AllBatchFilter(mock.Mock())
 
     def test_filter_items_calls_filter_items_on_subfilters(self):
         items = [mock.Mock(), mock.Mock(), mock.Mock()]
@@ -17,7 +17,7 @@ class AllBatchFilterTests(unittest.TestCase):
         filter2 = self._create_filter(True)
         filter2.filter_items = mock.MagicMock(return_value=result_items)
 
-        batch_filter = allbatchfilter.AllBatchFilter()
+        batch_filter = allbatchfilter.AllBatchFilter(mock.Mock())
         batch_filter.add_filter(filter1)
         batch_filter.add_filter(filter2)
 
@@ -37,7 +37,7 @@ class AllBatchFilterTests(unittest.TestCase):
         self._execute_is_match_test(True, [True, True, True])
 
     def _execute_is_match_test(self, expected_result, filter_results):
-        batch_filter = allbatchfilter.AllBatchFilter()
+        batch_filter = allbatchfilter.AllBatchFilter(mock.Mock())
         for filter_result in filter_results:
             batch_filter.add_filter(self._create_filter(filter_result))
         self.assertEqual(expected_result, batch_filter.is_match(mock.Mock()))

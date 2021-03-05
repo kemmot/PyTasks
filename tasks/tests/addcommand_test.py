@@ -35,6 +35,9 @@ class AddTaskCommandTests(unittest.TestCase):
         existing_tasks = []
         for _ in range(0, existing_task_count):
             existing_tasks.append(mock.Mock())
+
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
         
         mock_settings = mock.Mock()
         mock_settings.command_add_next_key_id = 2
@@ -44,6 +47,7 @@ class AddTaskCommandTests(unittest.TestCase):
         mock_storage.read_all = MagicMock(return_value=existing_tasks)
         
         mock_context = mock.Mock()
+        mock_context.console = mock_console
         mock_context.settings = mock_settings
         mock_context.storage = mock_storage
 
@@ -52,12 +56,10 @@ class AddTaskCommandTests(unittest.TestCase):
 
         command = addcommand.AddTaskCommand(mock_context)
         command.task = task
+        command.execute()
 
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.addcommand.print', mock_print):
-            command.execute()
         output = 'Task created: {}'.format(existing_task_count + 1)
-        mock_print.assert_called_once_with(output)
+        mock_console.print.assert_called_once_with(output)
 
 
 class AddTaskCommandParserTests(unittest.TestCase):

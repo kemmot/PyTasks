@@ -40,7 +40,7 @@ class AnnotateCommand(commandbase.FilterCommandBase):
         for task in tasks:
             annotation = entities.TaskAnnotation(self.message, self.created)
             task.annotations.append(annotation)
-            print('Task annotated: {}'.format(task.index))
+            self.context.console.print('Task annotated: {}'.format(task.index))
         self.context.storage.update(tasks)
 
 
@@ -77,5 +77,5 @@ class AnnotateCommandParser(commandbase.FilterCommandParserBase):
 
     def get_confirm_filter(self, context):
         if context.settings.command_annotate_confirm:
-            return confirmfilter.ConfirmFilter('Annotate')
+            return confirmfilter.ConfirmFilter(context, 'Annotate')
         return None

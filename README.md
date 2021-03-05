@@ -157,6 +157,11 @@ tasks [filter] list
 
 * [table.column.separator](#tablecolumnseparator)
 * [table.header.underline](#tableheaderunderline)
+* [table.row.alt_backcolour](#tablerowalt_backcolour)
+* [table.row.alt_forecolour](#tablerowalt_forecolour)
+* [table.row.backcolour](#tablerowbackcolour)
+* [table.row.forecolour](#tablerowforecolour)
+
 
 -----------------------------------------------------------------------------------------------------
 
@@ -395,3 +400,53 @@ Default value: " | "
 Whether to underline table headers to separate them from the rows.
 
 Default value: True
+
+## table.row.alt_backcolour
+The background colour of alternating table rows.
+See [background colours](#supported-background-colours) for options.
+
+Default value: Black
+
+## table.row.alt_forecolour
+The foreground colour of alternating table rows.
+See [foreground colours](#supported-foreground-colours) for options.
+
+Default value: White
+
+## table.row.backcolour
+The background colour of table rows.
+See [background colours](#supported-background-colours) for options.
+
+Default value: Black
+
+## table.row.forecolour
+The foreground colour of table rows.
+See [foreground colours](#supported-foreground-colours) for options.
+
+Default value: White
+
+# Supported Colours
+
+## Supported Foreground Colours
+The following colours are supported as foreground colours.
+
+* Beige
+* Black
+* Blue
+* Purple
+* Green
+* Red
+* White
+* Yellow
+
+## Supported Background Colours
+The following colours are supported as background colours.
+
+* Black
+* Blue
+* Cyan
+* Green
+* Purple
+* Red
+* White
+* Yellow

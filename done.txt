@@ -25,3 +25,4 @@
 [description:"BUG-0003 garbage collection does not work with multicommand" end:"1613664394" entry:"1613663487" status:"pending" uuid:"ff8f2dcf-aae7-486e-85b2-dcd9b9cbb5c8"]
 [annotation_1614207862:"This is due to it including none garbage collected tasks" description:"BUG-0004 Done confirmation shows incorrect count" end:"1614447616" entry:"1614447608" status:"pending" uuid:"2a71c056-9643-4b48-9704-00be4538f911"]
 [annotation_1603472718:"Use hook script for this" description:"FEAT-0016 Should auto allocate ticket numbers" end:"1614524809" entry:"0" status:"pending" uuid:"ce9abfdb-3623-4aea-9767-fe5bf0ed8e6b"]
+[description:"FEAT-0049 List output should alternate colours" end:"1614953504" entry:"1595274010" status:"pending" uuid:"5df655ab-660c-47b2-87e8-80ef697e8a5b"]

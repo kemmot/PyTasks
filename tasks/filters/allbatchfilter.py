@@ -2,7 +2,8 @@ import filters.filterbase as filterbase
 
 
 class AllBatchFilter(filterbase.FilterBase):
-    def __init__(self):
+    def __init__(self, context):
+        super().__init__(context)
         self._filters = []
 
     def add_filter(self, task_filter):

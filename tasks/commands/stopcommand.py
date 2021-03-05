@@ -31,5 +31,5 @@ class StopCommandParser(commandbase.FilterCommandParserBase):
 
     def get_confirm_filter(self, context):
         if context.settings.command_stop_confirm:
-            return confirmfilter.ConfirmFilter('Stop')
+            return confirmfilter.ConfirmFilter(context, 'Stop')
         return None

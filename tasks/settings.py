@@ -79,6 +79,22 @@ class Settings:
     def table_header_underline(self):
         return self._get_value_boolean('table.header.underline')
 
+    @property
+    def table_row_alt_backcolour(self):
+        return self._get_value('table.row.alt_backcolour')
+
+    @property
+    def table_row_alt_forecolour(self):
+        return self._get_value('table.row.alt_forecolour')
+
+    @property
+    def table_row_backcolour(self):
+        return self._get_value('table.row.backcolour')
+
+    @property
+    def table_row_forecolour(self):
+        return self._get_value('table.row.forecolour')
+
     def _get_value_boolean(self, key):
         if not self._config.has_option(self._category, key):
             message_format = 'Config element not found, category: [{}], key: [{}]'

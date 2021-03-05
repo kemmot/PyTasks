@@ -23,5 +23,5 @@ class DoneCommandParser(commandbase.FilterCommandParserBase):
 
     def get_confirm_filter(self, context):
         if context.settings.command_done_confirm:
-            return confirmfilter.ConfirmFilter('Mark as done')
+            return confirmfilter.ConfirmFilter(context, 'Mark as done')
         return None

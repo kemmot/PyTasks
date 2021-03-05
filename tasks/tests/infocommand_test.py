@@ -29,15 +29,16 @@ class InfoCommandTests(unittest.TestCase):
     def test_execute_prints_task_details(self):
         task = self._create_tasks(1)[0]
 
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
+
         mock_filter = mock.Mock()
         mock_filter.filter_items = mock.MagicMock(return_value=[task])
 
         mock_context = self._create_context()
-        command = infocommand.InfoCommand(mock_context, mock_filter)
         
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.infocommand.print', mock_print):
-            command.execute()
+        command = infocommand.InfoCommand(mock_context, mock_filter)
+        command.execute()
         
         calls = []
         calls.append(mock.call('Name        Value'))
@@ -46,20 +47,22 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('Status      {}'.format(task.status)))
         calls.append(mock.call('Entered     {}'.format(task.created_time)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
-        self.assertEqual(calls, mock_print.mock_calls)
+        self.assertEqual(calls, mock_context.console.print.mock_calls)
 
     def test_execute_prints_task_details_with_annotations(self):
         task = self._create_tasks(1, 1)[0]
+
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
 
         mock_filter = mock.Mock()
         mock_filter.filter_items = mock.MagicMock(return_value=[task])
 
         mock_context = self._create_context()
+        mock_context.console = mock_console
+
         command = infocommand.InfoCommand(mock_context, mock_filter)
-        
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.infocommand.print', mock_print):
-            command.execute()
+        command.execute()
         
         calls = []
         calls.append(mock.call('Name        Value'))
@@ -71,7 +74,7 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call(''))
         calls.append(mock.call('Date             Modification'))
         calls.append(mock.call('{} {}'.format(task.annotations[0].created.strftime('%Y-%m-%d %H:%M'), task.annotations[0].message)))
-        self.assertEqual(calls, mock_print.mock_calls)
+        self.assertEqual(calls, mock_context.console.print.mock_calls)
 
     def _create_context(self, tasks=None):
         if not tasks:
@@ -95,6 +98,7 @@ class InfoCommandTests(unittest.TestCase):
         for index in range(count):
             task = mock.Mock()
             task.annotations = []
+            task.created_time = datetime.datetime(2020, 1, 1, 12, 1, 2)
             task.id_number = uuid.uuid4()
             task.index = index + 1
             task.name = 'task {}'.format(task.index)

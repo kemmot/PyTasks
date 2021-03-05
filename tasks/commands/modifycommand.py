@@ -58,7 +58,7 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
 
     def get_confirm_filter(self, context):
         if context.settings.command_modify_confirm:
-            return confirmfilter.ConfirmFilter('Modify')
+            return confirmfilter.ConfirmFilter(context, 'Modify')
         return None
 
     def get_usage(self):

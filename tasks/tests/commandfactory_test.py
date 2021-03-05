@@ -109,7 +109,7 @@ class CommandFactoryTests(unittest.TestCase):
             expected_args = self.mock_context.settings.command_default.split()
         self.mock_parser.parse.assert_called_once_with(expected_args)
         self.mock_command_type.parse.assert_called_once_with(self.mock_context, command_args)
-        self.mock_context.filter_factory.parse.assert_called_once_with(filter_args[0])
+        self.mock_context.filter_factory.parse.assert_called_once_with(self.mock_context, filter_args[0])
 
     def create_mock_command_parser(self, command_name, command):
         parser = mock.Mock()

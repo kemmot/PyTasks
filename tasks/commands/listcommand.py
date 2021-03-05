@@ -1,5 +1,6 @@
 import commands.commandbase as commandbase
 import asciitable
+import console
 
 
 class ListTaskCommand(commandbase.FilterCommandBase):
@@ -19,13 +20,21 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         '''
         Executes the logic of this command.
         '''
+        alt_background_colour = self.context.console.parse_backcolour(self.context.settings.table_row_alt_backcolour)
+        alt_foreground_colour = self.context.console.parse_forecolour(self.context.settings.table_row_alt_forecolour)
+        background_colour = self.context.console.parse_backcolour(self.context.settings.table_row_backcolour)
+        foreground_colour = self.context.console.parse_forecolour(self.context.settings.table_row_forecolour)
+
         table = self.context.create_table()
         table.add_column('ID')
         table.add_column('Status')
         table.add_column('Description')
         for task in tasks:
-            table.add_row(task.index, task.status, task.name)
-        print(table.create_output())
+            if not task.is_ended:
+                table.add_row(task.index, task.status, task.name)
+        self.context.console.foreground_colour = foreground_colour
+        self.context.console.background_colour = background_colour
+        self.context.console.print_lines(table.create_output_lines(), alt_background_colour=alt_background_colour, alt_foregound_colour=alt_foreground_colour)
 
 
 class ListTaskCommandParser(commandbase.FilterCommandParserBase):
