@@ -2,7 +2,6 @@ import unittest
 from unittest import mock
 
 import commands.modifycommand as modifycommand
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 
 
@@ -156,15 +155,15 @@ class ModifyCommandTests(unittest.TestCase):
 
 class ModifyCommandParserTests(unittest.TestCase):
     def test_get_confirm_filter_no_confirmation(self):
-        filter = self.execute_get_confirm_filter(False)
-        self.assertIsNone(filter)
+        confirm_filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(confirm_filter)
 
     def test_get_confirm_filter_with_confirmation(self):
-        filter = self.execute_get_confirm_filter(True)
-        self.assertIsNotNone(filter)
-        self.assertIsInstance(filter, confirmfilter.ConfirmFilter)
-        self.assertIn('Modify', filter.action_name)
-        
+        confirm_filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(confirm_filter)
+        self.assertIsInstance(confirm_filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Modify', confirm_filter.action_name)
+
     def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
@@ -174,14 +173,14 @@ class ModifyCommandParserTests(unittest.TestCase):
         return parser.get_confirm_filter(mock_context)
 
     def test_parse_parse_success_with_project_and_priority(self):
-        command = self._test_parse_parse_success(False, ['project:test', 'priority:H'])
+        command = self._test_parse_parse_success(['project:test', 'priority:H'])
         self.assertEqual(len(command.template_task.attributes), 2)
         self.assertTrue('project' in command.template_task.attributes)
         self.assertEqual(command.template_task.attributes['project'], 'test')
         self.assertTrue('priority' in command.template_task.attributes)
         self.assertEqual(command.template_task.attributes['priority'], 'H')
 
-    def _test_parse_parse_success(self, with_confirmation, extra_args=None):
+    def _test_parse_parse_success(self, extra_args=None):
         args = ['new', 'name']
         if extra_args:
             for extra_arg in extra_args:

@@ -1,10 +1,8 @@
-import asciitable
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock
 
 import commands.listcommand as listcommand
-import filters.alwaysfilter as alwaysfilter
 
 
 class ListTaskCommandTests(unittest.TestCase):
@@ -19,7 +17,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_filter = mock.Mock()
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
         self.assertEqual(mock_filter, command.filter)
-    
+
     def test_before_execute_calls_garbage_collect_on_storage(self):
         mock_context = self._create_mock_context([])
         mock_filter = mock.Mock()
@@ -51,7 +49,7 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks[1].status = 'this status'
         tasks[1].name = 'some name'
         tasks[1].is_ended = False
-        
+
         mock_context = self._create_mock_context(tasks)
 
         mock_filter = mock.Mock()
@@ -90,27 +88,27 @@ class ListTaskCommandTests(unittest.TestCase):
         command.context.console.parse_backcolour.assert_called_with('black')
         command.context.console.parse_forecolour.assert_called_with('white')
         command.context.console.print_lines.assert_called()
-    
+
     def test_execute_raises_on_invalid_backcolour(self):
         command = self._create_command()
         command.context.console.parse_backcolour.side_effect = Exception()
         with self.assertRaises(Exception):
             command.execute()
-    
+
     def test_execute_raises_on_invalid_forecolour(self):
         command = self._create_command()
         command.context.console.parse_forecolour.side_effect = Exception()
         with self.assertRaises(Exception):
             command.execute()
-    
-    def _create_command(self, tasks=[], filter_tasks=[]):        
+
+    def _create_command(self, tasks=[], filter_tasks=[]):
         mock_context = self._create_mock_context(tasks)
 
         mock_filter = mock.Mock()
         mock_filter.filter_items = mock.MagicMock(return_value=filter_tasks)
 
         return listcommand.ListTaskCommand(mock_context, mock_filter)
-    
+
     def _create_mock_context(self, tasks=[]):
         mock_table = mock.Mock()
         mock_table.add_column = mock.MagicMock()
@@ -129,7 +127,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.create_table = mock.MagicMock(return_value=mock_table)
         mock_context.storage = mock_storage
         mock_context.mock_table = mock_table
-        
+
         mock_context.settings.table_row_alt_backcolour = 'black'
         mock_context.settings.table_row_alt_forecolour = 'white'
         mock_context.settings.table_row_backcolour = 'black'

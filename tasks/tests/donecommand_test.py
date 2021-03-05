@@ -2,7 +2,6 @@ import unittest
 from unittest import mock
 
 import commands.donecommand as donecommand
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 
 
@@ -38,7 +37,7 @@ class DoneCommandTests(unittest.TestCase):
 
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
-        
+
         mock_storage = mock.Mock()
         mock_storage.update = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
@@ -62,15 +61,15 @@ class DoneCommandTests(unittest.TestCase):
 
 class DoneCommandParserTests(unittest.TestCase):
     def test_get_confirm_filter_no_confirmation(self):
-        filter = self.execute_get_confirm_filter(False)
-        self.assertIsNone(filter)
+        confirm_filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(confirm_filter)
 
     def test_get_confirm_filter_with_confirmation(self):
-        filter = self.execute_get_confirm_filter(True)
-        self.assertIsNotNone(filter)
-        self.assertIsInstance(filter, confirmfilter.ConfirmFilter)
-        self.assertIn('Mark as done', filter.action_name)
-        
+        confirm_filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(confirm_filter)
+        self.assertIsInstance(confirm_filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Mark as done', confirm_filter.action_name)
+
     def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()

@@ -26,4 +26,4 @@ class TypeFactory:
 
     def register_type(self, cla):
         self._types.append(cla)
-        self._logger.debug('Type registered: {}'.format(str(cla)))
+        self._logger.debug('Type registered: [%s]', str(cla))

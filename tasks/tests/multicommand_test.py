@@ -1,6 +1,7 @@
+import datetime
 import unittest
-import uuid
 from unittest import mock
+import uuid
 
 import commands.multicommand as multicommand
 
@@ -38,7 +39,7 @@ class MultiCommandTests(unittest.TestCase):
         tasks = self._create_tasks(task_count)
         self.mock_context.storage = mock.Mock()
         self.mock_filter.filter_items = mock.MagicMock(return_value=tasks)
-        
+
         command = multicommand.MultiCommand(self.mock_context, \
             self.zero_item_command, self.one_item_command, self.multi_item_command)
         command.filter = self.mock_filter
@@ -51,14 +52,14 @@ class MultiCommandTests(unittest.TestCase):
     def test_execute_calls_one_item_command(self):
         self._execute_calls_relevant_command(1)
 
-    def test_execute_calls_one_item_command(self):
+    def test_execute_calls_multi_item_command(self):
         self._execute_calls_relevant_command(4)
-    
+
     def _execute_calls_relevant_command(self, task_count):
         tasks = self._create_tasks(task_count)
         self.mock_context.storage.read_all = mock.MagicMock(return_value=[])
         self.mock_filter.filter_items = mock.MagicMock(return_value=tasks)
-        
+
         command = multicommand.MultiCommand(self.mock_context, \
             self.zero_item_command, self.one_item_command, self.multi_item_command)
         command.filter = self.mock_filter
@@ -104,5 +105,5 @@ class MultiCommandTests(unittest.TestCase):
                 annotation.created = datetime.datetime(2020, 1, 1, 12, 34, 56)
                 annotation.message = 'this is an annotation'
                 task.annotations.append(annotation)
-            
+
         return tasks

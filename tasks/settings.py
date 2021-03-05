@@ -121,7 +121,7 @@ class Settings:
 
         try:
             self._config.read(path)
-            self._logger.debug('Read config from file: [{}]'.format(path))
+            self._logger.debug('Read config from file: [%s]', path)
         except Exception as ex:
             raise Exception('Failed to read config from file: [{}]'.format(path)) from ex
 
@@ -129,6 +129,6 @@ class Settings:
         try:
             with open(path, 'w') as config_file:
                 self._config.write(config_file, space_around_delimiters=False)
-            self._logger.debug('Wrote config to file: [{}]'.format(path))
+            self._logger.debug('Wrote config to file: [%s]', path)
         except Exception as ex:
             raise Exception('Failed to write config to file: [{}]'.format(path)) from ex

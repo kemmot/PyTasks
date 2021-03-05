@@ -15,7 +15,7 @@ class AddTaskCommandTests(unittest.TestCase):
 
         mock_storage = mock.MagicMock()
         mock_storage.write = MagicMock()
-        
+
         mock_context = mock.Mock()
         mock_context.settings = mock_settings
         mock_context.storage = mock_storage
@@ -38,14 +38,14 @@ class AddTaskCommandTests(unittest.TestCase):
 
         mock_console = mock.Mock()
         mock_console.print = mock.MagicMock()
-        
+
         mock_settings = mock.Mock()
         mock_settings.command_add_next_key_id = 2
         mock_settings.command_add_format = '{name}'
 
         mock_storage = mock.MagicMock()
         mock_storage.read_all = MagicMock(return_value=existing_tasks)
-        
+
         mock_context = mock.Mock()
         mock_context.console = mock_console
         mock_context.settings = mock_settings

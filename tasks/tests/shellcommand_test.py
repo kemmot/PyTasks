@@ -2,8 +2,6 @@ import unittest
 from unittest import mock
 
 import commands.shellcommand as shellcommand
-import filters.allbatchfilter as allbatchfilter
-import filters.confirmfilter as confirmfilter
 
 
 class ShellTests(unittest.TestCase):
@@ -49,7 +47,7 @@ class ShellTests(unittest.TestCase):
         shell = shellcommand.Shell(mock_callback, mock_console)
         shell.prompt = expected
         self.assertEqual(expected, shell.prompt)
-    
+
     def test_enter_succeeds(self):
         prompt = 'new prompt'
         exit_command = 'quit'
@@ -63,7 +61,7 @@ class ShellTests(unittest.TestCase):
         # ensure two prompts then exit
         input_calls = [mock.call(prompt), mock.call(prompt)]
         self.assertEqual(input_calls, mock_console.input.mock_calls)
-    
+
     def test_enter_handles_callback_exception(self):
         prompt = 'new prompt'
         exit_command = 'exit'
@@ -86,14 +84,14 @@ class ShellCommandTests(unittest.TestCase):
         mock_context = mock.Mock()
         command = shellcommand.ShellCommand(mock_context)
         self.assertEqual(mock_context, command.context)
-    
+
     def test_execute_calls_enter_on_shell(self):
         mock_shell = mock.Mock()
         mock_shell.enter = mock.Mock()
         command = shellcommand.ShellCommand(mock.Mock(), mock_shell)
         command.execute()
         mock_shell.enter.assert_called_once()
-    
+
     def test_handle_command_shell_callback(self):
         command_string = '45 list'
         expected_args = ['45', 'list']

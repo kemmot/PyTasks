@@ -3,7 +3,6 @@ import unittest
 from unittest import mock
 
 import commands.annotatecommand as annotatecommand
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 
 
@@ -82,7 +81,7 @@ class AnnotateCommandTests(unittest.TestCase):
 
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
-        
+
         mock_storage = mock.Mock()
         mock_storage.delete = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
@@ -106,15 +105,15 @@ class AnnotateCommandTests(unittest.TestCase):
 
 class AnnotateCommandParserTests(unittest.TestCase):
     def test_get_confirm_filter_no_confirmation(self):
-        filter = self.execute_get_confirm_filter(False)
-        self.assertIsNone(filter)
+        confirm_filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(confirm_filter)
 
     def test_get_confirm_filter_with_confirmation(self):
-        filter = self.execute_get_confirm_filter(True)
-        self.assertIsNotNone(filter)
-        self.assertIsInstance(filter, confirmfilter.ConfirmFilter)
-        self.assertIn('Annotate', filter.action_name)
-        
+        confirm_filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(confirm_filter)
+        self.assertIsInstance(confirm_filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Annotate', confirm_filter.action_name)
+
     def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
@@ -128,7 +127,7 @@ class AnnotateCommandParserTests(unittest.TestCase):
         parser = annotatecommand.AnnotateCommandParser()
         with self.assertRaises(Exception):
             parser.parse(mock_context, [])
-        
+
     def test_parse_success(self):
         args = ['this', 'is', 'a', 'multi-word', 'message']
 
@@ -147,7 +146,7 @@ class AnnotateCommandParserTests(unittest.TestCase):
         self.assertIsInstance(command, annotatecommand.AnnotateCommand)
         self.assertEqual(mock_context, command.context)
         self.assertEqual(command.message, 'this is a multi-word message')
-        
+
     def test_parse_success_with_created_date(self):
         args = ['this', 'is', 'a', 'multi-word', 'message', 'created:2021-01-01']
 
@@ -168,9 +167,9 @@ class AnnotateCommandParserTests(unittest.TestCase):
         self.assertEqual(command.created, datetime.datetime(2021, 1, 1))
         self.assertEqual(command.message, 'this is a multi-word message')
 
-        
     def test_parse_duplicate_attribute(self):
-        args = ['this', 'is', 'a', 'multi-word', 'message', 'created:2021-01-01', 'created:2021-01-02']
+        args = ['this', 'is', 'a', 'multi-word', 'message', \
+            'created:2021-01-01', 'created:2021-01-02']
 
         mock_filter = mock.Mock()
 
@@ -183,9 +182,8 @@ class AnnotateCommandParserTests(unittest.TestCase):
 
         parser = annotatecommand.AnnotateCommandParser()
         with self.assertRaises(Exception):
-            command = parser.parse(mock_context, args)
+            parser.parse(mock_context, args)
 
-        
     def test_parse_invalid_created_attribute(self):
         args = ['this', 'is', 'a', 'multi-word', 'message', 'created:baddate']
 
@@ -200,9 +198,8 @@ class AnnotateCommandParserTests(unittest.TestCase):
 
         parser = annotatecommand.AnnotateCommandParser()
         with self.assertRaises(Exception):
-            command = parser.parse(mock_context, args)
+            parser.parse(mock_context, args)
 
-        
     def test_parse_unknown_attribute(self):
         args = ['this', 'is', 'a', 'multi-word', 'message', 'invalid:wobbly']
 
@@ -217,5 +214,4 @@ class AnnotateCommandParserTests(unittest.TestCase):
 
         parser = annotatecommand.AnnotateCommandParser()
         with self.assertRaises(Exception):
-            command = parser.parse(mock_context, args)
-
+            parser.parse(mock_context, args)

@@ -81,15 +81,15 @@ class StopCommandTests(unittest.TestCase):
 
 class StopCommandParserTests(unittest.TestCase):
     def test_get_confirm_filter_no_confirmation(self):
-        filter = self.execute_get_confirm_filter(False)
-        self.assertIsNone(filter)
+        confirm_filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(confirm_filter)
 
     def test_get_confirm_filter_with_confirmation(self):
-        filter = self.execute_get_confirm_filter(True)
-        self.assertIsNotNone(filter)
-        self.assertIsInstance(filter, confirmfilter.ConfirmFilter)
-        self.assertIn('Stop', filter.action_name)
-        
+        confirm_filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(confirm_filter)
+        self.assertIsInstance(confirm_filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Stop', confirm_filter.action_name)
+
     def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
@@ -97,13 +97,6 @@ class StopCommandParserTests(unittest.TestCase):
 
         parser = stopcommand.StopCommandParser()
         return parser.get_confirm_filter(mock_context)
-
-    def _test_parse_parse_success(self):
-        mock_context = mock.Mock()
-        parser = stopcommand.StopCommandParser()
-        command = parser.parse(mock_context, args)
-        self.assertIsInstance(command, stopcommand.StopCommand)
-        self.assertEqual(mock_context, command.context)
 
     def test_get_usage(self):
         parser = stopcommand.StopCommandParser()

@@ -1,11 +1,9 @@
 import datetime
 import unittest
-import uuid
 from unittest import mock
+import uuid
 
 import commands.infocommand as infocommand
-import filters.allbatchfilter as allbatchfilter
-import filters.alwaysfilter as alwaysfilter
 
 
 class InfoCommandTests(unittest.TestCase):
@@ -36,10 +34,10 @@ class InfoCommandTests(unittest.TestCase):
         mock_filter.filter_items = mock.MagicMock(return_value=[task])
 
         mock_context = self._create_context()
-        
+
         command = infocommand.InfoCommand(mock_context, mock_filter)
         command.execute()
-        
+
         calls = []
         calls.append(mock.call('Name        Value'))
         calls.append(mock.call('ID          {}'.format(task.index)))
@@ -63,7 +61,7 @@ class InfoCommandTests(unittest.TestCase):
 
         command = infocommand.InfoCommand(mock_context, mock_filter)
         command.execute()
-        
+
         calls = []
         calls.append(mock.call('Name        Value'))
         calls.append(mock.call('ID          {}'.format(task.index)))
@@ -73,7 +71,9 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
         calls.append(mock.call(''))
         calls.append(mock.call('Date             Modification'))
-        calls.append(mock.call('{} {}'.format(task.annotations[0].created.strftime('%Y-%m-%d %H:%M'), task.annotations[0].message)))
+        calls.append(mock.call('{} {}'.format( \
+            task.annotations[0].created.strftime('%Y-%m-%d %H:%M'), \
+            task.annotations[0].message)))
         self.assertEqual(calls, mock_context.console.print.mock_calls)
 
     def _create_context(self, tasks=None):
@@ -82,7 +82,7 @@ class InfoCommandTests(unittest.TestCase):
 
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
-        
+
         mock_storage = mock.Mock()
         mock_storage.delete = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
@@ -109,7 +109,7 @@ class InfoCommandTests(unittest.TestCase):
                 annotation.created = datetime.datetime(2020, 1, 1, 12, 34, 56)
                 annotation.message = 'this is an annotation'
                 task.annotations.append(annotation)
-            
+
         return tasks
 
 

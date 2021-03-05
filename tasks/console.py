@@ -1,4 +1,4 @@
-class bcolors:
+class ConsoleColours:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -30,28 +30,28 @@ class bcolors:
 
 class Console:
     def __init__(self):
-        self._background_colour = bcolors.BACKGROUND_BLACK
-        self._foreground_colour = bcolors.FOREGROUND_WHITE
-    
+        self._background_colour = ConsoleColours.BACKGROUND_BLACK
+        self._foreground_colour = ConsoleColours.FOREGROUND_WHITE
+
     @property
     def background_colour(self):
         return self._background_colour
-        
+
     @background_colour.setter
     def background_colour(self, value):
         self._background_colour = value
-    
+
     @property
     def foreground_colour(self):
         return self._foreground_colour
-    
+
     @foreground_colour.setter
     def foreground_colour(self, value):
         self._foreground_colour = value
-    
+
     def input(self, prompt):
         return input(prompt)
-    
+
     def print_lines(self, lines, alt_foregound_colour=None, alt_background_colour=None):
         line_number = 0
         for line in lines:
@@ -80,41 +80,45 @@ class Console:
     def parse_backcolour(self, description):
         upper_description = description.upper()
         if upper_description == 'BLACK':
-            return bcolors.BACKGROUND_BLACK
+            result = ConsoleColours.BACKGROUND_BLACK
         elif upper_description == 'RED':
-            return bcolors.BACKGROUND_RED
+            result = ConsoleColours.BACKGROUND_RED
         elif upper_description == 'GREEN':
-            return bcolors.BACKGROUND_GREEN
+            result = ConsoleColours.BACKGROUND_GREEN
         elif upper_description == 'YELLOW':
-            return bcolors.BACKGROUND_YELLOW
+            result = ConsoleColours.BACKGROUND_YELLOW
         elif upper_description == 'BLUE':
-            return bcolors.BACKGROUND_BLUE
+            result = ConsoleColours.BACKGROUND_BLUE
         elif upper_description == 'PURPLE':
-            return bcolors.BACKGROUND_PURPLE
+            result = ConsoleColours.BACKGROUND_PURPLE
         elif upper_description == 'CYAN':
-            return bcolors.BACKGROUND_CYAN
+            result = ConsoleColours.BACKGROUND_CYAN
         elif upper_description == 'WHITE':
-            return bcolors.BACKGROUND_WHITE
+            result = ConsoleColours.BACKGROUND_WHITE
         else:
             raise Exception('Background colour not supported: {}'.format(description))
+
+        return result
 
     def parse_forecolour(self, description):
         upper_description = description.upper()
         if upper_description == 'BLACK':
-            return bcolors.FOREGROUND_BLACK
+            result = ConsoleColours.FOREGROUND_BLACK
         elif upper_description == 'RED':
-            return bcolors.FOREGROUND_RED
+            result = ConsoleColours.FOREGROUND_RED
         elif upper_description == 'GREEN':
-            return bcolors.FOREGROUND_GREEN
+            result = ConsoleColours.FOREGROUND_GREEN
         elif upper_description == 'YELLOW':
-            return bcolors.FOREGROUND_YELLOW
+            result = ConsoleColours.FOREGROUND_YELLOW
         elif upper_description == 'BLUE':
-            return bcolors.FOREGROUND_BLUE
+            result = ConsoleColours.FOREGROUND_BLUE
         elif upper_description == 'PURPLE':
-            return bcolors.FOREGROUND_PURPLE
+            result = ConsoleColours.FOREGROUND_PURPLE
         elif upper_description == 'BEIGE':
-            return bcolors.FOREGROUND_BEIGE
+            result = ConsoleColours.FOREGROUND_BEIGE
         elif upper_description == 'WHITE':
-            return bcolors.FOREGROUND_WHITE
+            result = ConsoleColours.FOREGROUND_WHITE
         else:
             raise Exception('Foreground colour not supported: {}'.format(description))
+
+        return result

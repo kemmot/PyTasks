@@ -8,6 +8,18 @@ class MultiCommand(commandbase.FilterCommandBase):
         self._one_item_action = one_item_action
         self._multi_item_action = multi_item_action
 
+    @property
+    def zero_item_action(self):
+        return self._zero_item_action
+
+    @property
+    def one_item_action(self):
+        return self._one_item_action
+
+    @property
+    def multi_item_action(self):
+        return self._multi_item_action
+
     def execute(self):
         '''
         Executes the logic of this command.

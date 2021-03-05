@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock
 
 import commands.helpcommand as helpcommand
 

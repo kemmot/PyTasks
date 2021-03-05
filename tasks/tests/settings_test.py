@@ -83,7 +83,7 @@ class SettingTests(unittest.TestCase):
         target = settings.Settings(config=config)
         target.read('test path')
         with self.assertRaises(Exception):
-            result = target.data_location
+            target.data_location
 
     @mock.patch('settings.os.path')
     def test_read_data_location_exists(self, mock_path):

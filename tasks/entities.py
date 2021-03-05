@@ -141,6 +141,6 @@ class Task:
 
     def stop(self):
         self.started_time = None
-    
+
     def __str__(self):
         return 'index: {}, name: {}'.format(self.index, self.name)

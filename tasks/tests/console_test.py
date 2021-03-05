@@ -1,6 +1,5 @@
 import unittest
 from unittest import mock
-from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import console
@@ -8,21 +7,21 @@ import console
 
 class ConsoleTests(unittest.TestCase):
     def test_constructor_succeeds(self):
-        c = console.Console()
-        self.assertEqual(c.background_colour, console.bcolors.BACKGROUND_BLACK)
-        self.assertEqual(c.foreground_colour, console.bcolors.FOREGROUND_WHITE)
+        test_console = console.Console()
+        self.assertEqual(test_console.background_colour, console.ConsoleColours.BACKGROUND_BLACK)
+        self.assertEqual(test_console.foreground_colour, console.ConsoleColours.FOREGROUND_WHITE)
 
     def test_background_colour_setter_succeeds(self):
-        c = console.Console()
-        self.assertEqual(c.background_colour, console.bcolors.BACKGROUND_BLACK)
-        c.background_colour = console.bcolors.BACKGROUND_YELLOW
-        self.assertEqual(c.background_colour, console.bcolors.BACKGROUND_YELLOW)
+        test_console = console.Console()
+        self.assertEqual(test_console.background_colour, console.ConsoleColours.BACKGROUND_BLACK)
+        test_console.background_colour = console.ConsoleColours.BACKGROUND_YELLOW
+        self.assertEqual(test_console.background_colour, console.ConsoleColours.BACKGROUND_YELLOW)
 
     def test_foreground_colour_setter_succeeds(self):
-        c = console.Console()
-        self.assertEqual(c.foreground_colour, console.bcolors.FOREGROUND_WHITE)
-        c.foreground_colour = console.bcolors.FOREGROUND_GREEN
-        self.assertEqual(c.foreground_colour, console.bcolors.FOREGROUND_GREEN)
+        test_console = console.Console()
+        self.assertEqual(test_console.foreground_colour, console.ConsoleColours.FOREGROUND_WHITE)
+        test_console.foreground_colour = console.ConsoleColours.FOREGROUND_GREEN
+        self.assertEqual(test_console.foreground_colour, console.ConsoleColours.FOREGROUND_GREEN)
 
     @patch('console.input', return_value='yes')
     def test_input(self, mock_input):
@@ -38,12 +37,12 @@ class ConsoleTests(unittest.TestCase):
         lines.append('line 4')
         alt_prefix = '\33[41m\33[32m'
         alt_suffix = '\33[34m\33[46m'
-        c = console.Console()
-        c.background_colour = console.bcolors.BACKGROUND_CYAN
-        c.foreground_colour = console.bcolors.FOREGROUND_BLUE
-        c.print_lines(lines, \
-            alt_background_colour=console.bcolors.BACKGROUND_RED, \
-            alt_foregound_colour=console.bcolors.FOREGROUND_GREEN)
+        test_console = console.Console()
+        test_console.background_colour = console.ConsoleColours.BACKGROUND_CYAN
+        test_console.foreground_colour = console.ConsoleColours.FOREGROUND_BLUE
+        test_console.print_lines(lines, \
+            alt_background_colour=console.ConsoleColours.BACKGROUND_RED, \
+            alt_foregound_colour=console.ConsoleColours.FOREGROUND_GREEN)
         expected_calls = [
             mock.call('line 1'),
             mock.call(alt_prefix + 'line 2' + alt_suffix),
@@ -59,57 +58,57 @@ class ConsoleTests(unittest.TestCase):
 
     @patch('console.print')
     def test_print_with_foreground_colour(self, mock_print):
-        c = console.Console()
-        c.foreground_colour = console.bcolors.FOREGROUND_BEIGE
-        c.print('purple text output', foreground_colour=console.bcolors.FOREGROUND_PURPLE)
+        test_console = console.Console()
+        test_console.foreground_colour = console.ConsoleColours.FOREGROUND_BEIGE
+        test_console.print('purple text output', foreground_colour=console.ConsoleColours.FOREGROUND_PURPLE)
         mock_print.assert_called_once_with('\33[35mpurple text output\33[36m')
 
     @patch('console.print')
     def test_print_with_background_colour(self, mock_print):
-        c = console.Console()
-        c.background_colour = console.bcolors.BACKGROUND_RED
-        c.print('green backed output', background_colour=console.bcolors.BACKGROUND_GREEN)
+        test_console = console.Console()
+        test_console.background_colour = console.ConsoleColours.BACKGROUND_RED
+        test_console.print('green backed output', background_colour=console.ConsoleColours.BACKGROUND_GREEN)
         mock_print.assert_called_once_with('\33[42mgreen backed output\33[41m')
 
     @patch('console.print')
     def test_print_with_foreground_and_background_colour(self, mock_print):
-        c = console.Console()
-        c.background_colour = console.bcolors.BACKGROUND_BLUE
-        c.foreground_colour = console.bcolors.FOREGROUND_YELLOW
-        c.print('this is the output', \
-            background_colour=console.bcolors.BACKGROUND_YELLOW, \
-            foreground_colour=console.bcolors.FOREGROUND_BLUE)
+        test_console = console.Console()
+        test_console.background_colour = console.ConsoleColours.BACKGROUND_BLUE
+        test_console.foreground_colour = console.ConsoleColours.FOREGROUND_YELLOW
+        test_console.print('this is the output', \
+            background_colour=console.ConsoleColours.BACKGROUND_YELLOW, \
+            foreground_colour=console.ConsoleColours.FOREGROUND_BLUE)
         mock_print.assert_called_once_with('\33[43m\33[34mthis is the output\33[33m\33[44m')
 
     def test_parse_backcolour(self):
         mappings = {
             # lower case
-            'black': console.bcolors.BACKGROUND_BLACK,
-            'red': console.bcolors.BACKGROUND_RED,
-            'green': console.bcolors.BACKGROUND_GREEN,
-            'yellow': console.bcolors.BACKGROUND_YELLOW,
-            'blue': console.bcolors.BACKGROUND_BLUE,
-            'purple': console.bcolors.BACKGROUND_PURPLE,
-            'cyan': console.bcolors.BACKGROUND_CYAN,
-            'white': console.bcolors.BACKGROUND_WHITE,
+            'black': console.ConsoleColours.BACKGROUND_BLACK,
+            'red': console.ConsoleColours.BACKGROUND_RED,
+            'green': console.ConsoleColours.BACKGROUND_GREEN,
+            'yellow': console.ConsoleColours.BACKGROUND_YELLOW,
+            'blue': console.ConsoleColours.BACKGROUND_BLUE,
+            'purple': console.ConsoleColours.BACKGROUND_PURPLE,
+            'cyan': console.ConsoleColours.BACKGROUND_CYAN,
+            'white': console.ConsoleColours.BACKGROUND_WHITE,
             # upper case
-            'BLACK': console.bcolors.BACKGROUND_BLACK,
-            'RED': console.bcolors.BACKGROUND_RED,
-            'GREEN': console.bcolors.BACKGROUND_GREEN,
-            'YELLOW': console.bcolors.BACKGROUND_YELLOW,
-            'BLUE': console.bcolors.BACKGROUND_BLUE,
-            'PURPLE': console.bcolors.BACKGROUND_PURPLE,
-            'CYAN': console.bcolors.BACKGROUND_CYAN,
-            'WHITE': console.bcolors.BACKGROUND_WHITE,
+            'BLACK': console.ConsoleColours.BACKGROUND_BLACK,
+            'RED': console.ConsoleColours.BACKGROUND_RED,
+            'GREEN': console.ConsoleColours.BACKGROUND_GREEN,
+            'YELLOW': console.ConsoleColours.BACKGROUND_YELLOW,
+            'BLUE': console.ConsoleColours.BACKGROUND_BLUE,
+            'PURPLE': console.ConsoleColours.BACKGROUND_PURPLE,
+            'CYAN': console.ConsoleColours.BACKGROUND_CYAN,
+            'WHITE': console.ConsoleColours.BACKGROUND_WHITE,
             # mixed case
-            'BlacK': console.bcolors.BACKGROUND_BLACK,
-            'Red': console.bcolors.BACKGROUND_RED,
-            'gReeN': console.bcolors.BACKGROUND_GREEN,
-            'YellOW': console.bcolors.BACKGROUND_YELLOW,
-            'blUe': console.bcolors.BACKGROUND_BLUE,
-            'purplE': console.bcolors.BACKGROUND_PURPLE,
-            'CyAn': console.bcolors.BACKGROUND_CYAN,
-            'wHITe': console.bcolors.BACKGROUND_WHITE,
+            'BlacK': console.ConsoleColours.BACKGROUND_BLACK,
+            'Red': console.ConsoleColours.BACKGROUND_RED,
+            'gReeN': console.ConsoleColours.BACKGROUND_GREEN,
+            'YellOW': console.ConsoleColours.BACKGROUND_YELLOW,
+            'blUe': console.ConsoleColours.BACKGROUND_BLUE,
+            'purplE': console.ConsoleColours.BACKGROUND_PURPLE,
+            'CyAn': console.ConsoleColours.BACKGROUND_CYAN,
+            'wHITe': console.ConsoleColours.BACKGROUND_WHITE,
         }
         for key in mappings:
             result = console.Console().parse_backcolour(key)
@@ -122,32 +121,32 @@ class ConsoleTests(unittest.TestCase):
     def test_parse_forecolour(self):
         mappings = {
             # lower case
-            'black': console.bcolors.FOREGROUND_BLACK,
-            'red': console.bcolors.FOREGROUND_RED,
-            'green': console.bcolors.FOREGROUND_GREEN,
-            'yellow': console.bcolors.FOREGROUND_YELLOW,
-            'blue': console.bcolors.FOREGROUND_BLUE,
-            'purple': console.bcolors.FOREGROUND_PURPLE,
-            'beige': console.bcolors.FOREGROUND_BEIGE,
-            'white': console.bcolors.FOREGROUND_WHITE,
+            'black': console.ConsoleColours.FOREGROUND_BLACK,
+            'red': console.ConsoleColours.FOREGROUND_RED,
+            'green': console.ConsoleColours.FOREGROUND_GREEN,
+            'yellow': console.ConsoleColours.FOREGROUND_YELLOW,
+            'blue': console.ConsoleColours.FOREGROUND_BLUE,
+            'purple': console.ConsoleColours.FOREGROUND_PURPLE,
+            'beige': console.ConsoleColours.FOREGROUND_BEIGE,
+            'white': console.ConsoleColours.FOREGROUND_WHITE,
             # upper case
-            'BLACK': console.bcolors.FOREGROUND_BLACK,
-            'RED': console.bcolors.FOREGROUND_RED,
-            'GREEN': console.bcolors.FOREGROUND_GREEN,
-            'YELLOW': console.bcolors.FOREGROUND_YELLOW,
-            'BLUE': console.bcolors.FOREGROUND_BLUE,
-            'PURPLE': console.bcolors.FOREGROUND_PURPLE,
-            'BEIGE': console.bcolors.FOREGROUND_BEIGE,
-            'WHITE': console.bcolors.FOREGROUND_WHITE,
+            'BLACK': console.ConsoleColours.FOREGROUND_BLACK,
+            'RED': console.ConsoleColours.FOREGROUND_RED,
+            'GREEN': console.ConsoleColours.FOREGROUND_GREEN,
+            'YELLOW': console.ConsoleColours.FOREGROUND_YELLOW,
+            'BLUE': console.ConsoleColours.FOREGROUND_BLUE,
+            'PURPLE': console.ConsoleColours.FOREGROUND_PURPLE,
+            'BEIGE': console.ConsoleColours.FOREGROUND_BEIGE,
+            'WHITE': console.ConsoleColours.FOREGROUND_WHITE,
             # mixed case
-            'BlacK': console.bcolors.FOREGROUND_BLACK,
-            'Red': console.bcolors.FOREGROUND_RED,
-            'gReeN': console.bcolors.FOREGROUND_GREEN,
-            'YellOW': console.bcolors.FOREGROUND_YELLOW,
-            'blUe': console.bcolors.FOREGROUND_BLUE,
-            'purplE': console.bcolors.FOREGROUND_PURPLE,
-            'BeiGe': console.bcolors.FOREGROUND_BEIGE,
-            'wHITe': console.bcolors.FOREGROUND_WHITE,
+            'BlacK': console.ConsoleColours.FOREGROUND_BLACK,
+            'Red': console.ConsoleColours.FOREGROUND_RED,
+            'gReeN': console.ConsoleColours.FOREGROUND_GREEN,
+            'YellOW': console.ConsoleColours.FOREGROUND_YELLOW,
+            'blUe': console.ConsoleColours.FOREGROUND_BLUE,
+            'purplE': console.ConsoleColours.FOREGROUND_PURPLE,
+            'BeiGe': console.ConsoleColours.FOREGROUND_BEIGE,
+            'wHITe': console.ConsoleColours.FOREGROUND_WHITE,
         }
         for key in mappings:
             result = console.Console().parse_forecolour(key)

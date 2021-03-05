@@ -119,7 +119,7 @@ class TextFileStorage:
             if keep:
                 tasks_to_keep.append(existing_task)
         self._replace_all(tasks_to_keep)
-    
+
     def read_pending(self):
         return [t for t in self.read_all() if not t.is_ended]
 
@@ -134,7 +134,7 @@ class TextFileStorage:
                     tasks.append(task)
                     line_number += 1
         else:
-            self._logger.warning('File not found: [{}]'.format(self._path))
+            self._logger.warning('File not found: [%s]', self._path)
         return tasks
 
     def write(self, tasks):
@@ -168,7 +168,7 @@ class TextFileStorage:
             if os.name != 'posix':
                 os.remove(self._path)
         else:
-            self._logger.info('Creating new file: [{}]'.format(self._path))
+            self._logger.info('Creating new file: [%s]', self._path)
         os.rename(temp_path, self._path)
 
 
@@ -185,7 +185,7 @@ class TaskWarriorStorage:
     @property
     def pending_storage(self):
         return self._pending_storage
-    
+
     def garbage_collect(self):
         done_tasks = []
         for task in self._pending_storage.read_all():
@@ -193,7 +193,11 @@ class TaskWarriorStorage:
                 done_tasks.append(task)
         self._done_storage.write(done_tasks)
         self._pending_storage.delete(done_tasks)
-        self._logger.debug('Garbage collected {} complete tasks to done file'.format(len(done_tasks)))
+        if done_tasks:
+            message = 'Garbage collected %s complete tasks to done file'
+            self._logger.info(message, len(done_tasks))
+        else:
+            self._logger.debug('No garbage collection required')
 
     def read_all(self):
         return self._pending_storage.read_pending()
@@ -217,8 +221,8 @@ class TaskWarriorStorageCreator:
         if not os.path.isabs(data_location):
             relative_path = os.path.join(os.path.dirname(__main__.__file__), data_location)
             data_location = os.path.abspath(relative_path)
-            message = 'Converted relative data location [{}] to: [{}]'
-            self._logger.debug(message.format(settings.data_location, data_location))
+            message = 'Converted relative data location [%s] to: [%s]'
+            self._logger.debug(message, settings.data_location, data_location)
 
         pending_filename = settings.data_pending_filename
         pending_path = os.path.join(data_location, pending_filename)

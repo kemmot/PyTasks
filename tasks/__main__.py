@@ -123,5 +123,5 @@ except Exception as ex:
     EXIT_CODE = cli.ExitCodes.unknown_error
 
 EXIT_CODE_DESCRIPTION = cli.ExitCodes.get_description(EXIT_CODE)
-LOGGER.debug('Application stopped with exit code: {} ({})'.format(EXIT_CODE, EXIT_CODE_DESCRIPTION))
+LOGGER.debug('Application stopped with exit code: %s (%s)', EXIT_CODE, EXIT_CODE_DESCRIPTION)
 exit(EXIT_CODE)
