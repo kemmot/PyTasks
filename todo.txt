@@ -29,3 +29,6 @@
 [description:"FEAT-0066: only rewrite ini file when settings changed" entry:"1614874017" status:"pending" uuid:"eef6a461-fbf9-4423-ab69-68a2df189528"]
 [description:"FEAT-0067: setting defaults should be used if missing" entry:"1614876287" status:"pending" uuid:"81c00694-e33a-4b2b-8f33-1851899ec6ca"]
 [description:"FEAT-0068: support custom columns in reports" entry:"1614880069" status:"pending" uuid:"5a93c68d-9e07-47ba-9be8-2185b0a96e17"]
+[description:"FEAT-0070: Add undo functionality" entry:"1615328709" status:"pending" uuid:"3da901a0-fa3d-45c6-b63d-127a06509f26"]
+[description:"FEAT-0071: Add projects command" entry:"1615328824" status:"pending" uuid:"5457c6fb-520b-42bb-ae40-c076b767e1c2"]
+[description:"FEAT-0072: Add tags command" entry:"1615328830" status:"pending" uuid:"8ab312db-b9d9-414b-847a-4256e79e163e"]
