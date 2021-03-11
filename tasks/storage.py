@@ -159,7 +159,7 @@ class TextFileStorage:
         temp_path = self._path + '.tmp'
         if os.path.isfile(temp_path):
             os.remove(temp_path)
-        with open(temp_path, 'w+') as file:
+        with open(temp_path, 'w+', newline='\n') as file:
             for task in tasks:
                 formatted_task = self._formatter.format(task)
                 file.write(formatted_task + '\n')
