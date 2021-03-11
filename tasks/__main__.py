@@ -28,6 +28,7 @@ import commandline as cli
 import console
 # modules used by reflection
 import filters.filterfactory as filterfactory
+import filters.taskattributefilter as taskattributefilter
 import filters.taskindexfilter as taskindexfilter
 import filters.tasknamefilter as tasknamefilter
 
