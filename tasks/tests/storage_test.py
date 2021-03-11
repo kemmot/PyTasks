@@ -268,7 +268,7 @@ class TextFileStorageTests(unittest.TestCase):
         calls = [mock.call(temp_path), mock.call(test_path)]
         self.assertEqual(calls, mock_os.remove.mock_calls)
 
-        mock_open.assert_called_with(temp_path, 'w+')
+        mock_open.assert_called_with(temp_path, 'w+', newline='\n')
         handle = mock_open()
         handle.write.assert_called_once_with(expected_output + '\n')
         handle.__exit__.assert_called()
