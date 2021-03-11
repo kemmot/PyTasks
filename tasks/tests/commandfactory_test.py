@@ -212,7 +212,7 @@ class ParsedCommandTests(unittest.TestCase):
         command.arguments.append('v1')
         command.arguments.append('c1')
         result = str(command)
-        self.assertEqual('[f1][v1][c1]', result)
+        self.assertEqual('[f1], [v1], [c1]', result)
 
     def _get_command_argument_values_test(self, args_string, output):
         self._get_argument_value_test(args_string, output, \

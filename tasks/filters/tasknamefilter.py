@@ -16,6 +16,9 @@ class TaskNameFilter(filterbase.FilterBase):
         result = self._name.upper() in task.name.upper()
         self._logger.debug('is_match: {}, task: [{}]'.format(result, task))
         return result
+    
+    def __str__(self):
+        return 'TaskNameFilter({})'.format(self.name)
 
 
 class TaskNameFilterParser(filterbase.FilterParserBase):

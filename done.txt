@@ -27,3 +27,6 @@
 [annotation_1603472718:"Use hook script for this" description:"FEAT-0016 Should auto allocate ticket numbers" end:"1614524809" entry:"0" status:"pending" uuid:"ce9abfdb-3623-4aea-9767-fe5bf0ed8e6b"]
 [description:"FEAT-0049 List output should alternate colours" end:"1614953504" entry:"1595274010" status:"pending" uuid:"5df655ab-660c-47b2-87e8-80ef697e8a5b"]
 [description:"FEAT-0069: test" end:"1614956442" entry:"1614956432" status:"pending" uuid:"1b5d760a-f671-4fe9-86a1-6a09f01e3e74"]
+[description:"FEAT-0064: support setting to force line endings for cygwin cross compat" end:"1615466763" entry:"1614873971" status:"pending" uuid:"80662835-4428-49b6-8664-1809cfbcfdac"]
+[description:"FEAT-0030 Add ability to filter on any attribute" end:"1615472254" entry:"0" status:"pending" uuid:"60b8589f-ed18-48c6-9ce7-02b47960cf30"]
+[description:"FEAT-0071: Add attribute filter" end:"1615472266" entry:"1615467335" status:"pending" uuid:"84a244c5-c4c0-4958-a0e4-1ebccdd46584"]

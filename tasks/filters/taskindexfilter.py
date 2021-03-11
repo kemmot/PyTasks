@@ -16,6 +16,9 @@ class TaskIndexFilter(filterbase.FilterBase):
         result = task.index == self._index
         self._logger.debug('is_match: {}, task: [{}]'.format(result, task))
         return result
+    
+    def __str__(self):
+        return 'TaskIndexFilter({})'.format(self.index)
 
 
 class TaskIndexFilterParser(filterbase.FilterParserBase):

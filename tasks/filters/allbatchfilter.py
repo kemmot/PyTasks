@@ -19,3 +19,14 @@ class AllBatchFilter(filterbase.FilterBase):
             if not task_filter.is_match(task):
                 return False
         return True
+    
+    def __str__(self):
+        description = 'AllBatchFilter('
+        filter_index = 1
+        for task_filter in self._filters:
+            if filter_index > 1:
+                description += ', '
+            description += '[filter {}: {}]'.format(filter_index, task_filter)
+            filter_index += 1
+        description += ')'
+        return description
