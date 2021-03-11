@@ -26,9 +26,11 @@ class CommandFactory(typefactory.TypeFactory):
         for command_name in command_names:
             self._parser.add_command_name(command_name)
         parsed_command = self._parser.parse(args)
-        self._logger.debug(parsed_command)
+        self._logger.debug('Parsed command: %s', parsed_command)
 
         batch_filter = self._get_filters(parsed_command)
+        self._logger.debug('Filters: %s', batch_filter)
+
         verb_argument = parsed_command.get_verb_value()
         if verb_argument:
             command_arguments = parsed_command.get_command_argument_values()
@@ -135,7 +137,12 @@ class ParsedCommand:
 
     def __str__(self):
         description = ''
+        first = True
         for arg in self.arguments:
+            if first:
+                first = False
+            else:
+                description += ', '
             description += f'[{arg}]'
         return description
 
