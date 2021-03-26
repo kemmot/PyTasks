@@ -274,6 +274,18 @@ task 3 done
 
 -----------------------------------------------------------------------------------------------------
 
+## Task Index Range Filter
+A numeric range filter will be recognised as a task index filter and will match
+the index of a task in the range reported by the list command.
+
+### Examples
+Example 1: complete tasks 3, 4 and 5.
+```
+task 3-5 done
+```
+
+-----------------------------------------------------------------------------------------------------
+
 ## Task Name Filter
 A non-numeric filter will be recognised as a task name filter and will match
 any tasks who's name contains the text.  Tested without case sensitivity.
