@@ -30,3 +30,4 @@
 [description:"FEAT-0064: support setting to force line endings for cygwin cross compat" end:"1615466763" entry:"1614873971" status:"pending" uuid:"80662835-4428-49b6-8664-1809cfbcfdac"]
 [description:"FEAT-0030 Add ability to filter on any attribute" end:"1615472254" entry:"0" status:"pending" uuid:"60b8589f-ed18-48c6-9ce7-02b47960cf30"]
 [description:"FEAT-0071: Add attribute filter" end:"1615472266" entry:"1615467335" status:"pending" uuid:"84a244c5-c4c0-4958-a0e4-1ebccdd46584"]
+[description:"FEAT-0027 Add number range support to filters" end:"1616773823" entry:"0" status:"pending" uuid:"39289c18-0ed6-4a1c-aa97-00bb4d808c2f"]
