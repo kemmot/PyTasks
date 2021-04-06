@@ -10,12 +10,24 @@ class InfoCommand(commandbase.FilterCommandBase):
         Executes the logic of this command.
         '''
         for task in tasks:
-            self.context.console.print('Name        Value')
-            self.context.console.print('ID          {}'.format(task.index))
-            self.context.console.print('Description {}'.format(task.name))
-            self.context.console.print('Status      {}'.format(task.status))
-            self.context.console.print('Entered     {}'.format(task.created_time))
-            self.context.console.print('UUID        {}'.format(task.id_number))
+            values = dict()
+            values['ID'] = task.index
+            values['Description'] = task.name
+            values['Status'] = task.status
+            values['Entered'] = task.created_time
+            values['UUID'] = task.id_number
+            values['Wait'] = task.wait_time
+
+            for attribute_name, attribute_value in task.attributes.items():
+                values[attribute_name] = attribute_value
+
+            max_attribute_name_length = 0
+            for attribute_name, attribute_value in values.items():
+                if len(attribute_name) > max_attribute_name_length:
+                    max_attribute_name_length = len(attribute_name)
+            self.context.console.print('{} Value'.format('Name'.ljust(max_attribute_name_length)))
+            for attribute_name, attribute_value in values.items():
+                self.context.console.print('{} {}'.format(attribute_name.ljust(max_attribute_name_length), attribute_value))
 
             if task.annotations:
                 self.context.console.print('')
