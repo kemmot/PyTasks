@@ -30,7 +30,7 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         table.add_column('Status')
         table.add_column('Description')
         for task in tasks:
-            if not task.is_ended:
+            if not task.is_ended and not task.is_waiting:
                 table.add_row(task.index, task.status, task.name)
         self.context.console.foreground_colour = foreground_colour
         self.context.console.background_colour = background_colour
