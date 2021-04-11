@@ -24,13 +24,14 @@ class CommandParserBaseTests(unittest.TestCase):
             parser.parse(mock.Mock(), [])
 
     def test_print_help(self):
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
+
         parser = commandbase.CommandParserBase('base')
+        parser.print_help(mock_console)
 
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.commandbase.print', mock_print):
-            parser.print_help()
+        mock_console.print.assert_called_with('tasks base')
 
-        mock_print.assert_called_with('tasks base')
 
 class FilterCommandParserBaseTests(unittest.TestCase):
     def test_constructor_args(self):
@@ -44,10 +45,10 @@ class FilterCommandParserBaseTests(unittest.TestCase):
             parser.parse(mock.Mock(), [])
 
     def test_print_help(self):
+        mock_console = mock.Mock()
+        mock_console.print = mock.MagicMock()
+
         parser = commandbase.FilterCommandParserBase('base')
+        parser.print_help(mock_console)
 
-        mock_print = mock.MagicMock()
-        with mock.patch('commands.commandbase.print', mock_print):
-            parser.print_help()
-
-        mock_print.assert_called_with('tasks [filter] base')
+        mock_console.print.assert_called_with('tasks [filter] base')

@@ -2,8 +2,8 @@ import unittest
 from unittest import mock
 
 import commands.donecommand as donecommand
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
+
 
 class DoneCommandTests(unittest.TestCase):
     def test_constructor_sets_properties(self):
@@ -24,7 +24,12 @@ class DoneCommandTests(unittest.TestCase):
         command.execute()
 
         mock_context.storage.read_all.assert_called_once()
-        mock_context.storage.delete.assert_called_once_with(tasks[1])
+        tasks[0].end.assert_not_called()
+        tasks[1].end.assert_called_once()
+        tasks[2].end.assert_not_called()
+        expected = []
+        expected.append(tasks[1])
+        mock_context.storage.update.assert_called_once_with(expected)
 
     def _create_context(self, tasks=None):
         if not tasks:
@@ -32,9 +37,9 @@ class DoneCommandTests(unittest.TestCase):
 
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
-        
+
         mock_storage = mock.Mock()
-        mock_storage.delete = mock.MagicMock()
+        mock_storage.update = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
 
         mock_context = mock.Mock()
@@ -49,63 +54,32 @@ class DoneCommandTests(unittest.TestCase):
             task = mock.Mock()
             task.index = index + 1
             task.name = 'task {}'.format(task.index)
+            task.end = mock.MagicMock()
             tasks.append(task)
         return tasks
 
 
 class DoneCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = donecommand.DoneCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
+    def test_get_confirm_filter_no_confirmation(self):
+        confirm_filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(confirm_filter)
 
-    def test_parse_no_filter_specified(self):
-        args = ['done']
-        mock_context = mock.Mock()
-        parser = donecommand.DoneCommandParser()
-        result = parser.parse(mock_context, args)
-        self.assertIsNone(result)
+    def test_get_confirm_filter_with_confirmation(self):
+        confirm_filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(confirm_filter)
+        self.assertIsInstance(confirm_filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Mark as done', confirm_filter.action_name)
 
-    def test_parse_filter_not_found(self):
-        args = ['text', 'done']
-        mock_filter_factory = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock()
-        mock_filter_factory.parse.side_effect = Exception
-        mock_context = mock.Mock()
-        mock_context.filter_factory = mock_filter_factory
-        with self.assertRaises(Exception):
-            donecommand.DoneCommandParser().parse(mock_context, args)
-
-    def test_parse_parse_success_no_confirmation(self):
-        self._test_parse_parse_success(False)
-
-    def test_parse_parse_success_with_confirmation(self):
-        self._test_parse_parse_success(True)
-        
-    def _test_parse_parse_success(self, with_confirmation):
-        args = ['2', 'done']
-
-        mock_filter_factory = mock.Mock()
-        mock_filter = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
-
+    def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
         mock_context.settings = mock.Mock()
         mock_context.settings.command_done_confirm = with_confirmation
-        mock_context.filter_factory = mock_filter_factory
 
         parser = donecommand.DoneCommandParser()
-        command = parser.parse(mock_context, args)
+        return parser.get_confirm_filter(mock_context)
 
+    def test_parse_success(self):
+        mock_context = mock.Mock()
+        command = donecommand.DoneCommandParser().parse(mock_context, [])
         self.assertIsInstance(command, donecommand.DoneCommand)
         self.assertEqual(mock_context, command.context)
-        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
-        self.assertEqual(mock_filter, command.filter._filters[0])
-
-        if with_confirmation:
-            self.assertEqual(2, len(command.filter._filters))
-            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
-            self.assertIn('Mark as done', command.filter._filters[1].action_name)
-        else:
-            self.assertEqual(1, len(command.filter._filters))

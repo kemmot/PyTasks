@@ -6,10 +6,10 @@ import datetime
 
 
 class TaskAnnotation:
-    def __init__(self, message, created=datetime.datetime.now()):
+    def __init__(self, message, created):
         self._message = message
         self._created = created
-    
+
     @property
     def created(self):
         return self._created
@@ -17,7 +17,7 @@ class TaskAnnotation:
     @property
     def message(self):
         return self._message
-    
+
 
 class Task:
     '''
@@ -25,15 +25,50 @@ class Task:
     '''
     def __init__(self):
         self._annotations = []
-        self._created = datetime.datetime.now()
+        self._attributes = {}
+        self._created_time = datetime.datetime.now()
+        self._end_time = None
         self._id_number = ''
         self._index = -1
         self._name = ''
+        self._started_time = None
         self._status = ''
-    
+
     @property
     def annotations(self):
+        '''
+        The annotations attached to this task.
+        '''
         return self._annotations
+
+    @property
+    def attributes(self):
+        '''
+        The extra attributes associated with this task.
+        '''
+        return self._attributes
+
+    @property
+    def created_time(self):
+        '''
+        The time the task was created.
+        '''
+        return self._created_time
+
+    @created_time.setter
+    def created_time(self, value):
+        self._created_time = value
+
+    @property
+    def end_time(self):
+        '''
+        The time the task was completed.
+        '''
+        return self._end_time
+
+    @end_time.setter
+    def end_time(self, value):
+        self._end_time = value
 
     @property
     def id_number(self):
@@ -58,15 +93,12 @@ class Task:
         self._index = value
 
     @property
-    def created(self):
-        '''
-        The time the task was created.
-        '''
-        return self._created
+    def is_ended(self):
+        return self.end_time is not None
 
-    @created.setter
-    def created(self, value):
-        self._created = value
+    @property
+    def is_started(self):
+        return self.started_time is not None
 
     @property
     def name(self):
@@ -89,3 +121,26 @@ class Task:
     @status.setter
     def status(self, value):
         self._status = value
+
+    @property
+    def started_time(self):
+        '''
+        The time the task was started.  None if not started.
+        '''
+        return self._started_time
+
+    @started_time.setter
+    def started_time(self, value):
+        self._started_time = value
+
+    def end(self):
+        self.end_time = datetime.datetime.now()
+
+    def start(self):
+        self.started_time = datetime.datetime.now()
+
+    def stop(self):
+        self.started_time = None
+
+    def __str__(self):
+        return 'index: {}, name: {}'.format(self.index, self.name)

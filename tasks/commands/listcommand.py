@@ -1,28 +1,40 @@
 import commands.commandbase as commandbase
-import filters.alwaysfilter as alwaysfilter
-import filters.filterfactory as filterfactory
+import asciitable
+import console
 
 
 class ListTaskCommand(commandbase.FilterCommandBase):
     '''
     A command that will list tasks.
     '''
+    def __init__(self, context, command_filter=None):
+        super().__init__(context, command_filter)
 
-    def __init__(self, context, filter):
-        super().__init__(context, filter)
-        
     def execute(self):
+        super().execute()
+    
+    def before_execute(self):
+        self.context.storage.garbage_collect()
+
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        print('ID   Status  Description')
-        print('------------------------')
-        for task in self.get_filtered_tasks():
-            format_string = '{} {} {}'
-            print(format_string.format( \
-                    task.index, \
-                    task.status, \
-                    task.name))
+        alt_background_colour = self.context.console.parse_backcolour(self.context.settings.table_row_alt_backcolour)
+        alt_foreground_colour = self.context.console.parse_forecolour(self.context.settings.table_row_alt_forecolour)
+        background_colour = self.context.console.parse_backcolour(self.context.settings.table_row_backcolour)
+        foreground_colour = self.context.console.parse_forecolour(self.context.settings.table_row_forecolour)
+
+        table = self.context.create_table()
+        table.add_column('ID')
+        table.add_column('Status')
+        table.add_column('Description')
+        for task in tasks:
+            if not task.is_ended:
+                table.add_row(task.index, task.status, task.name)
+        self.context.console.foreground_colour = foreground_colour
+        self.context.console.background_colour = background_colour
+        self.context.console.print_lines(table.create_output_lines(), alt_background_colour=alt_background_colour, alt_foregound_colour=alt_foreground_colour)
 
 
 class ListTaskCommandParser(commandbase.FilterCommandParserBase):
@@ -32,12 +44,4 @@ class ListTaskCommandParser(commandbase.FilterCommandParserBase):
         super().__init__(ListTaskCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if len(args) == 1 and args[0] == ListTaskCommandParser.COMMAND_NAME:
-            filter = alwaysfilter.AlwaysFilter()
-            command = ListTaskCommand(context, filter)
-        elif len(args) == 2 and args[1] == ListTaskCommandParser.COMMAND_NAME:
-            filter = context.filter_factory.parse(args[0])
-            command = ListTaskCommand(context, filter)
-        else:
-            command = None
-        return command
+        return ListTaskCommand(context)

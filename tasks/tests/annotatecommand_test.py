@@ -1,8 +1,8 @@
+import datetime
 import unittest
 from unittest import mock
 
 import commands.annotatecommand as annotatecommand
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 
 
@@ -27,7 +27,8 @@ class AnnotateCommandTests(unittest.TestCase):
 
         mock_context.storage.read_all.assert_called_once()
 
-    def test_execute_adds_annotation(self):
+    def test_execute_adds_annotation_without_date(self):
+        test_start_time = datetime.datetime.now()
         tasks = self._create_tasks(3)
         mock_context = self._create_context(tasks)
 
@@ -38,8 +39,28 @@ class AnnotateCommandTests(unittest.TestCase):
         command.message = 'message'
         command.execute()
 
+        test_end_time = datetime.datetime.now()
         self.assertEqual(1, len(tasks[1].annotations))
         self.assertEqual('message', tasks[1].annotations[0].message)
+        self.assertGreaterEqual(tasks[1].annotations[0].created, test_start_time)
+        self.assertLessEqual(tasks[1].annotations[0].created, test_end_time)
+
+    def test_execute_adds_annotation_with_date(self):
+        tasks = self._create_tasks(3)
+        mock_context = self._create_context(tasks)
+
+        mock_filter = mock.MagicMock()
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
+
+        annotation_created_date = datetime.datetime(2019, 1, 1)
+        command = annotatecommand.AnnotateCommand(mock_context, mock_filter)
+        command.created = annotation_created_date
+        command.message = 'message'
+        command.execute()
+
+        self.assertEqual(1, len(tasks[1].annotations))
+        self.assertEqual('message', tasks[1].annotations[0].message)
+        self.assertEqual(annotation_created_date, tasks[1].annotations[0].created)
 
     def test_execute_calls_update_on_storage(self):
         tasks = self._create_tasks(3)
@@ -60,7 +81,7 @@ class AnnotateCommandTests(unittest.TestCase):
 
         mock_settings = mock.Mock()
         mock_settings.command_done_confirm = False
-        
+
         mock_storage = mock.Mock()
         mock_storage.delete = mock.MagicMock()
         mock_storage.read_all = mock.MagicMock(return_value=tasks)
@@ -82,48 +103,33 @@ class AnnotateCommandTests(unittest.TestCase):
         return tasks
 
 
-class DoneCommandParserTests(unittest.TestCase):
-    def test_parse_wrong_command(self):
-        args = ['wrong']
-        mock_context = mock.Mock()
-        command = annotatecommand.AnnotateCommandParser().parse(mock_context, args)
-        self.assertEqual(None, command)
+class AnnotateCommandParserTests(unittest.TestCase):
+    def test_get_confirm_filter_no_confirmation(self):
+        confirm_filter = self.execute_get_confirm_filter(False)
+        self.assertIsNone(confirm_filter)
 
-    def test_parse_no_filter_specified(self):
-        args = ['annotate']
+    def test_get_confirm_filter_with_confirmation(self):
+        confirm_filter = self.execute_get_confirm_filter(True)
+        self.assertIsNotNone(confirm_filter)
+        self.assertIsInstance(confirm_filter, confirmfilter.ConfirmFilter)
+        self.assertIn('Annotate', confirm_filter.action_name)
+
+    def execute_get_confirm_filter(self, with_confirmation):
         mock_context = mock.Mock()
+        mock_context.settings = mock.Mock()
+        mock_context.settings.command_annotate_confirm = with_confirmation
+
         parser = annotatecommand.AnnotateCommandParser()
-        result = parser.parse(mock_context, args)
-        self.assertIsNone(result)
+        return parser.get_confirm_filter(mock_context)
 
     def test_parse_no_message(self):
-        args = ['2', 'annotate']
         mock_context = mock.Mock()
         parser = annotatecommand.AnnotateCommandParser()
-        result = parser.parse(mock_context, args)
-        self.assertIsNone(result)
-
-    def test_parse_filter_not_found(self):
-        args = ['text', 'annotate', 'message']
-
-        mock_filter_factory = mock.Mock()
-        mock_filter_factory.parse = mock.MagicMock()
-        mock_filter_factory.parse.side_effect = Exception
-
-        mock_context = mock.Mock()
-        mock_context.filter_factory = mock_filter_factory
-
         with self.assertRaises(Exception):
-            annotatecommand.AnnotateCommandParser().parse(mock_context, args)
+            parser.parse(mock_context, [])
 
-    def test_parse_parse_success_no_confirmation(self):
-        self._test_parse_parse_success(False)
-
-    def test_parse_parse_success_with_confirmation(self):
-        self._test_parse_parse_success(True)
-        
-    def _test_parse_parse_success(self, with_confirmation):
-        args = ['2', 'annotate', 'this', 'is', 'a', 'multi-word', 'message']
+    def test_parse_success(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message']
 
         mock_filter = mock.Mock()
 
@@ -133,20 +139,79 @@ class DoneCommandParserTests(unittest.TestCase):
         mock_context = mock.Mock()
         mock_context.filter_factory = mock_filter_factory
         mock_context.settings = mock.Mock()
-        mock_context.settings.command_annotate_confirm = with_confirmation
 
         parser = annotatecommand.AnnotateCommandParser()
         command = parser.parse(mock_context, args)
 
         self.assertIsInstance(command, annotatecommand.AnnotateCommand)
         self.assertEqual(mock_context, command.context)
-        self.assertIsInstance(command.filter, allbatchfilter.AllBatchFilter)
-        self.assertEqual(mock_filter, command.filter._filters[0])
         self.assertEqual(command.message, 'this is a multi-word message')
 
-        if with_confirmation:
-            self.assertEqual(2, len(command.filter._filters))
-            self.assertIsInstance(command.filter._filters[1], confirmfilter.ConfirmFilter)
-            self.assertIn('Annotate', command.filter._filters[1].action_name)
-        else:
-            self.assertEqual(1, len(command.filter._filters))
+    def test_parse_success_with_created_date(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'created:2021-01-01']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        command = parser.parse(mock_context, args)
+
+        self.assertIsInstance(command, annotatecommand.AnnotateCommand)
+        self.assertEqual(mock_context, command.context)
+        self.assertEqual(command.created, datetime.datetime(2021, 1, 1))
+        self.assertEqual(command.message, 'this is a multi-word message')
+
+    def test_parse_duplicate_attribute(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', \
+            'created:2021-01-01', 'created:2021-01-02']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        with self.assertRaises(Exception):
+            parser.parse(mock_context, args)
+
+    def test_parse_invalid_created_attribute(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'created:baddate']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        with self.assertRaises(Exception):
+            parser.parse(mock_context, args)
+
+    def test_parse_unknown_attribute(self):
+        args = ['this', 'is', 'a', 'multi-word', 'message', 'invalid:wobbly']
+
+        mock_filter = mock.Mock()
+
+        mock_filter_factory = mock.Mock()
+        mock_filter_factory.parse = mock.MagicMock(return_value=mock_filter)
+
+        mock_context = mock.Mock()
+        mock_context.filter_factory = mock_filter_factory
+        mock_context.settings = mock.Mock()
+
+        parser = annotatecommand.AnnotateCommandParser()
+        with self.assertRaises(Exception):
+            parser.parse(mock_context, args)

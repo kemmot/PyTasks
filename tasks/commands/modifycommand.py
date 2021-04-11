@@ -1,5 +1,4 @@
 import commands.commandbase as commandbase
-import filters.allbatchfilter as allbatchfilter
 import filters.confirmfilter as confirmfilter
 import entities
 
@@ -9,8 +8,8 @@ class ModifyCommand(commandbase.FilterCommandBase):
     A command that will modify existing tasks.
     '''
 
-    def __init__(self, context, filter):
-        super().__init__(context, filter)
+    def __init__(self, context, command_filter=None):
+        super().__init__(context, command_filter)
         self._template_task = None
 
     @property
@@ -23,15 +22,17 @@ class ModifyCommand(commandbase.FilterCommandBase):
     @template_task.setter
     def template_task(self, value):
         self._template_task = value
-        
-    def execute(self):
+
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        filtered_tasks = self.get_filtered_tasks()
-        for task in filtered_tasks:
-            task.name = self.template_task.name
-        self.context.storage.update(filtered_tasks)
+        for task in tasks:
+            if self.template_task.name:
+                task.name = self.template_task.name
+            for attribute_name, attribute_value in self.template_task.attributes.items():
+                task.attributes[attribute_name] = attribute_value
+        self.context.storage.update(tasks)
 
 
 class ModifyCommandParser(commandbase.FilterCommandParserBase):
@@ -41,20 +42,24 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
         super().__init__(ModifyCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if len(args) > 2 and args[1] == ModifyCommandParser.COMMAND_NAME:
-            batch_filter = allbatchfilter.AllBatchFilter()
-            batch_filter.add_filter(context.filter_factory.parse(args[0]))
+        template_task = entities.Task()
+        for arg in args:
+            if ':' in arg:
+                attribute_parts = arg.split(':')
+                template_task.attributes[attribute_parts[0]] = attribute_parts[1]
+            else:
+                if template_task.name:
+                    template_task.name += ' '
+                template_task.name += arg
 
-            if context.settings.command_modify_confirm:
-                batch_filter.add_filter(confirmfilter.ConfirmFilter('Modify'))
-            
-            name = args[2:]
-
-            template_task = entities.Task()
-            template_task.name = ' '.join(name)
-
-            command = ModifyCommand(context, batch_filter)
-            command.template_task = template_task
-        else:
-            command = None
+        command = ModifyCommand(context)
+        command.template_task = template_task
         return command
+
+    def get_confirm_filter(self, context):
+        if context.settings.command_modify_confirm:
+            return confirmfilter.ConfirmFilter(context, 'Modify')
+        return None
+
+    def get_usage(self):
+        return super().get_usage() + ' [attribute:value]'

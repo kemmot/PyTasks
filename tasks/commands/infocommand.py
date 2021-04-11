@@ -1,30 +1,28 @@
 import commands.commandbase as commandbase
-import entities
-import filters.allbatchfilter as allbatchfilter
-import filters.alwaysfilter as alwaysfilter
 
 
 class InfoCommand(commandbase.FilterCommandBase):
-    def __init__(self, context, batch_filter):
+    def __init__(self, context, batch_filter=None):
         super().__init__(context, batch_filter)
 
-    def execute(self):
+    def execute_tasks(self, tasks):
         '''
         Executes the logic of this command.
         '''
-        for task in self.get_filtered_tasks():
-            print('Name        Value')
-            print('ID          {}'.format(task.index))
-            print('Description {}'.format(task.name))
-            print('Status      {}'.format(task.status))
-            print('Entered     {}'.format(task.created))
-            print('UUID        {}'.format(task.id_number))
+        for task in tasks:
+            self.context.console.print('Name        Value')
+            self.context.console.print('ID          {}'.format(task.index))
+            self.context.console.print('Description {}'.format(task.name))
+            self.context.console.print('Status      {}'.format(task.status))
+            self.context.console.print('Entered     {}'.format(task.created_time))
+            self.context.console.print('UUID        {}'.format(task.id_number))
 
-            if len(task.annotations) > 0:
-                print('')
-                print('Date             Modification')
+            if task.annotations:
+                self.context.console.print('')
+                self.context.console.print('Date             Modification')
                 for annotation in task.annotations:
-                    print('{} {}'.format(annotation.created.strftime('%Y-%m-%d %H:%M'), annotation.message))
+                    date = annotation.created.strftime('%Y-%m-%d %H:%M')
+                    self.context.console.print('{} {}'.format(date, annotation.message))
 
 
 class InfoCommandParser(commandbase.FilterCommandParserBase):
@@ -34,11 +32,4 @@ class InfoCommandParser(commandbase.FilterCommandParserBase):
         super().__init__(InfoCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if len(args) == 1 and args[0] == InfoCommandParser.COMMAND_NAME:
-            command = InfoCommand(context, alwaysfilter.AlwaysFilter())
-        elif len(args) > 1 and args[1] == InfoCommandParser.COMMAND_NAME:
-            filter = context.filter_factory.parse(args[0])
-            command = InfoCommand(context, filter)
-        else:
-            command = None
-        return command
+        return InfoCommand(context)

@@ -1,0 +1,636 @@
+<h1 id="pytasks">PyTasks</h1>
+
+<p>A command line application for managing a task list.</p>
+
+<hr />
+
+<h1 id="usage">Usage</h1>
+
+<p>The application offers multiple operations as sub commands of the application with each exposing different parameters.</p>
+
+<p>The following shows the general usage of the application.</p>
+
+<pre><code>./tasks.sh [filter] &lt;command&gt; [command options]
+</code></pre>
+
+<p>The following commands are available:</p>
+
+<ul>
+<li><a href="#add-command">add</a></li>
+<li><a href="#annotate-command">annotate</a></li>
+<li><a href="#done-command">done</a></li>
+<li><a href="#help-command">help</a></li>
+<li><a href="#info-command">info</a></li>
+<li><a href="#list-command">list</a></li>
+<li><a href="#modify-command">modify</a></li>
+<li><a href="#shell-command">shell</a></li>
+<li><a href="#start-command">start</a></li>
+<li><a href="#stop-command">stop</a></li>
+</ul>
+
+<p>The following additional information is available.</p>
+
+<ul>
+<li>See <a href="#exit-codes">here</a> for exit codes.</li>
+<li>See <a href="#filters">here</a> for filters (note that not all commands support filters).</li>
+<li>See <a href="#settings">here</a> for settings.</li>
+</ul>
+
+<hr />
+
+<h2 id="add-command">Add Command</h2>
+
+<p>Adds a task.</p>
+
+<h3 id="usage-2">Usage</h3>
+
+<pre><code>tasks add &lt;name&gt; [name ...]
+</code></pre>
+
+<h3 id="positional-arguments">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">name</td>
+  <td align="left">The name of the new item.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Note: multiple names are concatenated together with spaces.</p>
+
+<h3 id="applicable-settings">Applicable Settings</h3>
+
+<ul>
+<li><a href="#commandaddformat">command.add.format</a></li>
+<li><a href="#commandaddnext_key_id">command.add.next<em>key</em>id</a></li>
+</ul>
+
+<h3 id="examples">Examples</h3>
+
+<p>Example 1: add a task.</p>
+
+<pre><code>tasks add This is a new task
+</code></pre>
+
+<hr />
+
+<h2 id="annotate-command">Annotate Command</h2>
+
+<p>Adds an annotation comment to a task.</p>
+
+<h3 id="usage-3">Usage</h3>
+
+<pre><code>tasks &lt;filter&gt; annotate &lt;comment&gt; [comment ...] [attribute:value ...]
+</code></pre>
+
+<h3 id="positional-arguments-2">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">filter</td>
+  <td align="left">The filter that identifies the task or tasks to apply the change to.</td>
+</tr>
+<tr>
+  <td align="left">comment</td>
+  <td align="left">The annotation comment to add to the tasks.</td>
+</tr>
+<tr>
+  <td align="left">attribute</td>
+  <td align="left">Attribute key value pairs.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Note: multiple comments are concatenated together with spaces.</p>
+
+<h3 id="supported-attributes">Supported Attributes</h3>
+
+<p>Note that these are annotation attributes rather than task attributes.
+The following values are supported.</p>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">created</td>
+  <td align="left">The date to use for the annotation creation date.  If not provided then the current date and time is used.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="applicable-settings-2">Applicable Settings</h3>
+
+<ul>
+<li><a href="#commandannotateconfirm">command.annotate.confirm</a></li>
+</ul>
+
+<h3 id="examples-2">Examples</h3>
+
+<p>Example 1: add an annotation to task 4.</p>
+
+<pre><code>tasks 4 annotate this is a multi-word annotation
+</code></pre>
+
+<hr />
+
+<h2 id="done-command">Done Command</h2>
+
+<p>Marks a task as complete.</p>
+
+<h3 id="usage-4">Usage</h3>
+
+<pre><code>tasks &lt;filter&gt; done
+</code></pre>
+
+<h3 id="positional-arguments-3">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">filter</td>
+  <td align="left">The task filter.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="applicable-settings-3">Applicable Settings</h3>
+
+<ul>
+<li><a href="#commanddoneconfirm">command.done.confirm</a></li>
+</ul>
+
+<hr />
+
+<h2 id="help-command">Help Command</h2>
+
+<p>Lists usage of available commands.</p>
+
+<h3 id="usage-5">Usage</h3>
+
+<pre><code>tasks help
+</code></pre>
+
+<hr />
+
+<h2 id="info-command">Info Command</h2>
+
+<p>Displays all information for a task or tasks.</p>
+
+<h3 id="usage-6">Usage</h3>
+
+<pre><code>tasks [filter] info
+</code></pre>
+
+<hr />
+
+<h2 id="list-command">List Command</h2>
+
+<p>Lists existing tasks.</p>
+
+<h3 id="usage-7">Usage</h3>
+
+<pre><code>tasks [filter] list
+</code></pre>
+
+<h3 id="positional-arguments-4">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">filter</td>
+  <td align="left">The optional task filter.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="applicable-settings-4">Applicable Settings</h3>
+
+<ul>
+<li><a href="#tablecolumnseparator">table.column.separator</a></li>
+<li><a href="#tableheaderunderline">table.header.underline</a></li>
+<li><a href="#tablerowalt_backcolour">table.row.alt_backcolour</a></li>
+<li><a href="#tablerowalt_forecolour">table.row.alt_forecolour</a></li>
+<li><a href="#tablerowbackcolour">table.row.backcolour</a></li>
+<li><a href="#tablerowforecolour">table.row.forecolour</a></li>
+</ul>
+
+<hr />
+
+<h2 id="modify-command">Modify Command</h2>
+
+<p>Modifies an existing command.</p>
+
+<h3 id="usage-8">Usage</h3>
+
+<pre><code>tasks &lt;filter&gt; modify &lt;name&gt; [name ...] [attribute:value ...]
+</code></pre>
+
+<h3 id="positional-arguments-5">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">attribute</td>
+  <td align="left">Any number of optional attribute key value pairs.</td>
+</tr>
+<tr>
+  <td align="left">filter</td>
+  <td align="left">The optional task filter.</td>
+</tr>
+<tr>
+  <td align="left">name</td>
+  <td align="left">The new name of the item.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="applicable-settings-5">Applicable Settings</h3>
+
+<ul>
+<li><a href="#commandmodifyconfirm">command.modify.confirm</a></li>
+</ul>
+
+<hr />
+
+<h2 id="shell-command">Shell Command</h2>
+
+<p>Enters an interactive prompt allowing for multiple commands to be entered without being prefixed with
+the application name.</p>
+
+<h3 id="usage-9">Usage</h3>
+
+<pre><code>tasks shell
+</code></pre>
+
+<h3 id="positional-arguments-6">Positional Arguments</h3>
+
+<p>None.</p>
+
+<h3 id="applicable-settings-6">Applicable Settings</h3>
+
+<p>None.</p>
+
+<hr />
+
+<h2 id="start-command">Start Command</h2>
+
+<p>Sets the start time of existing tasks.</p>
+
+<h3 id="usage-10">Usage</h3>
+
+<pre><code>tasks &lt;filter&gt; start
+</code></pre>
+
+<h3 id="positional-arguments-7">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">filter</td>
+  <td align="left">The optional task filter.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="applicable-settings-7">Applicable Settings</h3>
+
+<ul>
+<li><a href="#commandstartconfirm">command.start.confirm</a></li>
+</ul>
+
+<hr />
+
+<h2 id="stop-command">Stop Command</h2>
+
+<p>Clears the start time of existing tasks.</p>
+
+<h3 id="usage-11">Usage</h3>
+
+<pre><code>tasks &lt;filter&gt; stop
+</code></pre>
+
+<h3 id="positional-arguments-8">Positional Arguments</h3>
+
+<table>
+<thead>
+<tr>
+  <th align="left">Name</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="left">filter</td>
+  <td align="left">The optional task filter.</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="applicable-settings-8">Applicable Settings</h3>
+
+<ul>
+<li><a href="#commandstopconfirm">command.stop.confirm</a></li>
+</ul>
+
+<hr />
+
+<h1 id="exit-codes">Exit Codes</h1>
+
+<p>The following is a description of the exit codes that the application can produce.</p>
+
+<table>
+<thead>
+<tr>
+  <th align="right">Code</th>
+  <th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td align="right">0</td>
+  <td align="left">Command executed successfully.</td>
+</tr>
+<tr>
+  <td align="right">1</td>
+  <td align="left">Command line argument error.</td>
+</tr>
+<tr>
+  <td align="right">2</td>
+  <td align="left">No command specified.</td>
+</tr>
+<tr>
+  <td align="right">3</td>
+  <td align="left">Unknown command.</td>
+</tr>
+<tr>
+  <td align="right">99</td>
+  <td align="left">Unknown error.</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+
+<h1 id="filters">Filters</h1>
+
+<p>The following filters are available.</p>
+
+<hr />
+
+<h2 id="task-index-filter">Task Index Filter</h2>
+
+<p>A numeric filter will be recognised as a task index filter and will match
+the index of a task reported by the list command.</p>
+
+<h3 id="examples-3">Examples</h3>
+
+<p>Example 1: complete task 3.</p>
+
+<pre><code>task 3 done
+</code></pre>
+
+<hr />
+
+<h2 id="task-name-filter">Task Name Filter</h2>
+
+<p>A non-numeric filter will be recognised as a task name filter and will match
+any tasks who's name contains the text.  Tested without case sensitivity.</p>
+
+<p>If the filter text is surrounded by forward slashes, they will be ignored but 
+allows filtering on either a number in the name or a word that could be identified
+as a command name.</p>
+
+<h3 id="examples-4">Examples</h3>
+
+<p>Example 1: list any tasks containing the word 'project'.</p>
+
+<pre><code>tasks project list
+</code></pre>
+
+<p>Example 2: list tasks with '14' in the name.
+(note the slashes to ensure that task index 14 isn't listed)</p>
+
+<pre><code>tasks /14/ list
+</code></pre>
+
+<p>Example 3: list tasks with 'add' in the name
+(note the slashes to ensure that a task called 'list' isn't added).</p>
+
+<pre><code>tasks /add/ list
+</code></pre>
+
+<hr />
+
+<h1 id="settings">Settings</h1>
+
+<h2 id="commandaddformat">command.add.format</h2>
+
+<p>The format of the name of the text.</p>
+
+<p>The following substitution properties are available:
+* key<em>id: an auto incrementing ID stored in the command.add.next</em>key_id setting.
+* name: the name entered.</p>
+
+<p>The following example will prefix the name with an incrementing key ID.</p>
+
+<pre><code>FEAT-{key_id:04}: {name}
+</code></pre>
+
+<h2 id="commandaddnext_key_id">command.add.next<em>key</em>id</h2>
+
+<p>An auto incrementing key ID for use with the command.add.format setting.</p>
+
+<h2 id="commandannotateconfirm">command.annotate.confirm</h2>
+
+<p>Whether the annotate command should request confirmation before making changes.</p>
+
+<p>Possible values</p>
+
+<ul>
+<li>False</li>
+<li>True</li>
+</ul>
+
+<p>Default value: True</p>
+
+<h2 id="commanddefault">command.default</h2>
+
+<p>If no parameters are specified then these will be used.</p>
+
+<p>Possible values are any valid parameter set.</p>
+
+<p>Default value: list</p>
+
+<h2 id="commanddoneconfirm">command.done.confirm</h2>
+
+<p>Whether the done command should request confirmation before making changes.</p>
+
+<p>Possible values</p>
+
+<ul>
+<li>False</li>
+<li>True</li>
+</ul>
+
+<p>Default value: True</p>
+
+<h2 id="commandmodifyconfirm">command.modify.confirm</h2>
+
+<p>Whether the modify command should request confirmation before making changes.</p>
+
+<p>Possible values</p>
+
+<ul>
+<li>False</li>
+<li>True</li>
+</ul>
+
+<p>Default value: True</p>
+
+<h2 id="commandstartconfirm">command.start.confirm</h2>
+
+<p>Whether the start command should request confirmation before making changes.</p>
+
+<p>Possible values</p>
+
+<ul>
+<li>False</li>
+<li>True</li>
+</ul>
+
+<p>Default value: True</p>
+
+<h2 id="commandstopconfirm">command.stop.confirm</h2>
+
+<p>Whether the stop command should request confirmation before making changes.</p>
+
+<p>Possible values</p>
+
+<ul>
+<li>False</li>
+<li>True</li>
+</ul>
+
+<p>Default value: True</p>
+
+<h2 id="datalocation">data.location</h2>
+
+<p>The folder to use when looking for data files.</p>
+
+<p>Default value: ..</p>
+
+<h2 id="datadonefilename">data.done.filename</h2>
+
+<p>The filename to use for done tasks.  Appended to data.location.</p>
+
+<p>Default value: done.txt</p>
+
+<h2 id="datapendingfilename">data.pending.filename</h2>
+
+<p>The filename to use for in-progress tasks.  Appended to data.location.</p>
+
+<p>Default value: todo.txt</p>
+
+<h2 id="tablecolumnseparator">table.column.separator</h2>
+
+<p>The string to use to separate columns when printing tables.  Any double quotes will be stripped to allow leading and trailing spaces.</p>
+
+<p>Default value: " | "</p>
+
+<h2 id="tableheaderunderline">table.header.underline</h2>
+
+<p>Whether to underline table headers to separate them from the rows.</p>
+
+<p>Default value: True</p>
+
+<h2 id="tablerowalt_backcolour">table.row.alt_backcolour</h2>
+
+<p>The background colour of alternating table rows.  See <a href="#supported-background-colours">background colours</a> for options.</p>
+
+<h2 id="tablerowalt_forecolour">table.row.alt_forecolour</h2>
+
+<p>The foreground colour of alternating table rows.  See <a href="#supported-foreground-colours">foreground colours</a> for options.</p>
+
+<h2 id="tablerowbackcolour">table.row.backcolour</h2>
+
+<p>The background colour of table rows.  See <a href="#supported-background-colours">background colours</a> for options.</p>
+
+<h2 id="tablerowforecolour">table.row.forecolour</h2>
+
+<p>The foreground colour of table rows.  See <a href="#supported-foreground-colours">foreground colours</a> for options.</p>
+
+<h1 id="supported-colours">Supported Colours</h1>
+
+<h2 id="supported-foreground-colours">Supported Foreground Colours</h2>
+
+<p>The following colours are supported as foreground colours.</p>
+
+<ul>
+<li>Beige</li>
+<li>Black</li>
+<li>Blue</li>
+<li>Purple</li>
+<li>Green</li>
+<li>Red</li>
+<li>White</li>
+<li>Yellow</li>
+</ul>
+
+<h2 id="supported-background-colours">Supported Background Colours</h2>
+
+<p>The following colours are supported as background colours.</p>
+
+<ul>
+<li>Black</li>
+<li>Blue</li>
+<li>Cyan</li>
+<li>Green</li>
+<li>Purple</li>
+<li>Red</li>
+<li>White</li>
+<li>Yellow</li>
+</ul>

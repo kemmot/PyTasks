@@ -4,6 +4,9 @@ dir=$(dirname "${0}")
 dir=$(realpath "$dir/../tasks")
 pushd "$dir"
 
+#python3 -m unittest discover tests -p "modify*_test.py" -v
+#exit
+
 python3 -m unittest discover tests -p "*_test.py" -v
 exit_code=$?
 

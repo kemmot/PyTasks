@@ -28,10 +28,18 @@ class AddTaskCommand(commandbase.CommandBase):
         '''
         Executes the logic of this command.
         '''
+        key_id = self.context.settings.command_add_next_key_id
+        mappings = {
+            'key_id': key_id,
+            'name': self.task.name
+        }
+        self.task.name = self.context.settings.command_add_format.format(**mappings)
+
         existing_tasks = self.context.storage.read_all()
         self.context.storage.write(self.task)
+        self.context.settings.command_add_next_key_id = key_id + 1
         self.task.index = len(existing_tasks) + 1
-        print('Task created: {}'.format(self.task.index))
+        self.context.console.print('Task created: {}'.format(self.task.index))
 
 
 class AddTaskCommandParser(commandbase.CommandParserBase):
@@ -41,20 +49,15 @@ class AddTaskCommandParser(commandbase.CommandParserBase):
         super().__init__(AddTaskCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        if args[0] == AddTaskCommandParser.COMMAND_NAME:
-            if len(args) < 2:
-                raise Exception('Add command requires task description')
+        if not args:
+            raise Exception('Adding new task requires at least one word in name')
 
-            name = args[1:]
+        task = entities.Task()
+        task.created = datetime.datetime.now()
+        task.id_number = uuid.uuid4()
+        task.name = ' '.join(args)
+        task.status = 'pending'
 
-            task = entities.Task()
-            task.created = datetime.datetime.now()
-            task.id_number = uuid.uuid4()
-            task.name = ' '.join(name)
-            task.status = 'pending'
-
-            command = AddTaskCommand(context)
-            command.task = task
-        else:
-            command = None
+        command = AddTaskCommand(context)
+        command.task = task
         return command

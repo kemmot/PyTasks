@@ -2,86 +2,268 @@ import unittest
 from unittest import mock
 
 import commands.commandfactory as commandfactory
-import commandline
+import commands.multicommand as multicommand
+import filters.allbatchfilter as allbatchfilter
 
 
 class CommandFactoryTests(unittest.TestCase):
-    def test_get_command_no_command_specified_and_no_default(self):
-        mock_context = mock.Mock()
-        mock_context.settings = mock.Mock()
-        mock_context.settings.command_default = ''
-        factory = commandfactory.CommandFactory(mock_context)
-        try:
-            args = []
-            factory.get_command(args)
-            self.fail('Should not have reached this code')
-        except commandline.ExitCodeException as ex:
-            self.assertEqual(commandline.ExitCodes.no_command_specified_error, ex.exit_code)
+    def setUp(self):
+        self.command_name = 'test'
+        self.mock_command = mock.Mock()
+        self.mock_filter = mock.Mock()
 
-    def test_get_command_no_command_specified_with_known_default(self):
-        mock_context = mock.Mock()
-        mock_context.settings = mock.Mock()
-        mock_context.settings.command_default = 'test'
+        self.mock_command_type = self.create_mock_command_parser( \
+            self.command_name, \
+            self.mock_command)
 
-        expected_command = mock.Mock()
+        self.mock_context = mock.Mock()
+        self.mock_context.filter_factory = mock.Mock()
+        self.mock_context.filter_factory.parse = mock.MagicMock(return_value=self.mock_filter)
+        self.mock_context.settings = mock.Mock()
 
-        parser = mock.Mock()
-        parser.parse = mock.MagicMock(return_value=expected_command)
+        self.mock_parser = mock.Mock()
+        self.mock_parser.add_command_name = mock.Mock()
 
-        factory = commandfactory.CommandFactory(mock_context)
-        factory.register_type(parser)
+        self.factory = commandfactory.CommandFactory(self.mock_parser, self.mock_context)
+        self.factory.register_type(self.mock_command_type)
+
+    def test_constructor_success(self):
+        commandfactory.CommandFactory(mock.Mock(), mock.Mock())
+
+    def test_get_command_empty_args_no_default(self):
+        self.mock_context.settings.command_default = ''
+        self.mock_context.settings.command_default_zero_items = 'zero'
+        self.mock_context.settings.command_default_one_item = 'one'
+        self.mock_context.settings.command_default_multi_items = 'multi'
+        parsed_command = self.create_parsed_command('', '', '')
+        self.mock_parser.parse = mock.MagicMock(return_value=parsed_command)
+
+        zero_command = mock.Mock()
+        zero_parser = self.create_mock_command_parser( \
+            self.mock_context.settings.command_default_zero_items, \
+            zero_command)
+        self.factory.register_type(zero_parser)
+
+        one_command = mock.Mock()
+        one_parser = self.create_mock_command_parser( \
+            self.mock_context.settings.command_default_one_item, \
+            one_command)
+        self.factory.register_type(one_parser)
+
+        multi_command = mock.Mock()
+        multi_parser = self.create_mock_command_parser( \
+            self.mock_context.settings.command_default_multi_items, \
+            multi_command)
+        self.factory.register_type(multi_parser)
+
+        result = self.factory.get_command('')
+
+        self.assertIsInstance(result, multicommand.MultiCommand)
+        self.assertEqual(zero_command, result.zero_item_action)
+        self.assertEqual(one_command, result.one_item_action)
+        self.assertEqual(multi_command, result.multi_item_action)
+
+    def test_get_command_none_args(self):
+        args = None
+        filter_args = ['f1']
+        command_args = ['c1', 'c2']
+        default_args = 'test1 test2 test3'
+        self.get_command_test(args, filter_args, command_args, default_args)
+
+    def test_get_command_empty_args(self):
         args = []
-        command = factory.get_command(args)
-        self.assertEqual(command, expected_command)
+        filter_args = ['f1']
+        command_args = ['c1', 'c2']
+        default_args = 'test1 test2 test3'
+        self.get_command_test(args, filter_args, command_args, default_args)
 
-    def test_get_command_no_command_specified_with_unknown_default(self):
-        mock_context = mock.Mock()
-        mock_context.settings = mock.Mock()
-        mock_context.settings.command_default = 'test'
-        
-        factory = commandfactory.CommandFactory(mock_context)
-        try:
-            args = []
-            factory.get_command(args)
-            self.fail('Should not have reached this code')
-        except commandline.ExitCodeException as ex:
-            self.assertEqual(commandline.ExitCodes.unknown_command_error, ex.exit_code)
+    def test_get_command(self):
+        args = ['f1', 'v1', 'c1', 'c2']
+        filter_args = ['f1']
+        command_args = ['c1', 'c2']
+        default_args = 'test1 test2 test3'
+        self.get_command_test(args, filter_args, command_args, default_args)
 
-    def test_get_unknown_command(self):
-        mock_storage = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_storage)
-        try:
-            args = ['unknown']
-            factory.get_command(args)
-            self.fail('Should not have reached this code')
-        except commandline.ExitCodeException as ex:
-            self.assertEqual(commandline.ExitCodes.unknown_command_error, ex.exit_code)
+    def test_get_command_no_matching_commands(self):
+        args = ['f1', 'v1', 'c1', 'c2']
+        filter_args = ['f1']
+        command_args = ['c1', 'c2']
+        default_args = 'test1 test2 test3'
+        self.command_name = 'unknown'
+        with self.assertRaises(Exception):
+            self.get_command_test(args, filter_args, command_args, default_args)
 
-    def test_get_known_command(self):
-        args = ['test']
+    def get_command_test(self, args, filter_args, command_args, default_args):
+        self.mock_context.settings.command_default = default_args
+        parsed_command = self.create_parsed_command(filter_args, command_args)
+        self.mock_parser.parse = mock.MagicMock(return_value=parsed_command)
 
-        expected_command = mock.Mock()
+        result = self.factory.get_command(args)
 
+        self.assertEqual(self.mock_command, result)
+        self.assertIsInstance(self.mock_command.filter, allbatchfilter.AllBatchFilter)
+
+        self.mock_parser.add_command_name.assert_called_once_with(self.command_name)
+        if args:
+            expected_args = args
+        else:
+            expected_args = self.mock_context.settings.command_default.split()
+        self.mock_parser.parse.assert_called_once_with(expected_args)
+        self.mock_command_type.parse.assert_called_once_with(self.mock_context, command_args)
+        self.mock_context.filter_factory.parse.assert_called_once_with( \
+            self.mock_context, \
+            filter_args[0])
+
+    def create_mock_command_parser(self, command_name, command):
         parser = mock.Mock()
-        parser.parse = mock.MagicMock(return_value=expected_command)
+        parser.command_name = command_name
+        parser.parse = mock.MagicMock(return_value=command)
+        return parser
 
-        mock_context = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_context)
-        factory.register_type(parser)
+    def create_parsed_command(self, filter_args, command_args, command_name='?'):
+        if command_name == '?':
+            command_name = self.command_name
+        parsed_command = mock.Mock()
+        parsed_command.get_verb_value = mock.MagicMock(return_value=command_name)
+        parsed_command.get_command_argument_values = mock.MagicMock(return_value=command_args)
+        parsed_command.get_filter_argument_values = mock.MagicMock(return_value=filter_args)
+        return parsed_command
 
-        command = factory.get_command(args)
+class CommandParserTests(unittest.TestCase):
+    def test_parse_none_args_raises(self):
+        parser = commandfactory.CommandParser()
+        with self.assertRaises(Exception):
+            parser.parse(None)
 
-        self.assertEqual(command, expected_command)
-        parser.parse.assert_called_once_with(mock_context, args)
+    def test_parse_empty_args(self):
+        self._test_parse(['v1'], [])
 
-    def test_register_known_parsers_registers(self):
-        expected_command = mock.Mock()
+    def test_parse_only_verb(self):
+        self._test_parse(['v1'], ['v1'])
 
-        parser = mock.Mock()
-        parser.parse = mock.MagicMock(return_value=expected_command)
+    def test_parse_filter_verb(self):
+        self._test_parse(['v1'], ['f1', 'v1'])
 
-        mock_storage = mock.Mock()
-        factory = commandfactory.CommandFactory(mock_storage)
-        factory.register_type(parser)
-        command = factory.get_command(['test'])
-        self.assertEqual(expected_command, command)
+    def test_parse_verb_cmd(self):
+        self._test_parse(['v1'], ['v1', 'c1'])
+
+    def test_parse_filter_verb_cmd(self):
+        self._test_parse(['v1'], ['f1', 'v1', 'c1'])
+
+    def _test_parse(self, verbs, args_string):
+        parser = commandfactory.CommandParser()
+        for verb in verbs:
+            parser.add_command_name(verb)
+        command = parser.parse(args_string)
+        self.assertIsNotNone(command)
+        self.assertEqual(len(args_string), len(command.arguments))
+        arg_index = 0
+        for arg_string in args_string:
+            arg = command.arguments[arg_index]
+            arg_type = ArgumentTypeDecoder.decode(arg_string)
+            self._assert_argument(arg, arg_index, arg_type, arg_string)
+            arg_index += 1
+
+    def _assert_argument(self, arg, arg_index, arg_type, text):
+        self.assertEqual(arg_index, arg.arg_index)
+        self.assertEqual(arg_type, arg.arg_type)
+        self.assertEqual(text, arg.text)
+
+
+class ParsedCommandTests(unittest.TestCase):
+    def test_arguments_getter(self):
+        args = ['one', 'two']
+        factory = commandfactory.ParsedCommand()
+        for arg in args:
+            factory.arguments.append(arg)
+        self.assertEqual(args, factory.arguments)
+
+    def test_get_verb_zero(self):
+        with self.assertRaises(Exception):
+            self._get_get_verb_value_test('f1 f2 c1 c2', 'va')
+
+    def test_get_verb_single(self):
+        self._get_get_verb_value_test('f1 f2 v1 c1 c2', 'v1')
+
+    def test_get_verb_multiple(self):
+        self._get_get_verb_value_test('f1 va vb c1 c2', 'va')
+
+    def test_get_command_argument_values_zero(self):
+        self._get_command_argument_values_test('f1 f2 v1', [])
+
+    def test_get_command_argument_values_single(self):
+        self._get_command_argument_values_test('f1 f2 v1 c1', ['c1'])
+
+    def test_get_command_argument_values_multiple(self):
+        self._get_command_argument_values_test('f1 f2 v1 c1 c2', ['c1', 'c2'])
+
+    def test_get_filter_argument_values_zero(self):
+        self._get_filter_argument_values_test('v1 c1 c2', [])
+
+    def test_get_filter_argument_values_single(self):
+        self._get_filter_argument_values_test('f1 v1 c1', ['f1'])
+
+    def test_get_filter_argument_values_multiple(self):
+        self._get_filter_argument_values_test('f1 f2 v1 c1 c2', ['f1', 'f2'])
+
+    def test_str(self):
+        command = commandfactory.ParsedCommand()
+        command.arguments.append('f1')
+        command.arguments.append('v1')
+        command.arguments.append('c1')
+        result = str(command)
+        self.assertEqual('[f1], [v1], [c1]', result)
+
+    def _get_command_argument_values_test(self, args_string, output):
+        self._get_argument_value_test(args_string, output, \
+            commandfactory.ParsedCommand.get_command_argument_values)
+
+    def _get_filter_argument_values_test(self, args_string, output):
+        self._get_argument_value_test(args_string, output, \
+            commandfactory.ParsedCommand.get_filter_argument_values)
+
+    def _get_get_verb_value_test(self, args_string, output):
+        self._get_argument_value_test(args_string, output, \
+            commandfactory.ParsedCommand.get_verb_value)
+
+    def _get_argument_value_test(self, args_string, output, method):
+        command = self._create_command(args_string)
+        args = method(command)
+        self.assertEqual(output, args)
+
+    def _create_command(self, args_string):
+        command = commandfactory.ParsedCommand()
+        arg_index = 1
+        for arg_string in args_string.split():
+            arg_type = ArgumentTypeDecoder.decode(arg_string)
+            arg = commandfactory.ParsedArgument(arg_index, arg_string, arg_type)
+            command.arguments.append(arg)
+            arg_index += 1
+        return command
+
+
+class ArgumentTypeDecoder:
+    @staticmethod
+    def decode(arg_string):
+        '''
+        Creates a command with arguments decoded from args_string.
+        Arguments are separated by spaces.
+        Arguments beginning with 'c' will be added as command arguments.
+        Arguments beginning with 'f' will be added as filters.
+        Arguments beginning with 'v' will be added as verbs.
+        '''
+        if arg_string[0] == 'c':
+            arg_type = commandfactory.ArgumentType.command_argument
+        elif arg_string[0] == 'f':
+            arg_type = commandfactory.ArgumentType.filter
+        elif arg_string[0] == 'v':
+            arg_type = commandfactory.ArgumentType.verb
+        else:
+            raise Exception(f'Unknown test argument type: [{arg_string[0]}]')
+        return arg_type
+
+
+class ParsedArgumentTests(unittest.TestCase):
+    def test_str(self):
+        arg = commandfactory.ParsedArgument(1, 'test 1', 'arg type')
+        self.assertEqual('Argument: 1, type: arg type, value: test 1', str(arg))

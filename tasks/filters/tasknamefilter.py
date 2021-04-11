@@ -1,25 +1,33 @@
+import logging
 import filters.filterbase as filterbase
 
 
 class TaskNameFilter(filterbase.FilterBase):
-    def __init__(self, name):
+    def __init__(self, context, name):
+        super().__init__(context)
+        self._logger = logging.getLogger(__class__.__name__)
         self._name = name
-    
+
     @property
     def name(self):
         return self._name
 
     def is_match(self, task):
-        return self._name.upper() in task.name.upper()
+        result = self._name.upper() in task.name.upper()
+        self._logger.debug('is_match: {}, task: [{}]'.format(result, task))
+        return result
+    
+    def __str__(self):
+        return 'TaskNameFilter({})'.format(self.name)
 
 
 class TaskNameFilterParser(filterbase.FilterParserBase):
-    def parse(self, arg):
+    def parse(self, context, arg):
         if arg:
             search_term = arg
             if len(search_term) > 2 and search_term[0] == '/' and search_term[-1] == '/':
                 search_term = search_term[1:-1]
-            filter = TaskNameFilter(search_term)
+            task_filter = TaskNameFilter(context, search_term)
         else:
-            filter = None
-        return filter
+            task_filter = None
+        return task_filter

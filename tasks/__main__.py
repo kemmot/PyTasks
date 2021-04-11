@@ -4,18 +4,7 @@
 The main module for the tasks program.
 '''
 
-import logging
-import logging.config
-import os
-import sys
-import yaml
-
-import commandcontext as commandcontext
 import commands.commandfactory as commandfactory
-import commandline as cli
-import settings
-import storage
-
 # modules used by reflection
 import commands.addcommand
 import commands.annotatecommand
@@ -24,13 +13,31 @@ import commands.helpcommand
 import commands.infocommand
 import commands.listcommand
 import commands.modifycommand
+import commands.shellcommand
+import commands.startcommand
+import commands.stopcommand
+
+import logging
+import logging.config
+import os
+import sys
+import yaml
+
+import commandcontext
+import commandline as cli
+import console
+# modules used by reflection
 import filters.filterfactory as filterfactory
+import filters.taskattributefilter as taskattributefilter
 import filters.taskindexfilter as taskindexfilter
 import filters.tasknamefilter as tasknamefilter
 
+import settings
+import storage
+
 
 class OneLineExceptionFormatter(logging.Formatter):
-    def formatException(self, exc_info):
+    def formatException(self, exception_info):
         """Format an exception so that it prints on a single line."""
         return ''
 
@@ -79,14 +86,18 @@ try:
     SETTINGS = settings.Settings()
     SETTINGS.read(SETTINGS_FILENAME)
 
-    STORAGE = storage.TaskWarriorStorageCreator().create(SETTINGS)
-
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
-    
-    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY)
 
-    COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT)
+    STORAGE = storage.TaskWarriorStorageCreator().create(SETTINGS)
+
+    CONSOLE = console.Console()
+
+    CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY, CONSOLE)
+
+    PARSER = commandfactory.CommandParser()
+
+    COMMAND_FACTORY = commandfactory.CommandFactory(PARSER, CONTEXT)
     COMMAND_FACTORY.register_known_types()
     CONTEXT.command_factory = COMMAND_FACTORY
 
@@ -98,7 +109,12 @@ try:
         EXIT_CODE = cli.ExitCodes.command_line_argument_error
         raise cli.ExitCodeException(message=str(ex), exit_code=EXIT_CODE) from ex
 
+    if os.name != 'posix':
+        os.system('color') # needed for colour console output on windows
+    
+    COMMAND.before_execute()
     COMMAND.execute()
+    SETTINGS.save(SETTINGS_FILENAME)
     EXIT_CODE = cli.ExitCodes.success
 except cli.ExitCodeException as ex:
     LOGGER.error(str(ex), exc_info=True)
@@ -108,5 +124,5 @@ except Exception as ex:
     EXIT_CODE = cli.ExitCodes.unknown_error
 
 EXIT_CODE_DESCRIPTION = cli.ExitCodes.get_description(EXIT_CODE)
-LOGGER.debug('Application stopped with exit code: {} ({})'.format(EXIT_CODE, EXIT_CODE_DESCRIPTION))
+LOGGER.debug('Application stopped with exit code: %s (%s)', EXIT_CODE, EXIT_CODE_DESCRIPTION)
 exit(EXIT_CODE)
