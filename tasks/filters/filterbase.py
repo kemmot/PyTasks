@@ -17,7 +17,7 @@ class FilterBase:
         '''
         Executes the logic of this filter.
         '''
-        raise Exception('is_match not implemented in {}'.format(__class__.__name__))
+        raise Exception('is_match not implemented in {}'.format(self.__class__.__name__))
 
 
 class BatchFilter(FilterBase):

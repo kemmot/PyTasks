@@ -8,6 +8,7 @@ class ExitCodes:
     command_line_argument_error = 1
     no_command_specified_error = 2
     unknown_command_error = 3
+    configuration_error = 4
     unknown_error = 99
 
     @staticmethod
@@ -15,11 +16,13 @@ class ExitCodes:
         if value == ExitCodes.success:
             description = 'Success'
         elif value == ExitCodes.command_line_argument_error:
-            description = 'Command Line Argument Error'
+            description = 'Command line argument error'
         elif value == ExitCodes.no_command_specified_error:
             description = 'No command specified'
         elif value == ExitCodes.unknown_command_error:
             description = 'Unknown command'
+        elif value == ExitCodes.configuration_error:
+            description = 'Configuration error'
         else:
             description = 'Unknown Error'
         return description

@@ -72,6 +72,10 @@ class Settings:
         return self._get_value('data.pending.filename')
 
     @property
+    def report_list_columns(self):
+        return self._get_value('report.list.columns')
+
+    @property
     def table_column_separator(self):
         return self._get_value('table.column.separator').replace('"', '')
 
