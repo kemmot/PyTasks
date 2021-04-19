@@ -45,6 +45,7 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('Status      {}'.format(task.status)))
         calls.append(mock.call('Entered     {}'.format(task.created_time)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
+        calls.append(mock.call('Wait        {}'.format(task.wait_time)))
         self.assertEqual(calls, mock_context.console.print.mock_calls)
 
     def test_execute_prints_task_details_with_annotations(self):
@@ -69,6 +70,7 @@ class InfoCommandTests(unittest.TestCase):
         calls.append(mock.call('Status      {}'.format(task.status)))
         calls.append(mock.call('Entered     {}'.format(task.created_time)))
         calls.append(mock.call('UUID        {}'.format(task.id_number)))
+        calls.append(mock.call('Wait        {}'.format(task.wait_time)))
         calls.append(mock.call(''))
         calls.append(mock.call('Date             Modification'))
         calls.append(mock.call('{} {}'.format( \
@@ -98,6 +100,7 @@ class InfoCommandTests(unittest.TestCase):
         for index in range(count):
             task = mock.Mock()
             task.annotations = []
+            task.attributes = {}
             task.created_time = datetime.datetime(2020, 1, 1, 12, 1, 2)
             task.id_number = uuid.uuid4()
             task.index = index + 1

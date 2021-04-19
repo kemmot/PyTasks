@@ -15,18 +15,21 @@ class Empty:
 
 class TaskWarriorFormatterTests(unittest.TestCase):
     def test_format_gives_correct_output_without_started_or_ended(self):
-        self.output_test(False, False)
+        self.output_test(False, False, False)
 
     def test_format_gives_correct_output_with_started(self):
-        self.output_test(True, False)
+        self.output_test(True, False, False)
 
     def test_format_gives_correct_output_with_ended(self):
-        self.output_test(False, True)
+        self.output_test(False, True, False)
 
     def test_format_gives_correct_output_with_started_and_ended(self):
-        self.output_test(True, True)
+        self.output_test(True, True, False)
 
-    def output_test(self, include_started, include_ended):
+    def test_format_gives_correct_output_with_wait(self):
+        self.output_test(False, False, True)
+
+    def output_test(self, include_started, include_ended, include_wait):
         task = entities.Task()
         annotation1_date = datetime.datetime(2019, 12, 1, 20, 59, 18)
         annotation2_date = datetime.datetime(2019, 12, 2, 20, 59, 18)
@@ -44,6 +47,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
             task.started_time = datetime.datetime(2019, 11, 29, 20, 59, 18)
         if include_ended:
             task.end_time = datetime.datetime(2020, 11, 29, 20, 59, 18)
+        if include_wait:
+            task.wait_time = datetime.datetime(2021, 3, 30, 3, 16, 45)
 
         expected = '['
         expected += 'annotation_1575233958:"annotation 1"'
@@ -58,6 +63,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
             expected += ' start:"1575061158"'
         expected += ' status:"pending"'
         expected += ' uuid:"' + str(task.id_number) + '"'
+        if include_wait:
+            expected += ' wait:"1617074205"'
         expected += ']'
 
         formatter = storage.TaskWarriorFormatter()
@@ -66,18 +73,21 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_parse_parses_details_without_started_or_ended(self):
-        self.parse_test(False, False)
+        self.parse_test(False, False, False)
 
     def test_parse_parses_details_with_started(self):
-        self.parse_test(True, False)
+        self.parse_test(True, False, False)
 
     def test_parse_parses_details_with_ended(self):
-        self.parse_test(False, True)
+        self.parse_test(False, True, False)
 
     def test_parse_parses_details_with_started_and_ended(self):
-        self.parse_test(True, True)
+        self.parse_test(True, True, False)
 
-    def parse_test(self, include_started, include_ended):
+    def test_parse_parses_details_with_wait(self):
+        self.parse_test(False, False, True)
+
+    def parse_test(self, include_started, include_ended, include_wait):
         line = '['
         line += 'annotation_1575233958:"annotation 1"'
         line += ' annotation_1575320358:"annotation 2"'
@@ -91,6 +101,8 @@ class TaskWarriorFormatterTests(unittest.TestCase):
             line += ' start:"1575061158"'
         line += ' status:"pending"'
         line += ' uuid:"43462153-2313-4fc0-b1a4-f6c4b1501d8f"'
+        if include_wait:
+            line += ' wait:"1617074205"'
         line += ']'
         formatter = storage.TaskWarriorFormatter()
         task = formatter.parse(1, line)
@@ -111,14 +123,21 @@ class TaskWarriorFormatterTests(unittest.TestCase):
         self.assertEqual(task.attributes['project'], 'project 2')
         self.assertTrue('priority' in task.attributes)
         self.assertEqual(task.attributes['priority'], 'low')
+
         if include_started:
             self.assertEqual(task.started_time, datetime.datetime(2019, 11, 29, 20, 59, 18))
         else:
             self.assertIsNone(task.started_time)
+
         if include_ended:
             self.assertEqual(task.end_time, datetime.datetime(2020, 11, 29, 20, 59, 18))
         else:
             self.assertIsNone(task.end_time)
+
+        if include_wait:
+            self.assertEqual(task.wait_time, datetime.datetime(2021, 3, 30, 3, 16, 45))
+        else:
+            self.assertIsNone(task.wait_time)
 
 
 class TextFileStorageTests(unittest.TestCase):

@@ -44,16 +44,19 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
+        tasks.append(mock.Mock())
         tasks[1].index = 2
         tasks[1].is_ended = False
         tasks[1].status = 'this status'
         tasks[1].name = 'some name'
         tasks[1].is_ended = False
+        tasks[1].is_waiting = False
+        tasks[2].is_waiting = True
 
         mock_context = self._create_mock_context(tasks)
 
         mock_filter = mock.Mock()
-        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1]])
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1], tasks[2]])
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
         command.execute()
