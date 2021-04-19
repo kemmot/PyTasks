@@ -8,6 +8,7 @@ import commands.commandfactory as commandfactory
 # modules used by reflection
 import commands.addcommand
 import commands.annotatecommand
+import commands.columnscommand
 import commands.donecommand
 import commands.helpcommand
 import commands.infocommand
