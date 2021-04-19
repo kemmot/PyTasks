@@ -5,7 +5,6 @@
 [description:"FEAT-0023 support sqlite as alternate data store" entry:"0" status:"pending" uuid:"7ac3501b-b700-4931-a8cc-7f1fe36b6f72"]
 [description:"FEAT-0024 Add edit command" entry:"0" status:"pending" uuid:"2da1abb4-c851-45ed-a123-e05519277748"]
 [description:"FEAT-0025 Support todo.txt format as data store" entry:"0" status:"pending" uuid:"3432cf07-dea0-416e-b696-df9be21303ec"]
-[description:"FEAT-0027 Add number range support to filters" end:"1616773823" entry:"0" status:"pending" uuid:"39289c18-0ed6-4a1c-aa97-00bb4d808c2f"]
 [description:"FEAT-0028 Add multiple number support to filters" entry:"0" status:"pending" uuid:"71955cf0-73c5-4fe9-9fd1-230496b15bf1"]
 [description:"FEAT-0029 Add wildcard support to task name filter" entry:"0" status:"pending" uuid:"40462b42-2305-4257-bdc7-bfd5e9f3933b"]
 [description:"FEAT-0033 Add import command" entry:"0" status:"pending" uuid:"55ad17fb-5ed6-4868-a26b-3f68413552a6"]
@@ -35,3 +34,4 @@
 [description:"FEAT-0073: Modify command tag support" entry:"1615467379" module:"cmd-modify" status:"pending" uuid:"d4c51b6b-0548-4321-baf6-56cfdca01e83"]
 [description:"FEAT-0074: Add tag filter" entry:"1615467397" status:"pending" uuid:"c661dc42-a213-47f2-8638-c52a1074b0bc"]
 [description:"FEAT-0075: add feature to merge duplicate tasks" entry:"1616668783" status:"pending" uuid:"10b8010f-a573-4752-92a9-5a7d76d2af95"]
+[description:"FEAT-0081: Storage paths should respect user folder shortcuts" entry:"1618867010" status:"pending" uuid:"28ac56e1-45b7-46db-8497-c48ef1bd8f63"]
