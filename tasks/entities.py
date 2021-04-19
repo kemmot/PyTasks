@@ -33,6 +33,7 @@ class Task:
         self._name = ''
         self._started_time = None
         self._status = ''
+        self._wait_time = None
 
     @property
     def annotations(self):
@@ -101,6 +102,10 @@ class Task:
         return self.started_time is not None
 
     @property
+    def is_waiting(self):
+        return self.wait_time is not None and self.wait_time > datetime.datetime.now()
+
+    @property
     def name(self):
         '''
         The name of the task.
@@ -132,6 +137,17 @@ class Task:
     @started_time.setter
     def started_time(self, value):
         self._started_time = value
+
+    @property
+    def wait_time(self):
+        '''
+        The time the task is waiting until.
+        '''
+        return self._wait_time
+
+    @wait_time.setter
+    def wait_time(self, value):
+        self._wait_time = value
 
     def end(self):
         self.end_time = datetime.datetime.now()

@@ -34,6 +34,9 @@ class TaskWarriorFormatter:
         if task.is_ended:
             output_key_values['end'] = calendar.timegm(task.end_time.utctimetuple())
 
+        if task.wait_time:
+            output_key_values['wait'] = calendar.timegm(task.wait_time.utctimetuple())
+
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
             output_key_values['annotation_{}'.format(created_output)] = annotation.message
@@ -74,6 +77,8 @@ class TaskWarriorFormatter:
                 task.status = value
             elif key == 'uuid':
                 task.id_number = value
+            elif key == 'wait':
+                task.wait_time = self._parse_datetime(value)
             elif key.startswith('annotation_'):
                 created_timestamp = key[11:]
                 annotation_created = self._parse_datetime(created_timestamp)
