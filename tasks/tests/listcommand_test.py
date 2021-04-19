@@ -106,6 +106,49 @@ class ListTaskCommandTests(unittest.TestCase):
         with self.assertRaises(Exception):
             command.execute()
 
+    def test_execute_prints_empty_string_for_tasks_without_custom_property(self):
+        tasks = []
+        tasks.append(mock.Mock())
+        tasks.append(mock.Mock())
+        # task 1 does not have the custom property
+        tasks[0].attributes = {}
+        tasks[0].index = 2
+        tasks[0].is_ended = False
+        tasks[0].is_waiting = False
+        tasks[0].name = 'some name'
+        tasks[0].status = 'this status'
+        # task 2 has the custom property
+        tasks[1].attributes = {'project':'codename'}
+        tasks[1].index = 4
+        tasks[1].is_ended = False
+        tasks[1].is_waiting = False
+        tasks[1].name = 'another name'
+        tasks[1].status = 'another status'
+
+        mock_context = self._create_mock_context(tasks)
+        mock_context.settings.report_list_columns = 'id,description,project'
+
+        mock_filter = mock.Mock()
+        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
+
+        command = listcommand.ListTaskCommand(mock_context, mock_filter)
+        command.execute()
+
+        mock_filter.filter_items.assert_called()
+
+        add_column_call1 = mock.call('id')
+        add_column_call2 = mock.call('description')
+        add_column_call3 = mock.call('project')
+        add_column_calls = [add_column_call1, add_column_call2, add_column_call3]
+        self.assertEqual(add_column_calls, mock_context.mock_table.add_column.mock_calls)
+
+        add_row_call1 = mock.call(2, 'some name', '')
+        add_row_call2 = mock.call(4, 'another name', 'codename')
+        add_row_calls = [add_row_call1, add_row_call2]
+        self.assertEqual(add_row_calls, mock_context.mock_table.add_row.mock_calls)
+
+        mock_context.console.print_lines.assert_called()
+
     def _create_command(self, tasks=[], filter_tasks=[]):
         mock_context = self._create_mock_context(tasks)
 

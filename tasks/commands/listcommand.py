@@ -51,9 +51,7 @@ class ListTaskCommand(commandbase.FilterCommandBase):
                     elif column in task.attributes:
                         value = task.attributes[column]
                     else:
-                        raise commandline.ExitCodeException( \
-                            commandline.ExitCodes.configuration_error, \
-                            'Unknown column: [{}]'.format(column))
+                        value = ''
                     row_values.append(value)
                 table.add_row(*row_values)
 

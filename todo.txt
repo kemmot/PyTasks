@@ -31,3 +31,4 @@
 [description:"FEAT-0074: Add tag filter" entry:"1615467397" status:"pending" uuid:"c661dc42-a213-47f2-8638-c52a1074b0bc"]
 [description:"FEAT-0075: add feature to merge duplicate tasks" entry:"1616668783" status:"pending" uuid:"10b8010f-a573-4752-92a9-5a7d76d2af95"]
 [description:"FEAT-0079: Add command should support wait property" entry:"1617744803" status:"pending" uuid:"f9564dbd-0c5d-401b-bac9-644e66df6b7a"]
+[description:"BUG-0005: custom columns cannot be displayed unless all tasks have the property" end:"1645038331" entry:"1645037162" status:"pending" uuid:"da317057-807c-4cff-b3df-23760cbb3507"]
