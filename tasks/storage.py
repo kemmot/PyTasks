@@ -224,8 +224,10 @@ class TaskWarriorStorageCreator:
         data_location = settings.data_location
 
         if not os.path.isabs(data_location):
-            relative_path = os.path.join(os.path.dirname(__main__.__file__), data_location)
-            data_location = os.path.abspath(relative_path)
+            data_location = os.path.expanduser(data_location)
+            if not os.path.isabs(data_location):
+                data_location = os.path.join(os.path.dirname(__main__.__file__), data_location)
+            data_location = os.path.abspath(data_location)
             message = 'Converted relative data location [%s] to: [%s]'
             self._logger.debug(message, settings.data_location, data_location)
 
