@@ -1,5 +1,6 @@
 import commands.commandbase as commandbase
 import filters.confirmfilter as confirmfilter
+import datetimeparser
 import entities
 
 
@@ -30,6 +31,8 @@ class ModifyCommand(commandbase.FilterCommandBase):
         for task in tasks:
             if self.template_task.name:
                 task.name = self.template_task.name
+            if self.template_task.wait_time:
+                task.wait_time = self.template_task.wait_time
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 task.attributes[attribute_name] = attribute_value
         self.context.storage.update(tasks)
@@ -46,7 +49,10 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
         for arg in args:
             if ':' in arg:
                 attribute_parts = arg.split(':')
-                template_task.attributes[attribute_parts[0]] = attribute_parts[1]
+                if attribute_parts[0] == 'wait':
+                    template_task.wait_time = datetimeparser.DateTimeParser().parse(attribute_parts[1])
+                else:
+                    template_task.attributes[attribute_parts[0]] = attribute_parts[1]
             else:
                 if template_task.name:
                     template_task.name += ' '
