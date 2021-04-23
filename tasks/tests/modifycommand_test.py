@@ -1,3 +1,4 @@
+import datetime
 import unittest
 from unittest import mock
 
@@ -28,11 +29,15 @@ class ModifyCommandTests(unittest.TestCase):
 
         mock_context.storage.read_all.assert_called_once()
 
-    def test_execute_sets_task_name(self):
+    def test_execute_sets_task_properties(self):
+        new_name = 'new name'
+        new_wait_time = datetime.datetime(2021, 4, 30)
+
         tasks = self._create_tasks(3)
 
         template_task = self._create_tasks(1)[0]
-        template_task.name = 'new name'
+        template_task.name = new_name
+        template_task.wait_time = new_wait_time
 
         mock_context = self._create_context(tasks)
 
@@ -43,7 +48,8 @@ class ModifyCommandTests(unittest.TestCase):
         command.template_task = template_task
         command.execute()
 
-        self.assertEqual('new name', tasks[1].name)
+        self.assertEqual(new_name, tasks[1].name)
+        self.assertEqual(new_wait_time, tasks[1].wait_time)
 
     def test_execute_does_not_alter_name_when_not_specified(self):
         tasks = self._create_tasks(3)
@@ -173,12 +179,13 @@ class ModifyCommandParserTests(unittest.TestCase):
         return parser.get_confirm_filter(mock_context)
 
     def test_parse_parse_success_with_project_and_priority(self):
-        command = self._test_parse_parse_success(['project:test', 'priority:H'])
+        command = self._test_parse_parse_success(['project:test', 'priority:H', 'wait:2021-04-30'])
         self.assertEqual(len(command.template_task.attributes), 2)
         self.assertTrue('project' in command.template_task.attributes)
         self.assertEqual(command.template_task.attributes['project'], 'test')
         self.assertTrue('priority' in command.template_task.attributes)
         self.assertEqual(command.template_task.attributes['priority'], 'H')
+        self.assertEqual(command.template_task.wait_time, datetime.datetime(2021, 4, 30))
 
     def _test_parse_parse_success(self, extra_args=None):
         args = ['new', 'name']

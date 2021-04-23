@@ -32,4 +32,4 @@
 [description:"FEAT-0071: Add attribute filter" end:"1615472266" entry:"1615467335" status:"pending" uuid:"84a244c5-c4c0-4958-a0e4-1ebccdd46584"]
 [description:"FEAT-0027 Add number range support to filters" end:"1616773823" entry:"0" status:"pending" uuid:"39289c18-0ed6-4a1c-aa97-00bb4d808c2f"]
 [description:"FEAT-0077: List command should respect wait property" end:"1617744906" entry:"1614268432" status:"pending" uuid:"f1b4c0cf-6d9a-435e-9f5b-07e76487a4ed"]
-[description:"FEAT-0081: Storage paths should respect user folder shortcuts" end:"1618871165" entry:"1618867010" status:"pending" uuid:"28ac56e1-45b7-46db-8497-c48ef1bd8f63"]
+[description:"FEAT-0076: Modify command should support wait property" end:"1617746565" entry:"1614268420" status:"pending" uuid:"591998cf-9326-4c38-86f7-20ea9829a7fd"]
