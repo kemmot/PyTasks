@@ -1,25 +1,25 @@
 import unittest
 import unittest.mock as mock
 
-import filters.allbatchfilter as allbatchfilter
+import filters.anybatchfilter as anybatchfilter
 
 
-class AllBatchFilterTests(unittest.TestCase):
+class AnyBatchFilterTests(unittest.TestCase):
     def test_constructor_succeeds(self):
-        allbatchfilter.AllBatchFilter(mock.Mock())
+        anybatchfilter.AnyBatchFilter(mock.Mock())
 
     def test_filter_items_calls_filter_items_on_subfilters(self):
         items = [mock.Mock(), mock.Mock(), mock.Mock()]
 
-        filter1 = self._create_filter(True)
-        filter2 = self._create_filter(True)
+        filter1 = self._create_filter(False)
+        filter2 = self._create_filter(False)
 
-        batch_filter = allbatchfilter.AllBatchFilter(mock.Mock())
+        batch_filter = anybatchfilter.AnyBatchFilter(mock.Mock())
         batch_filter.add_filter(filter1)
         batch_filter.add_filter(filter2)
 
         results = batch_filter.filter_items(items)
-        self.assertEqual(items, results)
+        self.assertEqual([], results)
 
         filter1.is_match.assert_called()
         filter2.is_match.assert_called()
@@ -27,14 +27,14 @@ class AllBatchFilterTests(unittest.TestCase):
     def test_is_match_does_not_return_item_if_no_subfilters_return_true(self):
         self._execute_is_match_test(False, [False, False, False])
 
-    def test_is_match_does_not_return_item_if_only_some_subfilters_return_true(self):
-        self._execute_is_match_test(False, [False, True, False])
+    def test_is_match_does_return_item_if_only_some_subfilters_return_true(self):
+        self._execute_is_match_test(True, [False, True, False])
 
     def test_is_match_returns_item_if_all_filters_return_true(self):
         self._execute_is_match_test(True, [True, True, True])
 
     def _execute_is_match_test(self, expected_result, filter_results):
-        batch_filter = allbatchfilter.AllBatchFilter(mock.Mock())
+        batch_filter = anybatchfilter.AnyBatchFilter(mock.Mock())
         for filter_result in filter_results:
             batch_filter.add_filter(self._create_filter(filter_result))
         self.assertEqual(expected_result, batch_filter.is_match(mock.Mock()))

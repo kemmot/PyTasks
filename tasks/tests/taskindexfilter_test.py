@@ -1,6 +1,7 @@
 import unittest
 import unittest.mock as mock
 
+import filters.anybatchfilter as anybatchfilter
 import filters.taskindexfilter as taskindexfilter
 
 
@@ -25,6 +26,70 @@ class TaskIndexFilterTests(unittest.TestCase):
         description = str(taskindexfilter.TaskIndexFilter(mock.Mock(), 45))
         self.assertIn('TaskIndexFilter', description)
         self.assertIn('45', description)
+
+
+class TaskIndexGreaterThanOrEqualFilterTests(unittest.TestCase):
+    def test_constructor_sets_index(self):
+        target = taskindexfilter.TaskIndexGreaterThanOrEqualFilter(mock.Mock(), 18)
+        self.assertEqual(18, target.index)
+
+    def test_is_match_returns_false_on_lower_index(self):
+        mock_context = mock.Mock()
+        task = mock.Mock()
+        task.index = 1
+        filter = taskindexfilter.TaskIndexGreaterThanOrEqualFilter(mock_context, 2)
+        self.assertFalse(filter.is_match(task))
+
+    def test_is_match_returns_true_on_equal_index(self):
+        mock_context = mock.Mock()
+        task = mock.Mock()
+        task.index = 2
+        filter = taskindexfilter.TaskIndexGreaterThanOrEqualFilter(mock_context, 2)
+        self.assertTrue(filter.is_match(task))
+
+    def test_is_match_returns_true_on_higher_index(self):
+        mock_context = mock.Mock()
+        task = mock.Mock()
+        task.index = 3
+        filter = taskindexfilter.TaskIndexGreaterThanOrEqualFilter(mock_context, 2)
+        self.assertTrue(filter.is_match(task))
+
+    def test_string_representation_contains_class_and_index(self):
+        description = str(taskindexfilter.TaskIndexGreaterThanOrEqualFilter(mock.Mock(), 12))
+        self.assertIn('TaskIndexGreaterThanOrEqualFilter', description)
+        self.assertIn('12', description)
+
+
+class TaskIndexLessThanOrEqualFilter(unittest.TestCase):
+    def test_constructor_sets_index(self):
+        target = taskindexfilter.TaskIndexLessThanOrEqualFilter(mock.Mock(), 74)
+        self.assertEqual(74, target.index)
+
+    def test_is_match_returns_true_on_lower_index(self):
+        mock_context = mock.Mock()
+        task = mock.Mock()
+        task.index = 1
+        filter = taskindexfilter.TaskIndexLessThanOrEqualFilter(mock_context, 2)
+        self.assertTrue(filter.is_match(task))
+
+    def test_is_match_returns_true_on_equal_index(self):
+        mock_context = mock.Mock()
+        task = mock.Mock()
+        task.index = 2
+        filter = taskindexfilter.TaskIndexLessThanOrEqualFilter(mock_context, 2)
+        self.assertTrue(filter.is_match(task))
+
+    def test_is_match_returns_false_on_higher_index(self):
+        mock_context = mock.Mock()
+        task = mock.Mock()
+        task.index = 3
+        filter = taskindexfilter.TaskIndexLessThanOrEqualFilter(mock_context, 2)
+        self.assertFalse(filter.is_match(task))
+
+    def test_string_representation_contains_class_and_index(self):
+        description = str(taskindexfilter.TaskIndexLessThanOrEqualFilter(mock.Mock(), 12))
+        self.assertIn('TaskIndexLessThanOrEqualFilter', description)
+        self.assertIn('12', description)
 
 
 class TaskIndexRangeFilterTests(unittest.TestCase):
@@ -87,14 +152,33 @@ class TaskIndexFilterParserTests(unittest.TestCase):
         self.assertEqual(34, target.start_index)
         self.assertEqual(199, target.end_index)
 
+    def test_parse_open_start_filter(self):
+        mock_context = mock.Mock()
+        target = taskindexfilter.TaskIndexFilterParser().parse(mock_context, '-14')
+        self.assertIsInstance(target, taskindexfilter.TaskIndexLessThanOrEqualFilter)
+        self.assertEqual(14, target.index)
+
+    def test_parse_open_end_filter(self):
+        mock_context = mock.Mock()
+        target = taskindexfilter.TaskIndexFilterParser().parse(mock_context, '34-')
+        self.assertIsInstance(target, taskindexfilter.TaskIndexGreaterThanOrEqualFilter)
+        self.assertEqual(34, target.index)
+
+    def test_parse_multiple_filters(self):
+        mock_context = mock.Mock()
+        target = taskindexfilter.TaskIndexFilterParser().parse(mock_context, '-3 7 34-45 57-')
+        self.assertIsInstance(target, anybatchfilter.AnyBatchFilter)
+        self.assertIsInstance(target.filters[0], taskindexfilter.TaskIndexLessThanOrEqualFilter)
+        self.assertIsInstance(target.filters[1], taskindexfilter.TaskIndexFilter)
+        self.assertIsInstance(target.filters[2], taskindexfilter.TaskIndexRangeFilter)
+        self.assertIsInstance(target.filters[3], taskindexfilter.TaskIndexGreaterThanOrEqualFilter)
+
     def test_invalid_input_returns_none(self):
         mock_context = mock.Mock()
         self.assertIsNone(taskindexfilter.TaskIndexFilterParser().parse(mock_context, 'words'))
 
-        # invalid or missing range end
+        # invalid range end
         self.assertIsNone(taskindexfilter.TaskIndexFilterParser().parse(mock_context, '34-one'))
-        self.assertIsNone(taskindexfilter.TaskIndexFilterParser().parse(mock_context, '34-'))
 
-        # invalid or missing range start
+        # invalid range start
         self.assertIsNone(taskindexfilter.TaskIndexFilterParser().parse(mock_context, 'one-14'))
-        self.assertIsNone(taskindexfilter.TaskIndexFilterParser().parse(mock_context, '-14'))
