@@ -33,3 +33,5 @@
 [description:"FEAT-0027 Add number range support to filters" end:"1616773823" entry:"0" status:"pending" uuid:"39289c18-0ed6-4a1c-aa97-00bb4d808c2f"]
 [description:"FEAT-0077: List command should respect wait property" end:"1617744906" entry:"1614268432" status:"pending" uuid:"f1b4c0cf-6d9a-435e-9f5b-07e76487a4ed"]
 [description:"FEAT-0076: Modify command should support wait property" end:"1617746565" entry:"1614268420" status:"pending" uuid:"591998cf-9326-4c38-86f7-20ea9829a7fd"]
+[description:"FEAT-0080: Wait attribute should support relative dates" end:"1617748563" entry:"1617748479" status:"pending" uuid:"99929433-db85-4be4-b593-d9ef0f8dbb3b"]
+[description:"FEAT-0004 Add task key generation" end:"1617978453" entry:"0" status:"pending" uuid:"da92a6fb-5959-4e9d-9dd3-f34e32b3371e"]

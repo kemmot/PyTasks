@@ -33,6 +33,11 @@ class TaskNameFilterTests(unittest.TestCase):
         task.name = 'oneTESTtwo'
         self.assertTrue(tasknamefilter.TaskNameFilter(mock_context, 'test').is_match(task))
 
+    def test_string_representation_contains_class_and_index(self):
+        description = str(tasknamefilter.TaskNameFilter(mock.Mock(), 'task name'))
+        self.assertIn('TaskNameFilter', description)
+        self.assertIn('task name', description)
+
 
 class TaskNameFilterParserTests(unittest.TestCase):
     def test_parse_none_returns_none(self):

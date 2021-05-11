@@ -284,6 +284,21 @@ Example 1: complete tasks 3, 4 and 5.
 task 3-5 done
 ```
 
+Example 2: list all tasks with an index higher than 7.
+```
+task 7- list
+```
+
+Example 3: start all tasks with an index less than 5.
+```
+task -5 start
+```
+
+Example 3: stop a collection of ranges of tasks.
+```
+task 1,3-5,7- stop
+```
+
 -----------------------------------------------------------------------------------------------------
 
 ## Task Name Filter
