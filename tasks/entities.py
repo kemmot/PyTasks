@@ -135,25 +135,25 @@ class Task:
         return self._attributes
 
     @property
-    def created_time(self):
+    def created_time(self) -> datetime.datetime:
         '''
         The time the task was created.
         '''
         return self._created_time
 
     @created_time.setter
-    def created_time(self, value):
+    def created_time(self, value: datetime.datetime):
         self._created_time = value
 
     @property
-    def end_time(self):
+    def end_time(self) -> datetime.datetime:
         '''
         The time the task was completed.
         '''
         return self._end_time
 
     @end_time.setter
-    def end_time(self, value):
+    def end_time(self, value: datetime.datetime):
         self._end_time = value
 
     @property
@@ -168,37 +168,37 @@ class Task:
         self._id_number = value
 
     @property
-    def index(self):
+    def index(self) -> int:
         '''
         The task index.
         '''
         return self._index
 
     @index.setter
-    def index(self, value):
+    def index(self, value: int):
         self._index = value
 
     @property
-    def is_ended(self):
+    def is_ended(self) -> bool:
         return self.end_time is not None
 
     @property
-    def is_started(self):
+    def is_started(self) -> bool:
         return self.started_time is not None
 
     @property
-    def is_waiting(self):
+    def is_waiting(self) -> bool:
         return self.wait_time is not None and self.wait_time > datetime.datetime.now()
 
     @property
-    def name(self):
+    def name(self) -> str:
         '''
         The name of the task.
         '''
         return self._name
 
     @name.setter
-    def name(self, value):
+    def name(self, value: str):
         self._name = value
 
     @property
@@ -213,25 +213,25 @@ class Task:
         self._status = value
 
     @property
-    def started_time(self):
+    def started_time(self) -> datetime.datetime:
         '''
         The time the task was started.  None if not started.
         '''
         return self._started_time
 
     @started_time.setter
-    def started_time(self, value):
+    def started_time(self, value: datetime.datetime):
         self._started_time = value
 
     @property
-    def wait_time(self):
+    def wait_time(self) -> datetime.datetime:
         '''
         The time the task is waiting until.
         '''
         return self._wait_time
 
     @wait_time.setter
-    def wait_time(self, value):
+    def wait_time(self, value: datetime.datetime):
         self._wait_time = value
 
     def end(self):

@@ -1,3 +1,23 @@
+class DataTable:
+    def __init__(self):
+        self._columns = []
+        self._rows = []
+    
+    @property
+    def columns(self):
+        return self._columns
+    
+    @property
+    def rows(self):
+        return self._rows
+
+    def add_column(self, name):
+        self._columns.append(name)
+
+    def add_row(self, *row_values):
+        self._rows.append(row_values)
+
+
 class AsciiTable:
     def __init__(self):
         self._add_header_underline = False

@@ -39,115 +39,67 @@ class ListTaskCommandTests(unittest.TestCase):
 
         mock_context.storage.read_all.assert_called_once()
 
-    def test_execute_filters_tasks(self):
+    def test_execute_prints_table(self):
         tasks = []
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
+
         tasks[1].attributes = {}
+        tasks[1].attributes['project'] = 'test'
         tasks[1].index = 2
         tasks[1].is_ended = False
         tasks[1].name = 'some name'
         tasks[1].is_ended = False
         tasks[1].is_waiting = False
         tasks[1].status = 'this status'
+
         tasks[2].attributes = {}
+        tasks[2].is_ended = False
         tasks[2].is_waiting = True
 
+        tasks[3].attributes = {}
+        tasks[3].is_ended = True
+        tasks[3].is_waiting = False
+
         mock_context = self._create_mock_context(tasks)
 
         mock_filter = mock.Mock()
-        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1], tasks[2]])
+        mock_filter.filter_items = mock.MagicMock(return_value=[tasks[1], tasks[2], tasks[3]])
 
         command = listcommand.ListTaskCommand(mock_context, mock_filter)
         command.execute()
 
-        mock_filter.filter_items.assert_called()
+        mock_context.console.print_table.assert_called()
+        call_args = mock_context.console.print_table.mock_calls[0].args
+        table = call_args[0]
+        self.assertEqual(7, len(table.columns), 'Column count incorrect')
+        self.assertEqual('id', table.columns[0], 'Column label incorrect')
+        self.assertEqual('status', table.columns[1], 'Column label incorrect')
+        self.assertEqual('description', table.columns[2], 'Column label incorrect')
+        self.assertEqual('start', table.columns[3], 'Column label incorrect')
+        self.assertEqual('wait', table.columns[4], 'Column label incorrect')
+        self.assertEqual('project', table.columns[5], 'Column label incorrect')
+        self.assertEqual('does_not_exist', table.columns[6], 'Column label incorrect')
+        
+        # check that only the one not ended, not waiting, tasks is displayed
+        self.assertEqual(1, len(table.rows), 'Row count incorrect')
 
-        add_column_call1 = mock.call('id')
-        add_column_call2 = mock.call('status')
-        add_column_call3 = mock.call('description')
-        add_column_calls = [add_column_call1, add_column_call2, add_column_call3]
-        self.assertEqual(add_column_calls, mock_context.mock_table.add_column.mock_calls)
+        # test standard columns
+        self.assertEqual('2', table.rows[0][0])
+        self.assertEqual('this status', table.rows[0][1])
+        self.assertEqual('some name', table.rows[0][2])
 
-        add_row_call1 = mock.call(2, 'this status', 'some name')
-        add_row_calls = [add_row_call1]
-        self.assertEqual(add_row_calls, mock_context.mock_table.add_row.mock_calls)
+        # test dates
+        #self.assertEqual('', table.rows[0][3])
+        #self.assertEqual('', table.rows[0][4])
 
-        mock_context.console.print_lines.assert_called()
+        # test custom properties
+        self.assertEqual('test', table.rows[0][5])
 
-    def test_execute_prints_content(self):
-        task = mock.MagicMock()
-        task.name = 'test1'
-        task.status = 'pending'
-        task.id_number = 0
-        task.created = ''
-
-        tasks = []
-        tasks.append(task)
-
-        command = self._create_command(tasks, tasks)
-        command.execute()
-
-        command.context.console.parse_backcolour.assert_called_with('black')
-        command.context.console.parse_forecolour.assert_called_with('white')
-        command.context.console.print_lines.assert_called()
-
-    def test_execute_raises_on_invalid_backcolour(self):
-        command = self._create_command()
-        command.context.console.parse_backcolour.side_effect = Exception()
-        with self.assertRaises(Exception):
-            command.execute()
-
-    def test_execute_raises_on_invalid_forecolour(self):
-        command = self._create_command()
-        command.context.console.parse_forecolour.side_effect = Exception()
-        with self.assertRaises(Exception):
-            command.execute()
-
-    def test_execute_prints_empty_string_for_tasks_without_custom_property(self):
-        tasks = []
-        tasks.append(mock.Mock())
-        tasks.append(mock.Mock())
-        # task 1 does not have the custom property
-        tasks[0].attributes = {}
-        tasks[0].index = 2
-        tasks[0].is_ended = False
-        tasks[0].is_waiting = False
-        tasks[0].name = 'some name'
-        tasks[0].status = 'this status'
-        # task 2 has the custom property
-        tasks[1].attributes = {'project':'codename'}
-        tasks[1].index = 4
-        tasks[1].is_ended = False
-        tasks[1].is_waiting = False
-        tasks[1].name = 'another name'
-        tasks[1].status = 'another status'
-
-        mock_context = self._create_mock_context(tasks)
-        mock_context.settings.report_list_columns = 'id,description,project'
-
-        mock_filter = mock.Mock()
-        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
-
-        command = listcommand.ListTaskCommand(mock_context, mock_filter)
-        command.execute()
-
-        mock_filter.filter_items.assert_called()
-
-        add_column_call1 = mock.call('id')
-        add_column_call2 = mock.call('description')
-        add_column_call3 = mock.call('project')
-        add_column_calls = [add_column_call1, add_column_call2, add_column_call3]
-        self.assertEqual(add_column_calls, mock_context.mock_table.add_column.mock_calls)
-
-        add_row_call1 = mock.call(2, 'some name', '')
-        add_row_call2 = mock.call(4, 'another name', 'codename')
-        add_row_calls = [add_row_call1, add_row_call2]
-        self.assertEqual(add_row_calls, mock_context.mock_table.add_row.mock_calls)
-
-        mock_context.console.print_lines.assert_called()
+        # test missing columns
+        self.assertEqual('', table.rows[0][6])
 
     def _create_command(self, tasks=[], filter_tasks=[]):
         mock_context = self._create_mock_context(tasks)
@@ -166,6 +118,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_console = mock.Mock()
         mock_console.parse_backcolour = mock.MagicMock(return_value='')
         mock_console.print_lines = mock.MagicMock()
+        mock_console.print_table = mock.MagicMock()
 
         mock_storage = mock.MagicMock()
         mock_storage.read_all = MagicMock(return_value=tasks)
@@ -176,7 +129,7 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.storage = mock_storage
         mock_context.mock_table = mock_table
 
-        mock_context.settings.report_list_columns = 'id,status,description'
+        mock_context.settings.report_list_columns = 'id,status,description,start,wait,project,does_not_exist'
 
         mock_context.settings.table_row_alt_backcolour = 'black'
         mock_context.settings.table_row_alt_forecolour = 'white'

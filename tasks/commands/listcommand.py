@@ -21,14 +21,9 @@ class ListTaskCommand(commandbase.FilterCommandBase):
         '''
         Executes the logic of this command.
         '''
-        alt_background_colour = self.context.console.parse_backcolour(self.context.settings.table_row_alt_backcolour)
-        alt_foreground_colour = self.context.console.parse_forecolour(self.context.settings.table_row_alt_forecolour)
-        background_colour = self.context.console.parse_backcolour(self.context.settings.table_row_backcolour)
-        foreground_colour = self.context.console.parse_forecolour(self.context.settings.table_row_forecolour)
+        table = asciitable.DataTable()
 
         columns = self.context.settings.report_list_columns.split(',')
-        
-        table = self.context.create_table()
         for column in columns:
             column = column.strip()
             table.add_column(column)
@@ -39,25 +34,26 @@ class ListTaskCommand(commandbase.FilterCommandBase):
                 for column in columns:
                     column = column.strip()
                     if column == 'id':
-                        value = task.index
+                        value = str(task.index)
                     elif column == 'description':
                         value = task.name
                     elif column == 'status':
                         value = task.status
                     elif column == 'start':
-                        value = task.started_time
+                        value = str(task.started_time)
                     elif column == 'wait':
-                        value = task.wait_time
+                        value = str(task.wait_time)
                     elif column in task.attributes:
-                        value = task.attributes[column]
+                        value = str(task.attributes[column])
                     else:
                         value = ''
                     row_values.append(value)
                 table.add_row(*row_values)
-
-        self.context.console.foreground_colour = foreground_colour
-        self.context.console.background_colour = background_colour
-        self.context.console.print_lines(table.create_output_lines(), alt_background_colour=alt_background_colour, alt_foregound_colour=alt_foreground_colour)
+        
+        c = self.context.console
+        c.foreground_colour = self.context.settings.table_row_forecolour
+        c.background_colour = self.context.settings.table_row_backcolour
+        c.print_table(table, self.context.settings.table_row_alt_forecolour, self.context.settings.table_row_alt_backcolour)
 
 
 class ListTaskCommandParser(commandbase.FilterCommandParserBase):
