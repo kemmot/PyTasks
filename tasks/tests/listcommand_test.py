@@ -45,12 +45,14 @@ class ListTaskCommandTests(unittest.TestCase):
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
         tasks.append(mock.Mock())
+        tasks[1].attributes = {}
         tasks[1].index = 2
         tasks[1].is_ended = False
-        tasks[1].status = 'this status'
         tasks[1].name = 'some name'
         tasks[1].is_ended = False
         tasks[1].is_waiting = False
+        tasks[1].status = 'this status'
+        tasks[2].attributes = {}
         tasks[2].is_waiting = True
 
         mock_context = self._create_mock_context(tasks)
@@ -63,9 +65,9 @@ class ListTaskCommandTests(unittest.TestCase):
 
         mock_filter.filter_items.assert_called()
 
-        add_column_call1 = mock.call('ID')
-        add_column_call2 = mock.call('Status')
-        add_column_call3 = mock.call('Description')
+        add_column_call1 = mock.call('id')
+        add_column_call2 = mock.call('status')
+        add_column_call3 = mock.call('description')
         add_column_calls = [add_column_call1, add_column_call2, add_column_call3]
         self.assertEqual(add_column_calls, mock_context.mock_table.add_column.mock_calls)
 
@@ -130,6 +132,8 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.create_table = mock.MagicMock(return_value=mock_table)
         mock_context.storage = mock_storage
         mock_context.mock_table = mock_table
+
+        mock_context.settings.report_list_columns = 'id,status,description'
 
         mock_context.settings.table_row_alt_backcolour = 'black'
         mock_context.settings.table_row_alt_forecolour = 'white'

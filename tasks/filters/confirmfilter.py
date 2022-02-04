@@ -10,23 +10,39 @@ class ConfirmFilter(filterbase.FilterBase):
     def action_name(self):
         return self._action_name
 
-    def filter_items(self, items):
-        filtered_items = []
-        if items:
-            if len(items) == 1:
-                message = '{}? [y/n]... ID: {}, name: "{}"> '.format( \
-                    self.action_name, \
-                    items[0].index, \
-                    items[0].name)
+    def filter_items(self, tasks):
+        filtered_tasks = []
+        if tasks:
+            if len(tasks) == 1:
+                result = self._query_single(tasks[0])
             else:
-                message = '{}? [y/n]... {} items> '.format(self.action_name, len(items))
+                result = self._query_multiple(tasks)
 
-            if self.context.console.input(message).startswith('y'):
-                filtered_items = items
+            if result:
+                filtered_tasks = tasks
             else:
-                filtered_items = []
+                filtered_tasks = []
         else:
             # no prompt required
-            filtered_items = items
+            filtered_tasks = tasks
 
-        return filtered_items
+        return filtered_tasks
+    
+    def is_match(self, task):
+        return self._query_single(task)
+    
+    def _query_single(self, task):
+        message = '{}? [y/n]... ID: {}, name: "{}"> '.format( \
+            self.action_name, \
+            task.index, \
+            task.name)
+        return self._query(message)
+    
+    def _query_multiple(self, tasks):
+        message = '{}? [y/n]... {} items> '.format(self.action_name, len(tasks))
+        return self._query(message)
+    
+    def _query(self, message):
+        if self.context.console.input(message).startswith('y'):
+            return True
+        return False

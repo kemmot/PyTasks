@@ -29,6 +29,7 @@ The following additional information is available.
 * See [here](#exit-codes) for exit codes.
 * See [here](#filters) for filters (note that not all commands support filters).
 * See [here](#settings) for settings.
+* See [here](#supported-columns) for supported columns.
 
 -----------------------------------------------------------------------------------------------------
 
@@ -253,6 +254,7 @@ The following is a description of the exit codes that the application can produc
 |   1|Command line argument error.  |
 |   2|No command specified.         |
 |   3|Unknown command.              |
+|   4|Configuration error           |
 |  99|Unknown error.                |
 
 -----------------------------------------------------------------------------------------------------
@@ -418,6 +420,13 @@ The filename to use for in-progress tasks.  Appended to data.location.
 
 Default value: todo.txt
 
+## report.list.columns
+The comma delimited list of columns to show when displaying the list report.
+
+Default value: id,status,description
+
+See [supported columns](#supported-columns) for the columns available in this setting.
+
 ## table.column.separator
 The string to use to separate columns when printing tables.  Any double quotes will be stripped to allow leading and trailing spaces.
 
@@ -451,6 +460,17 @@ The foreground colour of table rows.
 See [foreground colours](#supported-foreground-colours) for options.
 
 Default value: White
+
+# Supported Columns
+The following columns are supported:
+
+|Name       |Description                        |
+|----------:|:----------------------------------|
+|description|The description of the task.       |
+|id         |The index ID of the task.          |
+|start      |The time that the task was started.|
+|status     |The current task status.           |
+|wait       |The target wait time for the task. |
 
 # Supported Colours
 
