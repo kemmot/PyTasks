@@ -1,3 +1,4 @@
+import commandline
 import commands.commandbase as commandbase
 
 
@@ -43,5 +44,7 @@ class MultiCommand(commandbase.FilterCommandBase):
             command.before_execute()
             command.execute_tasks(tasks)
             self._logger.debug('Executed {} command on {} tasks'.format(command.__class__.__name__, len(tasks)))
+        except commandline.ExitCodeException:
+            raise
         except Exception as ex:
             raise Exception(f'Failed executing {command}') from ex
