@@ -472,6 +472,19 @@ The following columns are supported:
 |status     |The current task status.           |
 |wait       |The target wait time for the task. |
 
+# Supported Date Formats
+
+|Name    |Example   |
+|--------|----------|
+|iso     |2021-04-17|
+|relative|-4d       |
+
+Relative date formats consist of a direction, value and unit.
+The direction can be '+' for a future date from now or '-' for a past date.
+The value can be any numeric value.
+The unit can be one of the following:
+* d: days.
+
 # Supported Colours
 
 ## Supported Foreground Colours
