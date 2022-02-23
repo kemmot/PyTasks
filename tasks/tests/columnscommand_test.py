@@ -17,21 +17,21 @@ class ColumnsCommandTests(unittest.TestCase):
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
+        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
 
         command = columnscommand.ColumnsCommand(mock_context, mock_filter)
         command.execute()
 
         mock_context.storage.read_all.assert_called_once()
 
-    def test_execute_prints_well_known_columns(self):
+    def test_execute_prints_all_columns(self):
         tasks = self._create_tasks(3)
         tasks[0].attributes['project'] = 'project1'
         tasks[1].attributes['project'] = 'project2'
         mock_context = self._create_context(tasks)
 
         mock_filter = mock.MagicMock()
-        mock_filter.is_match = mock.MagicMock(return_value=True)
+        mock_filter.filter_items = mock.MagicMock(return_value=tasks)
 
         command = columnscommand.ColumnsCommand(mock_context, mock_filter)
         command.execute()
@@ -52,9 +52,10 @@ class ColumnsCommandTests(unittest.TestCase):
         add_row_calls.append(mock.call('', '', '', 'relative', '-4d'))
         add_row_calls.append(mock.call('id', 'numeric', '', 'number*', '123'))
         
-        #add_row_calls.append(mock.call('project', 'string', 'Modifiable', '', ''))
-        #add_row_calls.append(mock.call('', '', '', '', 'project1'))
-        #add_row_calls.append(mock.call('', '', '', '', 'project2'))
+        # custom columns
+        add_row_calls.append(mock.call('project', 'string', 'Modifiable', '', ''))
+        add_row_calls.append(mock.call('', '', '', '', 'project1'))
+        add_row_calls.append(mock.call('', '', '', '', 'project2'))
 
         add_row_calls.append(mock.call('start', 'date', '', 'formatted', '2021-04-17'))
         add_row_calls.append(mock.call('', '', '', 'relative', '-4d'))

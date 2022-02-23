@@ -1,8 +1,5 @@
 import commands.commandbase as commandbase
-import datetime
-import datetimeparser
 import entities
-import filters.confirmfilter as confirmfilter
 
 
 class ColumnsCommand(commandbase.FilterCommandBase):
@@ -63,9 +60,8 @@ class ColumnsCommand(commandbase.FilterCommandBase):
                 for row in self._get_rows_for_date_attribute(entities.TaskAttributeName.WAIT, modifiable=False):
                     table.add_row(*row)
             else:
-                pass
-                #for row in self._get_rows_for_custom_attribute(attribute_name, custom_attribute_values[attribute_name]):
-                #    table.add_row(*row)
+                for row in self._get_rows_for_custom_attribute(attribute_name, custom_attribute_values[attribute_name]):
+                    table.add_row(*row)
 
         self.context.console.foreground_colour = foreground_colour
         self.context.console.background_colour = background_colour

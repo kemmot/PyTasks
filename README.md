@@ -15,6 +15,7 @@ The following commands are available:
 
 * [add](#add-command)
 * [annotate](#annotate-command)
+* [columns](#columns-command)
 * [done](#done-command)
 * [help](#help-command)
 * [info](#info-command)
@@ -97,6 +98,23 @@ Example 1: add an annotation to task 4.
 ```
 tasks 4 annotate this is a multi-word annotation
 ```
+
+-------------------------------------------------------------------------------------------------
+
+## Columns Command
+Lists the columns available to display including custom task attributes.
+
+### Usage
+```
+tasks <filter> columns
+```
+### Positional Arguments
+
+|Name  |Description|
+|:-----|:----------|
+|filter|The task filter.|
+
+Note that the filter argument filters the tasks that are examined for custom attributes rather than being based on the names of the columns.
 
 -------------------------------------------------------------------------------------------------
 
