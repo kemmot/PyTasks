@@ -36,3 +36,5 @@
 [description:"FEAT-0080: Wait attribute should support relative dates" end:"1617748563" entry:"1617748479" status:"pending" uuid:"99929433-db85-4be4-b593-d9ef0f8dbb3b"]
 [description:"FEAT-0004 Add task key generation" end:"1617978453" entry:"0" status:"pending" uuid:"da92a6fb-5959-4e9d-9dd3-f34e32b3371e"]
 [description:"FEAT-0068: support custom columns in reports" end:"1618165198" entry:"1614880069" status:"pending" uuid:"5a93c68d-9e07-47ba-9be8-2185b0a96e17"]
+[description:"FEAT-0035 Add columns command to list available attributes" end:"1618865177" entry:"0" status:"pending" uuid:"deef5e7a-2157-41b4-933c-77635896f3dc"]
+[description:"BUG-0005: custom columns cannot be displayed unless all tasks have the property" end:"1645038331" entry:"1645037162" status:"pending" uuid:"da317057-807c-4cff-b3df-23760cbb3507"]

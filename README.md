@@ -15,6 +15,7 @@ The following commands are available:
 
 * [add](#add-command)
 * [annotate](#annotate-command)
+* [columns](#columns-command)
 * [done](#done-command)
 * [help](#help-command)
 * [info](#info-command)
@@ -97,6 +98,23 @@ Example 1: add an annotation to task 4.
 ```
 tasks 4 annotate this is a multi-word annotation
 ```
+
+-------------------------------------------------------------------------------------------------
+
+## Columns Command
+Lists the columns available to display including custom task attributes.
+
+### Usage
+```
+tasks <filter> columns
+```
+### Positional Arguments
+
+|Name  |Description|
+|:-----|:----------|
+|filter|The task filter.|
+
+Note that the filter argument filters the tasks that are examined for custom attributes rather than being based on the names of the columns.
 
 -------------------------------------------------------------------------------------------------
 
@@ -471,6 +489,19 @@ The following columns are supported:
 |start      |The time that the task was started.|
 |status     |The current task status.           |
 |wait       |The target wait time for the task. |
+
+# Supported Date Formats
+
+|Name    |Example   |
+|--------|----------|
+|iso     |2021-04-17|
+|relative|-4d       |
+
+Relative date formats consist of a direction, value and unit.
+The direction can be '+' for a future date from now or '-' for a past date.
+The value can be any numeric value.
+The unit can be one of the following:
+* d: days.
 
 # Supported Colours
 

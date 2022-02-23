@@ -2,7 +2,10 @@
 Module for task related entity classes.
 '''
 
+import enum
+
 import datetime
+import exceptions
 
 
 class TaskAnnotation:
@@ -17,6 +20,88 @@ class TaskAnnotation:
     @property
     def message(self):
         return self._message
+
+
+class TaskAttributeType(enum.Enum):
+    DESCRIPTION = 10
+    END = 20
+    ENTRY = 30
+    ID = 40
+    START = 50
+    STATUS = 60
+    WAIT = 70
+
+
+class TaskAttributeName:
+    DESCRIPTION = 'description'
+    END = 'end'
+    ENTRY = 'entry'
+    ID = 'id'
+    START = 'start'
+    STATUS = 'status'
+    WAIT = 'wait'
+
+    @staticmethod
+    def get_names():
+        names = []
+        names.append(TaskAttributeName.DESCRIPTION)
+        names.append(TaskAttributeName.END)
+        names.append(TaskAttributeName.ENTRY)
+        names.append(TaskAttributeName.ID)
+        names.append(TaskAttributeName.START)
+        names.append(TaskAttributeName.STATUS)
+        names.append(TaskAttributeName.WAIT)
+        return names
+
+    @staticmethod
+    def get_name(task_type_attribute_enum):
+        if task_type_attribute_enum == TaskAttributeType.DESCRIPTION:
+            return TaskAttributeName.DESCRIPTION
+
+        if task_type_attribute_enum == TaskAttributeType.END:
+            return TaskAttributeName.END
+
+        if task_type_attribute_enum == TaskAttributeType.ENTRY:
+            return TaskAttributeName.ENTRY
+
+        if task_type_attribute_enum == TaskAttributeType.ID:
+            return TaskAttributeName.ID
+
+        if task_type_attribute_enum == TaskAttributeType.START:
+            return TaskAttributeName.START
+
+        if task_type_attribute_enum == TaskAttributeType.STATUS:
+            return TaskAttributeName.STATUS
+
+        if task_type_attribute_enum == TaskAttributeType.WAIT:
+            return TaskAttributeName.WAIT
+
+        raise exceptions.NotSupportedException('Task type attribute not supported: [{}]'.format(task_type_attribute_enum))
+
+    @staticmethod
+    def is_name_valid(attribute_name):
+        if attribute_name == TaskAttributeName.DESCRIPTION:
+            return True
+
+        if attribute_name == TaskAttributeName.END:
+            return True
+
+        if attribute_name == TaskAttributeName.ENTRY:
+            return True
+
+        if attribute_name == TaskAttributeName.ID:
+            return True
+
+        if attribute_name == TaskAttributeName.START:
+            return True
+
+        if attribute_name == TaskAttributeName.STATUS:
+            return True
+
+        if attribute_name == TaskAttributeName.WAIT:
+            return True
+
+        return False
 
 
 class Task:
