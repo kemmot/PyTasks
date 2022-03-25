@@ -166,7 +166,7 @@ class TaskIndexFilterParserTests(unittest.TestCase):
 
     def test_parse_multiple_filters(self):
         mock_context = mock.Mock()
-        target = taskindexfilter.TaskIndexFilterParser().parse(mock_context, '-3 7 34-45 57-')
+        target = taskindexfilter.TaskIndexFilterParser().parse(mock_context, '-3,7,34-45,57-')
         self.assertIsInstance(target, anybatchfilter.AnyBatchFilter)
         self.assertIsInstance(target.filters[0], taskindexfilter.TaskIndexLessThanOrEqualFilter)
         self.assertIsInstance(target.filters[1], taskindexfilter.TaskIndexFilter)
