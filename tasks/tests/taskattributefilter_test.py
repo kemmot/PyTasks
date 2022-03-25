@@ -20,6 +20,13 @@ class TaskAttributeFilterTests(unittest.TestCase):
         task_filter = taskattributefilter.TaskAttributeFilter(mock.Mock(), 'location', 'sea side')
         self.assertFalse(task_filter.is_match(task))
 
+    def test_is_match_returns_true_on_missing_attribute_if_requested(self):
+        task = mock.Mock()
+        task.attributes = {}
+        task.attributes['partnumber'] = 'sea side'
+        task_filter = taskattributefilter.TaskAttributeFilter(mock.Mock(), 'location', '')
+        self.assertTrue(task_filter.is_match(task))
+
     def test_is_match_returns_false_on_different_attribute(self):
         task = mock.Mock()
         task.attributes = {}
