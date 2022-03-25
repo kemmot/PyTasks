@@ -1,3 +1,4 @@
+import datetime
 import unittest
 from unittest import mock
 from unittest.mock import MagicMock
@@ -80,3 +81,15 @@ class AddTaskCommandParserTests(unittest.TestCase):
         self.assertIsInstance(command.task.id_number, uuid.UUID)
         self.assertEqual(command.task.status, 'pending')
         self.assertEqual(command.task.name, 'first task')
+
+    def test_parse_parse_success_with_project_and_priority(self):
+        args = ['task', 'name', 'project:test', 'priority:H', 'wait:2021-04-30']
+        mock_context = mock.Mock()
+        command = addcommand.AddTaskCommandParser().parse(mock_context, args)
+        self.assertEqual(command.task.name, 'task name')
+        self.assertEqual(len(command.task.attributes), 2)
+        self.assertTrue('project' in command.task.attributes)
+        self.assertEqual(command.task.attributes['project'], 'test')
+        self.assertTrue('priority' in command.task.attributes)
+        self.assertEqual(command.task.attributes['priority'], 'H')
+        self.assertEqual(command.task.wait_time, datetime.datetime(2021, 4, 30))

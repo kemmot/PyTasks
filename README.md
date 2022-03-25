@@ -39,14 +39,15 @@ Adds a task.
 
 ### Usage
 ```
-tasks add <name> [name ...]
+tasks add <name> [name ...] [attribute:value ...]
 ```
 
 ### Positional Arguments
 
-|Name|Description|
-|:---|:----------|
-|name|The name of the new item.|
+|Name     |Description|
+|:--------|:----------|
+|attribute|Any number of optional attribute key value pairs.|
+|name     |The name of the new item.|
 
 Note: multiple names are concatenated together with spaces.
 

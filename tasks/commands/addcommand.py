@@ -52,10 +52,9 @@ class AddTaskCommandParser(commandbase.CommandParserBase):
         if not args:
             raise Exception('Adding new task requires at least one word in name')
 
-        task = entities.Task()
+        task = self.parse_template_task(args)
         task.created = datetime.datetime.now()
         task.id_number = uuid.uuid4()
-        task.name = ' '.join(args)
         task.status = 'pending'
 
         command = AddTaskCommand(context)

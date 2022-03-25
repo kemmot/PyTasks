@@ -1,7 +1,5 @@
 import commands.commandbase as commandbase
 import filters.confirmfilter as confirmfilter
-import datetimeparser
-import entities
 
 
 class ModifyCommand(commandbase.FilterCommandBase):
@@ -45,21 +43,8 @@ class ModifyCommandParser(commandbase.FilterCommandParserBase):
         super().__init__(ModifyCommandParser.COMMAND_NAME)
 
     def parse(self, context, args):
-        template_task = entities.Task()
-        for arg in args:
-            if ':' in arg:
-                attribute_parts = arg.split(':')
-                if attribute_parts[0] == 'wait':
-                    template_task.wait_time = datetimeparser.DateTimeParser().parse(attribute_parts[1])
-                else:
-                    template_task.attributes[attribute_parts[0]] = attribute_parts[1]
-            else:
-                if template_task.name:
-                    template_task.name += ' '
-                template_task.name += arg
-
         command = ModifyCommand(context)
-        command.template_task = template_task
+        command.template_task = self.parse_template_task(args)
         return command
 
     def get_confirm_filter(self, context):

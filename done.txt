@@ -38,3 +38,5 @@
 [description:"FEAT-0068: support custom columns in reports" end:"1618165198" entry:"1614880069" status:"pending" uuid:"5a93c68d-9e07-47ba-9be8-2185b0a96e17"]
 [description:"FEAT-0035 Add columns command to list available attributes" end:"1618865177" entry:"0" status:"pending" uuid:"deef5e7a-2157-41b4-933c-77635896f3dc"]
 [description:"BUG-0005: custom columns cannot be displayed unless all tasks have the property" end:"1645038331" entry:"1645037162" status:"pending" uuid:"da317057-807c-4cff-b3df-23760cbb3507"]
+[FEAT-0047:" List command should support attributes" description:"FEAT-0047 List command should support attributes" end:"1648224348" entry:"1588944850" project:"cmd.list" status:"pending" uuid:"20ca8e42-5a1e-4fe5-aff3-fe38841c61e2"]
+[description:"FEAT-0081: List command should respect max terminal width" end:"1648223138" entry:"1618566297" project:"cmd.list" status:"pending" uuid:"aff5c94c-abe2-45a9-8fdd-1e2b2c608519"]

@@ -1,5 +1,8 @@
 import logging
 
+import datetimeparser
+import entities
+
 
 class CommandBase:
     '''
@@ -24,7 +27,7 @@ class CommandBase:
         Executes the logic of this command.
         '''
         raise Exception('Execute not implemented in {}'.format(__class__.__name__))
-
+    
 
 class FilterCommandBase(CommandBase):
     def __init__(self, context, command_filter=None):
@@ -80,6 +83,21 @@ class CommandParserBase:
 
     def get_usage(self):
         return 'tasks {}'.format(self._command_name)
+
+    def parse_template_task(self, args):
+        template_task = entities.Task()
+        for arg in args:
+            if ':' in arg:
+                attribute_parts = arg.split(':')
+                if attribute_parts[0] == 'wait':
+                    template_task.wait_time = datetimeparser.DateTimeParser().parse(attribute_parts[1])
+                else:
+                    template_task.attributes[attribute_parts[0]] = attribute_parts[1]
+            else:
+                if template_task.name:
+                    template_task.name += ' '
+                template_task.name += arg
+        return template_task
 
 
 class FilterCommandParserBase(CommandParserBase):
