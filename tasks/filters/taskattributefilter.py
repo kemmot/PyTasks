@@ -25,6 +25,9 @@ class TaskAttributeFilter(filterbase.FilterBase):
             else:
                 result = False
                 reason = 'attribute value does not match'
+        elif self.attribute_value == '':
+            result = True
+            reason = 'attribute does not exist as searched for'
         else:
             result = False
             reason = 'attribute does not exist'

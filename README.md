@@ -283,6 +283,22 @@ The following filters are available.
 
 -----------------------------------------------------------------------------------------------------
 
+## Task Attribute Filter
+A filter containing a colon (:) will be recognised as an attribute filter and will match tasks that have the matching attribute value.
+
+### Examples
+Example 1: list tasks with the 'personal' project attribute.
+```
+task project:personal list
+```
+
+Example 2: modify all tasks without a priority.
+```
+task priority: modify wait:+10d
+```
+
+-----------------------------------------------------------------------------------------------------
+
 ## Task Index Filter
 A numeric filter will be recognised as a task index filter and will match
 the index of a task reported by the list command.
