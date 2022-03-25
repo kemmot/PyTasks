@@ -40,3 +40,4 @@
 [description:"BUG-0005: custom columns cannot be displayed unless all tasks have the property" end:"1645038331" entry:"1645037162" status:"pending" uuid:"da317057-807c-4cff-b3df-23760cbb3507"]
 [FEAT-0047:" List command should support attributes" description:"FEAT-0047 List command should support attributes" end:"1648224348" entry:"1588944850" project:"cmd.list" status:"pending" uuid:"20ca8e42-5a1e-4fe5-aff3-fe38841c61e2"]
 [description:"FEAT-0081: List command should respect max terminal width" end:"1648223138" entry:"1618566297" project:"cmd.list" status:"pending" uuid:"aff5c94c-abe2-45a9-8fdd-1e2b2c608519"]
+[description:"FEAT-0028 Add multiple number support to filters" end:"1648228900" entry:"0" start:"1617978582" status:"pending" uuid:"71955cf0-73c5-4fe9-9fd1-230496b15bf1"]

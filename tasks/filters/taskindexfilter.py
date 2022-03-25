@@ -92,7 +92,7 @@ class TaskIndexFilterParser(filterbase.FilterParserBase):
     def parse(self, context, arg):
         task_filters = anybatchfilter.AnyBatchFilter(context)
         filter_count = 0
-        for part in arg.split(' '):
+        for part in arg.split(','):
             task_filter = self._parse_range_filter(context, part)
 
             if not task_filter:

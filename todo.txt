@@ -4,7 +4,6 @@
 [description:"FEAT-0023 support sqlite as alternate data store" entry:"0" status:"pending" uuid:"7ac3501b-b700-4931-a8cc-7f1fe36b6f72"]
 [description:"FEAT-0024 Add edit command" entry:"0" status:"pending" uuid:"2da1abb4-c851-45ed-a123-e05519277748"]
 [description:"FEAT-0025 Support todo.txt format as data store" entry:"0" status:"pending" uuid:"3432cf07-dea0-416e-b696-df9be21303ec"]
-[description:"FEAT-0028 Add multiple number support to filters" entry:"0" start:"1617978582" status:"pending" uuid:"71955cf0-73c5-4fe9-9fd1-230496b15bf1"]
 [description:"FEAT-0029 Add wildcard support to task name filter" entry:"0" status:"pending" uuid:"40462b42-2305-4257-bdc7-bfd5e9f3933b"]
 [description:"FEAT-0033 Add import command" entry:"0" status:"pending" uuid:"55ad17fb-5ed6-4868-a26b-3f68413552a6"]
 [description:"FEAT-0034 Add export command" entry:"0" status:"pending" uuid:"f35e6fc0-d0e9-41b0-ae94-2828361c6195"]
