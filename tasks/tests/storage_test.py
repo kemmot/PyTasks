@@ -13,6 +13,37 @@ class Empty:
     pass
 
 
+class EditFormatterTests(unittest.TestCase):
+    def test_format_correct(self):
+        task = entities.Task()
+        task.name = 'test name'
+        task.status = 'pending'
+        task.created_time = datetime.datetime(2022, 1, 1, 1, 1, 1)
+        task.annotations.append(entities.TaskAnnotation('annotation 1', datetime.datetime(2022, 2, 2, 2, 2, 2)))
+        task.annotations.append(entities.TaskAnnotation('annotation 2', datetime.datetime(2022, 3, 3, 3, 3, 3)))
+        task.attributes['attribute 1'] = 'value 1'
+        task.attributes['attribute 2'] = 'value 2'
+        output = storage.EditFormatter().format(task)
+        output_lines = output.split('\n')
+        self.assertEqual(len(output_lines), 16)
+        self.assertEqual(output_lines[0], f'# uuid: {task.id_number}')
+        self.assertEqual(output_lines[1], f'# created time: 2022-01-01 01:01:01')
+        self.assertEqual(output_lines[2], f'description: test name')
+        self.assertEqual(output_lines[3], f'status: pending')
+        self.assertEqual(output_lines[4], f'start: ')
+        self.assertEqual(output_lines[5], f'end: ')
+        self.assertEqual(output_lines[6], f'wait: ')
+        self.assertEqual(output_lines[7], '')
+        self.assertEqual(output_lines[8], '# custom attributes')
+        self.assertEqual(output_lines[9], 'attribute 1: value 1')
+        self.assertEqual(output_lines[10], 'attribute 2: value 2')
+        self.assertEqual(output_lines[11], '')
+        self.assertEqual(output_lines[12], '# annotations')
+        self.assertEqual(output_lines[13], '2022-02-02 02:02:02: annotation 1')
+        self.assertEqual(output_lines[14], '2022-03-03 03:03:03: annotation 2')
+        self.assertEqual(output_lines[15], '')
+
+
 class TaskWarriorFormatterTests(unittest.TestCase):
     def test_format_gives_correct_output_without_started_or_ended(self):
         self.output_test(False, False, False)

@@ -13,6 +13,47 @@ import __main__
 import entities
 
 
+class EditFormatter:
+    def format(self, task):
+        output = ''
+        output += self._format_comment_line(self._format_key_value_line('uuid', task.id_number, end=''))
+        output += self._format_comment_line(self._format_key_value_line('created time', task.created_time, end=''))
+        output += self._format_key_value_line('description', task.name)
+        output += self._format_key_value_line('status', task.status)
+        output += self._format_key_value_line('start', task.started_time)
+        output += self._format_key_value_line('end', task.end_time)
+        output += self._format_key_value_line('wait', task.wait_time)
+
+        output += self._format_empty_line()
+        output += self._format_comment_line('custom attributes')
+        for name in sorted(task.attributes):
+            value = task.attributes[name]
+            output += self._format_key_value_line(name, value)
+
+        output += self._format_empty_line()
+        output += self._format_comment_line('annotations')
+        for annotation in task.annotations:
+            output += self._format_key_value_line(annotation.created, annotation.message)
+
+        return output
+    
+    def _format_comment_line(self, line):
+        return self._format_line('# ' + line)
+    
+    def _format_empty_line(self):
+        return self._format_line('')
+    
+    def _format_key_value_line(self, key, value, end='\n'):
+        value_to_print = value if value else ''
+        return self._format_line(f'{key}: {value_to_print}', end)
+
+    def _format_line(self, line, end='\n'):
+        return line + end
+
+    def parse(self, line_number, line):
+        pass
+
+
 class TaskWarriorFormatter:
     '''
     A formatter matching task warriors file format.
