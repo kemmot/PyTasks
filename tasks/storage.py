@@ -50,8 +50,37 @@ class EditFormatter:
     def _format_line(self, line, end='\n'):
         return line + end
 
-    def parse(self, line_number, line):
-        pass
+    def parse(self, lines):
+        task = entities.Task()
+        for line in lines:
+            line = line.strip()
+            annotation_match = re.search('(?P<created>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}): (?P<message>.+)', line)
+            if line == '' or line.startswith('#'):
+                # comment or non-editable field
+                continue
+            elif annotation_match != None:
+                created = datetime.datetime.strptime(annotation_match.group('created'), '%Y-%m-%d %H:%M:%S')
+                message = annotation_match.group('message')
+                annotation = entities.TaskAnnotation(message, created)
+                task.annotations.append(annotation)
+            elif ':' in line:
+                parts = line.split(':')
+                key = parts[0]
+                key_upper = key.upper()
+                value = ':'.join(parts[1:]).strip()
+                if key_upper == 'DESCRIPTION':
+                    task.name = value
+                elif key_upper == 'END':
+                    task.end_time = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                elif key_upper == 'START':
+                    task.started_time = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                elif key_upper == 'STATUS':
+                    task.status = value
+                elif key_upper == 'WAIT':
+                    task.wait_time = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                else:
+                    task.attributes[key] = value
+        return task
 
 
 class TaskWarriorFormatter:
