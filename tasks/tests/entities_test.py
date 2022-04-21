@@ -82,3 +82,89 @@ class TaskAttributeNameTests(unittest.TestCase):
         self.assertFalse(entities.TaskAttributeName.is_name_valid(''))
         self.assertFalse(entities.TaskAttributeName.is_name_valid('name'))
         self.assertFalse(entities.TaskAttributeName.is_name_valid('womble'))
+
+
+class TaskSorterTests(unittest.TestCase):
+    def test_due_dates_in_order(self):
+        tasks = []
+
+        e1 = entities.Task()
+        e1.attributes['due'] = 100
+        tasks.append(e1)
+
+        e2 = entities.Task()
+        e2.attributes['due'] = 300
+        tasks.append(e2)
+
+        e3 = entities.Task()
+        tasks.append(e3)
+
+        e4 = entities.Task()
+        e4.attributes['due'] = 200
+        tasks.append(e4)
+
+        sorter = entities.TaskSorter()
+        sorter.sort(tasks)
+
+        self.assertEqual(e2, tasks[0])
+        self.assertEqual(e4, tasks[1])
+        self.assertEqual(e1, tasks[2])
+        self.assertEqual(e3, tasks[3])
+    
+    def test_priorities_in_order(self):
+        tasks = []
+
+        e1 = entities.Task()
+        e1.attributes['due'] = 100
+        e1.attributes['priority'] = 'M'
+        tasks.append(e1)
+
+        e2 = entities.Task()
+        e2.attributes['due'] = 100
+        e2.attributes['priority'] = 'L'
+        tasks.append(e2)
+
+        e3 = entities.Task()
+        e3.attributes['due'] = 100
+        tasks.append(e3)
+
+        e4 = entities.Task()
+        e4.attributes['due'] = 100
+        e4.attributes['priority'] = 'H'
+        tasks.append(e4)
+
+        e5 = entities.Task()
+        e5.attributes['due'] = 100
+        e5.attributes['priority'] = 'NOT VALID'
+        tasks.append(e5)
+
+        sorter = entities.TaskSorter()
+        sorter.sort(tasks)
+
+        self.assertEqual(e4, tasks[0])
+        self.assertEqual(e1, tasks[1])
+        self.assertEqual(e2, tasks[2])
+        self.assertEqual(e5, tasks[3])
+        self.assertEqual(e3, tasks[4])
+
+    def test_indexes_in_order(self):
+        tasks = []
+
+        e1 = entities.Task()
+        e1.index = 3
+        tasks.append(e1)
+
+        e2 = entities.Task()
+        e1.index = 1
+        tasks.append(e2)
+
+        e3 = entities.Task()
+        e1.index = 2
+        tasks.append(e3)
+
+        sorter = entities.TaskSorter()
+        sorter.sort(tasks)
+
+        self.assertEqual(e2, tasks[0])
+        self.assertEqual(e3, tasks[1])
+        self.assertEqual(e1, tasks[2])

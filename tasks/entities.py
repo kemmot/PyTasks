@@ -3,6 +3,7 @@ Module for task related entity classes.
 '''
 
 import enum
+import functools
 
 import datetime
 import exceptions
@@ -245,3 +246,57 @@ class Task:
 
     def __str__(self):
         return 'index: {}, name: {}'.format(self.index, self.name)
+    
+    def __repl__(self):
+        return self.__str__()
+
+
+class TaskSorter:
+    def sort(self, tasks):
+        task_sort_by_key = functools.cmp_to_key(TaskSorter.__task_sort)
+        tasks.sort(key=task_sort_by_key)
+        
+    def __task_sort(a, b):
+        result = TaskSorter.__task_sort_by_property(a, b, 'due')
+        if result == 0:
+            result = TaskSorter.__task_sort_by_property(a, b, 'priority', converter=TaskSorter.__priority_converter)
+        if result == 0:
+            result = TaskSorter.__task_sort_by_index(a, b)
+        return result
+    
+    def __task_sort_by_index(a, b):
+        if a.index < b.index:
+            return -1
+        elif a.index > b.index:
+            return 1
+        else:
+            return 0
+
+    def __task_sort_by_property(a, b, key, converter=None):
+        if key in a.attributes:
+            if key in b.attributes:
+                a_value = a.attributes[key]
+                b_value = b.attributes[key]
+                if converter:
+                    a_value = converter(a_value)
+                    b_value = converter(b_value)
+                if a_value < b_value:
+                    result = 1
+                elif a_value > b_value:
+                    result = -1
+                else:
+                    result = 0
+            else:
+                result = -1
+        elif key in b.attributes:
+            result = 1
+        else:
+            result = 0
+        
+        return result
+    
+    def __priority_converter(value):
+        if value == 'H': return 3
+        if value == 'M': return 2
+        if value == 'L': return 1
+        else: return 0

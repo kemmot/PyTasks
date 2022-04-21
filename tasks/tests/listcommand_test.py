@@ -74,6 +74,8 @@ class ListTaskCommandTests(unittest.TestCase):
         mock_context.console.print_table.assert_called()
         call_args = mock_context.console.print_table.mock_calls[0].args
         table = call_args[0]
+
+        # test column names
         self.assertEqual(7, len(table.columns), 'Column count incorrect')
         self.assertEqual('id', table.columns[0], 'Column label incorrect')
         self.assertEqual('status', table.columns[1], 'Column label incorrect')
@@ -83,7 +85,7 @@ class ListTaskCommandTests(unittest.TestCase):
         self.assertEqual('project', table.columns[5], 'Column label incorrect')
         self.assertEqual('does_not_exist', table.columns[6], 'Column label incorrect')
         
-        # check that only the one not ended, not waiting, tasks is displayed
+        # check that only the not ended, not waiting, tasks are displayed
         self.assertEqual(1, len(table.rows), 'Row count incorrect')
 
         # test standard columns

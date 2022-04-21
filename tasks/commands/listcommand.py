@@ -1,7 +1,9 @@
+
+from operator import index
+
 import commands.commandbase as commandbase
 import asciitable
-import commandline
-import console
+import entities
 
 
 class ListTaskCommand(commandbase.FilterCommandBase):
@@ -28,27 +30,28 @@ class ListTaskCommand(commandbase.FilterCommandBase):
             column = column.strip()
             table.add_column(column)
 
-        for task in tasks:
-            if not task.is_ended and not task.is_waiting:
-                row_values = []
-                for column in columns:
-                    column = column.strip()
-                    if column == 'id':
-                        value = str(task.index)
-                    elif column == 'description':
-                        value = task.name
-                    elif column == 'status':
-                        value = task.status
-                    elif column == 'start':
-                        value = str(task.started_time)
-                    elif column == 'wait':
-                        value = str(task.wait_time)
-                    elif column in task.attributes:
-                        value = str(task.attributes[column])
-                    else:
-                        value = ''
-                    row_values.append(value)
-                table.add_row(*row_values)
+        tasks_to_display = [t for t in tasks if not t.is_ended and not t.is_waiting]
+        entities.TaskSorter().sort(tasks_to_display)
+        for task in tasks_to_display:
+            row_values = []
+            for column in columns:
+                column = column.strip()
+                if column == 'id':
+                    value = str(task.index)
+                elif column == 'description':
+                    value = task.name
+                elif column == 'status':
+                    value = task.status
+                elif column == 'start':
+                    value = str(task.started_time)
+                elif column == 'wait':
+                    value = str(task.wait_time)
+                elif column in task.attributes:
+                    value = str(task.attributes[column])
+                else:
+                    value = ''
+                row_values.append(value)
+            table.add_row(*row_values)
         
         c = self.context.console
         c.foreground_colour = self.context.settings.table_row_forecolour
