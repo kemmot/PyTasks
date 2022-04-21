@@ -116,7 +116,7 @@ try:
     
     COMMAND.before_execute()
     COMMAND.execute()
-    SETTINGS.save(SETTINGS_FILENAME)
+    SETTINGS.save_if_needed(SETTINGS_FILENAME)
     EXIT_CODE = cli.ExitCodes.success
 except cli.ExitCodeException as ex:
     LOGGER.error(str(ex), exc_info=True)

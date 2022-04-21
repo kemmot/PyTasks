@@ -10,6 +10,7 @@ class Settings:
             config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
         self._config = config
         self._logger = logging.getLogger(self.__class__.__name__)
+        self._is_dirty = False
 
     @property
     def command_add_format(self):
@@ -22,6 +23,7 @@ class Settings:
     @command_add_next_key_id.setter
     def command_add_next_key_id(self, value):
         self._config[self._category]['command.add.next_key_id'] = str(value)
+        self._is_dirty = True
 
     @property
     def command_default(self):
@@ -129,9 +131,14 @@ class Settings:
 
         try:
             self._config.read(path)
+            self._is_dirty = False
             self._logger.debug('Read config from file: [%s]', path)
         except Exception as ex:
             raise Exception('Failed to read config from file: [{}]'.format(path)) from ex
+
+    def save_if_needed(self, path):
+        if self._is_dirty:
+            self.save(path)
 
     def save(self, path):
         try:
