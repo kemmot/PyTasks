@@ -22,6 +22,7 @@ The following commands are available:
 * [info](#info-command)
 * [list](#list-command)
 * [modify](#modify-command)
+* [next](#next-command)
 * [shell](#shell-command)
 * [start](#start-command)
 * [stop](#stop-command)
@@ -198,13 +199,13 @@ tasks [filter] list
 
 ### Applicable Settings
 
+* [report.list.columns](#reportlistcolumns)
 * [table.column.separator](#tablecolumnseparator)
 * [table.header.underline](#tableheaderunderline)
 * [table.row.alt_backcolour](#tablerowalt_backcolour)
 * [table.row.alt_forecolour](#tablerowalt_forecolour)
 * [table.row.backcolour](#tablerowbackcolour)
 * [table.row.forecolour](#tablerowforecolour)
-
 
 -----------------------------------------------------------------------------------------------------
 
@@ -227,6 +228,37 @@ tasks <filter> modify <name> [name ...] [attribute:value ...]
 ### Applicable Settings
 
 * [command.modify.confirm](#commandmodifyconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
+## Next Command
+Lists non-waiting tasks in priority order.
+
+The order is based on the following...
+* Started tasks first.
+* Tasks with a due date with earliest due dates first.
+* Tasks with a priority in order of H, then M then L.
+
+### Usage
+```
+tasks [filter] next
+```
+
+### Positional Arguments
+
+|Name  |Description|
+|:-----|:----------|
+|filter|The optional task filter.|
+
+### Applicable Settings
+
+* [report.next.columns](#reportnextcolumns)
+* [table.column.separator](#tablecolumnseparator)
+* [table.header.underline](#tableheaderunderline)
+* [table.row.alt_backcolour](#tablerowalt_backcolour)
+* [table.row.alt_forecolour](#tablerowalt_forecolour)
+* [table.row.backcolour](#tablerowbackcolour)
+* [table.row.forecolour](#tablerowforecolour)
 
 -----------------------------------------------------------------------------------------------------
 
@@ -486,6 +518,13 @@ Default value: todo.txt
 
 ## report.list.columns
 The comma delimited list of columns to show when displaying the list report.
+
+Default value: id,status,description
+
+See [supported columns](#supported-columns) for the columns available in this setting.
+
+## report.next.columns
+The comma delimited list of columns to show when displaying the next report.
 
 Default value: id,status,description
 

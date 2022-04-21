@@ -82,6 +82,10 @@ class Settings:
         return self._get_value('report.list.columns')
 
     @property
+    def report_next_columns(self):
+        return self._get_value('report.next.columns')
+
+    @property
     def table_column_separator(self):
         return self._get_value('table.column.separator').replace('"', '')
 

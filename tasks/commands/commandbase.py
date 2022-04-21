@@ -66,7 +66,7 @@ class FilterCommandBase(CommandBase):
         return filtered_items
 
 
-class ReportCommand(FilterCommandBase):
+class ReportCommandBase(FilterCommandBase):
     def __init__(self, context, command_filter=None):
         super().__init__(context, command_filter)
 
@@ -81,12 +81,21 @@ class ReportCommand(FilterCommandBase):
         Executes the logic of this command.
         '''
         columns = self.get_columns()
-        table = self.create_task_table(columns, tasks)
+        tasks_to_display = self.filter_tasks(tasks)
+        self.sort_tasks(tasks_to_display)
+        table = self.create_task_table(columns, tasks_to_display)
         self.print_table(table)
     
     def get_columns(self):
         raise Exception(f'get_columns not overridden in {self.__class__}')
     
+    def filter_tasks(self, tasks):
+        return tasks
+    
+    def sort_tasks(self, tasks):
+        # do nothing by default
+        pass
+
     def create_task_table(self, columns, tasks):
         table = asciitable.DataTable()
 

@@ -1,7 +1,7 @@
 import commands.commandbase as commandbase
 
 
-class ListTaskCommand(commandbase.ReportCommand):
+class ListTaskCommand(commandbase.ReportCommandBase):
     '''
     A command that will list tasks.
     '''
