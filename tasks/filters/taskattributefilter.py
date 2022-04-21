@@ -19,7 +19,7 @@ class TaskAttributeFilter(filterbase.FilterBase):
 
     def is_match(self, task):
         if self.attribute_name in task.attributes:
-            if task.attributes[self.attribute_name] == self.attribute_value:
+            if task.attributes[self.attribute_name].startswith(self.attribute_value):
                 result = True
                 reason = 'attribute value matches'
             else:

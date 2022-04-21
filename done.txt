@@ -45,3 +45,4 @@
 [description:"FEAT-0086: Filters should support matching empty fields" end:"1648230849" entry:"1618864166" project:"filter" status:"pending" uuid:"5c70e648-0622-42dc-bbe2-e51d26bb81dd"]
 [description:"FEAT-0093: list command should support prioritization" end:"1650557253" entry:"1650538433" project:"cmd.list" status:"pending" uuid:"f98a7805-8bfe-47aa-a1ef-5f28ba67a3d2"]
 [description:"FEAT-0088: Should only write config if it has changed" end:"1650557961" entry:"1648223419" project:"config" status:"pending" uuid:"3dc8a4a8-b595-4b26-ad9c-39d993065b6b"]
+[description:"FEAT-0095: wait property should understand relative dates" end:"1650579747" entry:"1650538413" project:"cmd.done" status:"pending" uuid:"bc8f3cfa-dc68-42f5-b393-eefd95de25b5" wait:"1650758400"]
