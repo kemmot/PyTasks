@@ -1,5 +1,8 @@
 import logging
 
+import asciitable
+import commandline
+import console
 import datetimeparser
 import entities
 
@@ -61,6 +64,64 @@ class FilterCommandBase(CommandBase):
         filtered_items = self.filter.filter_items(items)
         self._logger.debug('Filtered {} items to {}'.format(len(items), len(filtered_items)))
         return filtered_items
+
+
+class ReportCommand(FilterCommandBase):
+    def __init__(self, context, command_filter=None):
+        super().__init__(context, command_filter)
+
+    def execute(self):
+        super().execute()
+    
+    def before_execute(self):
+        self.context.storage.garbage_collect()
+
+    def execute_tasks(self, tasks):
+        '''
+        Executes the logic of this command.
+        '''
+        columns = self.get_columns()
+        table = self.create_task_table(columns, tasks)
+        self.print_table(table)
+    
+    def get_columns(self):
+        raise Exception(f'get_columns not overridden in {self.__class__}')
+    
+    def create_task_table(self, columns, tasks):
+        table = asciitable.DataTable()
+
+        for column in columns:
+            column = column.strip()
+            table.add_column(column)
+
+        for task in tasks:
+            row_values = []
+            for column in columns:
+                column = column.strip()
+                if column == 'id':
+                    value = str(task.index)
+                elif column == 'description':
+                    value = task.name
+                elif column == 'status':
+                    value = task.status
+                elif column == 'start':
+                    value = str(task.started_time)
+                elif column == 'wait':
+                    value = str(task.wait_time)
+                elif column in task.attributes:
+                    value = str(task.attributes[column])
+                else:
+                    value = ''
+                row_values.append(value)
+            table.add_row(*row_values)
+        
+        return table
+    
+    def print_table(self, table):
+        c = console.ConsoleFactory().get_console()
+        c.foreground_colour = self.context.settings.table_row_forecolour
+        c.background_colour = self.context.settings.table_row_backcolour
+        c.print_table(table, self.context.settings.table_row_alt_forecolour, self.context.settings.table_row_alt_backcolour)
 
 
 class CommandParserBase:
