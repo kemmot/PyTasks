@@ -44,3 +44,4 @@
 [description:"FEAT-0048 Add attribute support to add command" end:"1648229208" entry:"1588944853" status:"pending" uuid:"9ac1d501-1eb8-493d-a559-98da2e01c36f"]
 [description:"FEAT-0086: Filters should support matching empty fields" end:"1648230849" entry:"1618864166" project:"filter" status:"pending" uuid:"5c70e648-0622-42dc-bbe2-e51d26bb81dd"]
 [description:"FEAT-0093: list command should support prioritization" end:"1650557253" entry:"1650538433" project:"cmd.list" status:"pending" uuid:"f98a7805-8bfe-47aa-a1ef-5f28ba67a3d2"]
+[description:"FEAT-0088: Should only write config if it has changed" end:"1650557961" entry:"1648223419" project:"config" status:"pending" uuid:"3dc8a4a8-b595-4b26-ad9c-39d993065b6b"]

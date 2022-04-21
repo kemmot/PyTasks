@@ -159,7 +159,7 @@ class CommandParserBase:
         for arg in args:
             if ':' in arg:
                 attribute_parts = arg.split(':')
-                if attribute_parts[0] == 'wait':
+                if attribute_parts[0] in ['due', 'wait']:
                     template_task.wait_time = datetimeparser.DateTimeParser().parse(attribute_parts[1])
                 else:
                     template_task.attributes[attribute_parts[0]] = attribute_parts[1]
