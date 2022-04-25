@@ -15,34 +15,38 @@ class DateTimeParser:
         return self._start_date
 
     def parse(self, date_time_string):
+        date = self.parse_special_date(date_time_string)
+        if date:
+            return date
+
         date = self.parse_absolute_date(date_time_string)
         if date:
-            print(date)
             return date
         
         date = self.parse_relative_date(date_time_string)
         if date:
-            print(date)
             return date
 
         raise ValueError('Date format not recognised: [{}]'.format(date_time_string))
 
+    def parse_special_date(self, date_time_string):
+        if date_time_string == 'today':
+            return datetime.datetime.today()
+        else:
+            return None
+
     def parse_absolute_date(self, date_time_string):
-        print('parsing absolute date')
         match = re.search('\d{4}-\d{2}-\d{2}', date_time_string)
         if not match:
-            print('no match')
             return None
 
         date = datetime.datetime.strptime(date_time_string, '%Y-%m-%d')
         return date
 
     def parse_relative_date(self, date_time_string):
-        print('parsing relative date')
         regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[d])', re.IGNORECASE)
         match = regex.search(date_time_string)
         if not match:
-            print('no match')
             return None
         
         direction = match.group('direction')
