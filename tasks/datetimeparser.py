@@ -32,6 +32,8 @@ class DateTimeParser:
     def parse_special_date(self, date_time_string):
         if date_time_string == 'today':
             return datetime.datetime.today()
+        elif date_time_string == 'tomorrow':
+            return datetime.datetime.today() + datetime.timedelta(days=1)
         else:
             return None
 

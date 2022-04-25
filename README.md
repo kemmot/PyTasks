@@ -577,9 +577,9 @@ The following columns are supported:
 
 # Supported Date Formats
 Dates can be specified in a number of formats:
-* absolute
-* literal
-* relative
+* [absolute](#absolute-date-format)
+* [literal](#literal-date-format)
+* [relative](#relative-date-format)
 
 ## Absolute Date Format
 Absolute date formats must be in iso format:
@@ -597,6 +597,7 @@ This format allows a fixed set of strings to be specified that are used to calcu
 
 The following are supported:
 * today
+* tomorrow
 
 ## Relative Date Format
 The relative date format allows a simple calculation to be used to calculate a date.
