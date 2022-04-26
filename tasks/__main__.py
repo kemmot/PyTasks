@@ -85,9 +85,11 @@ LOGGER = logging.getLogger(__name__)
 LOGGER.debug('\n')
 LOGGER.debug('Application started')
 try:
-    SETTINGS_FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tasks.ini')
-    SETTINGS = settings.Settings()
-    SETTINGS.read(SETTINGS_FILENAME)
+    SETTINGS_FILENAME = 'tasks.ini'
+    USER_SETTINGS_FILENAME = os.path.join(os.path.expanduser('~'), SETTINGS_FILENAME)
+    PROGRAM_SETTINGS_FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), SETTINGS_FILENAME)
+    SETTINGS = settings.SettingsProviderConfigurator().get_settings_provider(USER_SETTINGS_FILENAME, PROGRAM_SETTINGS_FILENAME)
+    SETTINGS.read()
 
     FILTER_FACTORY = filterfactory.FilterFactory()
     FILTER_FACTORY.register_known_types()
@@ -117,7 +119,7 @@ try:
     
     COMMAND.before_execute()
     COMMAND.execute()
-    SETTINGS.save_if_needed(SETTINGS_FILENAME)
+    SETTINGS.save_if_needed()
     EXIT_CODE = cli.ExitCodes.success
 except cli.ExitCodeException as ex:
     LOGGER.error(str(ex), exc_info=True)
