@@ -8,6 +8,7 @@ import sys
 import commands.commandbase as commandbase
 import commands.multicommand as multicommand
 import filters.allbatchfilter as allbatchfilter
+import filters.anybatchfilter as anybatchfilter
 import typefactory
 
 
@@ -64,11 +65,19 @@ class CommandFactory(typefactory.TypeFactory):
         return parser, command
 
     def _get_filters(self, parsed_command):
-        batch_filter = allbatchfilter.AllBatchFilter(self._command_context)
+        filters_by_group = {}
         filter_arguments = parsed_command.get_filter_argument_values()
         for filter_argument in filter_arguments:
             filter = self._command_context.filter_factory.parse(self._command_context, filter_argument)
-            batch_filter.add_filter(filter)
+            if not filter.filter_group in filters_by_group:
+                filters_by_group[filter.filter_group] = []
+            filters_by_group[filter.filter_group].append(filter)
+        batch_filter = allbatchfilter.AllBatchFilter(self._command_context)
+        for filter_group in filters_by_group:
+            filter_group_batch = anybatchfilter.AnyBatchFilter(self._command_context)
+            for filter in filters_by_group[filter_group]:
+                filter_group_batch.add_filter(filter)
+            batch_filter.add_filter(filter_group_batch)
         return batch_filter
 
 

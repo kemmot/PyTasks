@@ -5,6 +5,10 @@ class FilterBase:
     @property
     def context(self):
         return self._context
+    
+    @property
+    def filter_group(self):
+        raise Exception('filter_group getter not implemented in {}'.format(self.__class__.__name__))
 
     def filter_items(self, items):
         filtered_items = []
@@ -28,6 +32,10 @@ class BatchFilter(FilterBase):
     @property
     def filters(self):
         return self._filters
+    
+    @property
+    def filter_group(self):
+        return 'batch'
 
     def add_filter(self, task_filter):
         self._filters.append(task_filter)

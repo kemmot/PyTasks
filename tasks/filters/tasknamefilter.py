@@ -9,6 +9,10 @@ class TaskNameFilter(filterbase.FilterBase):
         self._name = name
 
     @property
+    def filter_group(self):
+        return 'name'
+
+    @property
     def name(self):
         return self._name
 

@@ -10,6 +10,10 @@ class ConfirmFilter(filterbase.FilterBase):
     def action_name(self):
         return self._action_name
 
+    @property
+    def filter_group(self):
+        return 'user'
+
     def filter_items(self, tasks):
         filtered_tasks = []
         if tasks:

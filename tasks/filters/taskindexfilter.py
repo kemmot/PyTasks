@@ -12,6 +12,10 @@ class TaskIndexFilter(filterbase.FilterBase):
         self._logger = logging.getLogger(__class__.__name__)
 
     @property
+    def filter_group(self):
+        return 'index'
+
+    @property
     def index(self):
         return self._index
 
@@ -31,6 +35,10 @@ class TaskIndexGreaterThanOrEqualFilter(filterbase.FilterBase):
         self._logger = logging.getLogger(__class__.__name__)
 
     @property
+    def filter_group(self):
+        return 'index'
+
+    @property
     def index(self):
         return self._index
 
@@ -48,6 +56,10 @@ class TaskIndexLessThanOrEqualFilter(filterbase.FilterBase):
         super().__init__(context)
         self._index = index
         self._logger = logging.getLogger(__class__.__name__)
+
+    @property
+    def filter_group(self):
+        return 'index'
 
     @property
     def index(self):
@@ -70,6 +82,10 @@ class TaskIndexRangeFilter(filterbase.FilterBase):
         self._start_index = start_index
         self._end_index = end_index
         self._logger = logging.getLogger(__class__.__name__)
+
+    @property
+    def filter_group(self):
+        return 'index'
 
     @property
     def start_index(self):

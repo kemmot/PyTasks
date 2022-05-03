@@ -16,6 +16,10 @@ class TaskAttributeFilter(filterbase.FilterBase):
     @property
     def attribute_value(self):
         return self._attribute_value
+    
+    @property
+    def filter_group(self):
+        return self.attribute_name
 
     def is_match(self, task):
         if self.attribute_name in task.attributes:
