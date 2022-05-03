@@ -26,14 +26,25 @@ class ModifyCommand(commandbase.FilterCommandBase):
         '''
         Executes the logic of this command.
         '''
+        modified_attributes = {}
         for task in tasks:
             if self.template_task.name:
                 task.name = self.template_task.name
+                if not 'name' in modified_attributes:
+                    modified_attributes['name'] = self.template_task.name
             if self.template_task.wait_time:
                 task.wait_time = self.template_task.wait_time
+                if not 'wait' in modified_attributes:
+                    modified_attributes['wait'] = self.template_task.wait_time
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 task.attributes[attribute_name] = attribute_value
+                if not attribute_name in modified_attributes:
+                    modified_attributes[attribute_name] = attribute_value
         self.context.storage.update(tasks)
+        if self.context.settings.command_modify_summary:
+            for modified_attribute in modified_attributes:
+                self.context.console.print(f'Changed {modified_attribute} to {modified_attributes[modified_attribute]}')
+            self.context.console.print(f'{len(tasks)} tasks modified')
 
 
 class ModifyCommandParser(commandbase.FilterCommandParserBase):

@@ -14,6 +14,7 @@ class SettingNames:
 	command_annotate_confirm = 'command.annotate.confirm'
 	command_done_confirm = 'command.done.confirm'
 	command_modify_confirm = 'command.modify.confirm'
+	command_modify_summary = 'command.modify.summary'
 	command_start_confirm = 'command.start.confirm'
 	command_stop_confirm = 'command.stop.confirm'
 	data_done_filename = 'data.done.filename'
@@ -79,6 +80,10 @@ class SettingsFacade:
 	@property
 	def command_modify_confirm(self):
 		return self.__settings_provider.get_value_boolean(SettingNames.command_modify_confirm)
+
+	@property
+	def command_modify_summary(self):
+		return self.__settings_provider.get_value_boolean(SettingNames.command_modify_summary)
 
 	@property
 	def command_start_confirm(self):
@@ -196,6 +201,8 @@ class DefaultSettingsProvider(SettingsProviderBase):
 		elif key == SettingNames.command_done_confirm:
 			return 'True'
 		elif key == SettingNames.command_modify_confirm:
+			return 'True'
+		elif key == SettingNames.command_modify_summary:
 			return 'True'
 		elif key == SettingNames.command_start_confirm:
 			return 'True'
