@@ -107,7 +107,9 @@ class ReportCommandBase(FilterCommandBase):
             row_values = []
             for column in columns:
                 column = column.strip()
-                if column == 'id':
+                if column == 'annotation.count':
+                    value = str(len(task.annotations))
+                elif column == 'id':
                     value = str(task.index)
                 elif column == 'description':
                     value = task.name

@@ -567,13 +567,14 @@ Default value: White
 # Supported Columns
 The following columns are supported:
 
-|Name       |Description                        |
-|----------:|:----------------------------------|
-|description|The description of the task.       |
-|id         |The index ID of the task.          |
-|start      |The time that the task was started.|
-|status     |The current task status.           |
-|wait       |The target wait time for the task. |
+|Name            |Description                                        |
+|---------------:|:--------------------------------------------------|
+|annotation.count|An integer showing the annotate count for the task.|
+|description     |The description of the task.                       |
+|id              |The index ID of the task.                          |
+|start           |The time that the task was started.                |
+|status          |The current task status.                           |
+|wait            |The target wait time for the task.                 |
 
 # Supported Date Formats
 Dates can be specified in a number of formats:
