@@ -10,6 +10,7 @@ import commands.addcommand
 import commands.annotatecommand
 import commands.columnscommand
 import commands.donecommand
+import commands.editcommand
 import commands.helpcommand
 import commands.infocommand
 import commands.listcommand

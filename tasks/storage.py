@@ -16,6 +16,7 @@ import entities
 class EditFormatter:
     def format(self, task):
         output = ''
+        output += self._format_comment_line('lines beginning with ''#'' will be ignored')
         output += self._format_comment_line(self._format_key_value_line('uuid', task.id_number, end=''))
         output += self._format_comment_line(self._format_key_value_line('created time', task.created_time, end=''))
         output += self._format_key_value_line('description', task.name)
@@ -26,12 +27,14 @@ class EditFormatter:
 
         output += self._format_empty_line()
         output += self._format_comment_line('custom attributes')
+        output += self._format_comment_line('key: value')
         for name in sorted(task.attributes):
             value = task.attributes[name]
             output += self._format_key_value_line(name, value)
 
         output += self._format_empty_line()
         output += self._format_comment_line('annotations')
+        output += self._format_comment_line('yyyy-MM-dd HH:mm:ss: annotation comment')
         for annotation in task.annotations:
             output += self._format_key_value_line(annotation.created, annotation.message)
 
@@ -71,16 +74,22 @@ class EditFormatter:
                 if key_upper == 'DESCRIPTION':
                     task.name = value
                 elif key_upper == 'END':
-                    task.end_time = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                    task.end_time = self._parse_datetime(value)
                 elif key_upper == 'START':
-                    task.started_time = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                    task.started_time = self._parse_datetime(value)
                 elif key_upper == 'STATUS':
                     task.status = value
                 elif key_upper == 'WAIT':
-                    task.wait_time = datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+                    task.wait_time = self._parse_datetime(value)
                 else:
                     task.attributes[key] = value
         return task
+
+    def _parse_datetime(self, string_value):
+        if not string_value:
+            return None
+        return datetime.datetime.strptime(string_value, '%Y-%m-%d %H:%M:%S')
+
 
 
 class TaskWarriorFormatter:
