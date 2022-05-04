@@ -13,6 +13,85 @@ import __main__
 import entities
 
 
+class EditFormatter:
+    def format(self, task):
+        output = ''
+        output += self._format_comment_line('lines beginning with ''#'' will be ignored')
+        output += self._format_comment_line(self._format_key_value_line('uuid', task.id_number, end=''))
+        output += self._format_comment_line(self._format_key_value_line('created time', task.created_time, end=''))
+        output += self._format_key_value_line('description', task.name)
+        output += self._format_key_value_line('status', task.status)
+        output += self._format_key_value_line('start', task.started_time)
+        output += self._format_key_value_line('end', task.end_time)
+        output += self._format_key_value_line('wait', task.wait_time)
+
+        output += self._format_empty_line()
+        output += self._format_comment_line('custom attributes')
+        output += self._format_comment_line('key: value')
+        for name in sorted(task.attributes):
+            value = task.attributes[name]
+            output += self._format_key_value_line(name, value)
+
+        output += self._format_empty_line()
+        output += self._format_comment_line('annotations')
+        output += self._format_comment_line('yyyy-MM-dd HH:mm:ss: annotation comment')
+        for annotation in task.annotations:
+            output += self._format_key_value_line(annotation.created, annotation.message)
+
+        return output
+    
+    def _format_comment_line(self, line):
+        return self._format_line('# ' + line)
+    
+    def _format_empty_line(self):
+        return self._format_line('')
+    
+    def _format_key_value_line(self, key, value, end='\n'):
+        value_to_print = value if value else ''
+        return self._format_line(f'{key}: {value_to_print}', end)
+
+    def _format_line(self, line, end='\n'):
+        return line + end
+
+    def parse(self, lines):
+        task = entities.Task()
+        for line in lines:
+            line = line.strip()
+            annotation_match = re.search('(?P<created>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}): (?P<message>.+)', line)
+            if line == '' or line.startswith('#'):
+                # comment or non-editable field
+                continue
+            elif annotation_match != None:
+                created = datetime.datetime.strptime(annotation_match.group('created'), '%Y-%m-%d %H:%M:%S')
+                message = annotation_match.group('message')
+                annotation = entities.TaskAnnotation(message, created)
+                task.annotations.append(annotation)
+            elif ':' in line:
+                parts = line.split(':')
+                key = parts[0]
+                key_upper = key.upper()
+                value = ':'.join(parts[1:]).strip()
+                if key_upper == 'DESCRIPTION':
+                    task.name = value
+                elif key_upper == 'END':
+                    task.end_time = self._parse_datetime(value)
+                elif key_upper == 'START':
+                    task.started_time = self._parse_datetime(value)
+                elif key_upper == 'STATUS':
+                    task.status = value
+                elif key_upper == 'WAIT':
+                    task.wait_time = self._parse_datetime(value)
+                else:
+                    task.attributes[key] = value
+        return task
+
+    def _parse_datetime(self, string_value):
+        if not string_value:
+            return None
+        return datetime.datetime.strptime(string_value, '%Y-%m-%d %H:%M:%S')
+
+
+
 class TaskWarriorFormatter:
     '''
     A formatter matching task warriors file format.

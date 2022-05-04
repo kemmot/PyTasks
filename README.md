@@ -17,6 +17,7 @@ The following commands are available:
 * [annotate](#annotate-command)
 * [columns](#columns-command)
 * [done](#done-command)
+* [edit](#edit-command)
 * [help](#help-command)
 * [info](#info-command)
 * [list](#list-command)
@@ -136,6 +137,28 @@ tasks <filter> done
 ### Applicable Settings
 
 * [command.done.confirm](#commanddoneconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
+## Edit Command
+Allows a task to be editted in an external editor.
+
+### Usage
+```
+tasks <filter> edit
+```
+
+### Positional Arguments
+
+|Name  |Description|
+|:-----|:----------|
+|filter|The task filter.|
+
+Note that if the filter returns more than one task, only the first will be editted.
+
+### Applicable Settings
+
+* [command.edit.editor](#commandediteditor)
 
 -----------------------------------------------------------------------------------------------------
 
@@ -409,6 +432,12 @@ Possible values
 * True
 
 Default value: True
+
+## command.edit.editor
+The editor to use with the edit command.
+If not specified, the EDITOR environmental variable will be used.
+
+Default value: vim
 
 ## command.modify.confirm
 Whether the modify command should request confirmation before making changes.

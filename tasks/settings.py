@@ -48,6 +48,10 @@ class Settings:
         return self._get_value_boolean('command.done.confirm')
 
     @property
+    def command_edit_editor(self):
+        return self._get_value('command.edit.editor')
+
+    @property
     def command_modify_confirm(self):
         return self._get_value_boolean('command.modify.confirm')
 
