@@ -67,13 +67,14 @@ class SettingsFacade:
 	@property
 	def command_annotate_confirm(self):
 		return self.__settings_provider.get_value_boolean(SettingNames.command_annotate_confirm)
-    @property
-    def command_edit_editor(self):
-        return self._get_value('command.edit.editor')
 
-    @property
-    def command_modify_confirm(self):
-        return self._get_value_boolean('command.modify.confirm')
+	@property
+	def command_edit_editor(self):
+		return self._get_value('command.edit.editor')
+
+	@property
+	def command_modify_confirm(self):
+		return self._get_value_boolean('command.modify.confirm')
 
 	@property
 	def command_done_confirm(self):
