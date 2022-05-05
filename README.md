@@ -200,6 +200,7 @@ tasks [filter] list
 ### Applicable Settings
 
 * [report.list.columns](#reportlistcolumns)
+* [report.list.max_annotation_count](#reportlistmax_annotation_count)
 * [table.column.separator](#tablecolumnseparator)
 * [table.header.underline](#tableheaderunderline)
 * [table.row.alt_backcolour](#tablerowalt_backcolour)
@@ -228,6 +229,7 @@ tasks <filter> modify <name> [name ...] [attribute:value ...]
 ### Applicable Settings
 
 * [command.modify.confirm](#commandmodifyconfirm)
+* [command.modify.summary](#commandmodifysummary)
 
 -----------------------------------------------------------------------------------------------------
 
@@ -253,6 +255,7 @@ tasks [filter] next
 ### Applicable Settings
 
 * [report.next.columns](#reportnextcolumns)
+* [report.next.max_annotation_count](#reportnextmax_annotation_count)
 * [table.column.separator](#tablecolumnseparator)
 * [table.header.underline](#tableheaderunderline)
 * [table.row.alt_backcolour](#tablerowalt_backcolour)
@@ -481,6 +484,16 @@ Possible values
 
 Default value: True
 
+## command.modify.summary
+Whether the modify command should output a summary of changes.
+
+Possible values
+
+* False
+* True
+
+Default value: True
+
 ## command.start.confirm
 Whether the start command should request confirmation before making changes.
 
@@ -523,12 +536,30 @@ Default value: id,status,description
 
 See [supported columns](#supported-columns) for the columns available in this setting.
 
+## report.list.max_annotation_count
+The maximum number of annotations to display with each task in the 'list' report.
+
+Setting to 0 (zero) or less causes no annotations to be displayed.
+
+If there are more annotations on a task than this number, only the most recent will be displayed.
+
+Default value: 3.
+
 ## report.next.columns
 The comma delimited list of columns to show when displaying the next report.
 
 Default value: id,status,description
 
 See [supported columns](#supported-columns) for the columns available in this setting.
+
+## report.next.max_annotation_count
+The maximum number of annotations to display with each task in the 'next' report.
+
+Setting to 0 (zero) or less causes no annotations to be displayed.
+
+If there are more annotations on a task than this number, only the most recent will be displayed.
+
+Default value: 3.
 
 ## table.column.separator
 The string to use to separate columns when printing tables.  Any double quotes will be stripped to allow leading and trailing spaces.

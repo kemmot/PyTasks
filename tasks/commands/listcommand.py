@@ -7,6 +7,9 @@ class ListTaskCommand(commandbase.ReportCommandBase):
     '''
     def __init__(self, context, command_filter=None):
         super().__init__(context, command_filter)
+    
+    def get_annotation_count(self):
+        return self.context.settings.report_list_max_annotation_count
 
     def get_columns(self):
         return self.context.settings.report_list_columns.split(',')

@@ -81,27 +81,34 @@ class ReportCommandBase(FilterCommandBase):
         Executes the logic of this command.
         '''
         columns = self.get_columns()
+        max_annotation_count = self.get_annotation_count()
         tasks_to_display = self.filter_tasks(tasks)
         self.sort_tasks(tasks_to_display)
-        table = self.create_task_table(columns, tasks_to_display)
+        table = self.create_task_table(columns, max_annotation_count, tasks_to_display)
         self.print_table(table)
-    
+
+    def get_annotation_count(self):
+        return 0
+
     def get_columns(self):
         raise Exception(f'get_columns not overridden in {self.__class__}')
-    
+
     def filter_tasks(self, tasks):
         return tasks
-    
+
     def sort_tasks(self, tasks):
         # do nothing by default
         pass
 
-    def create_task_table(self, columns, tasks):
+    def create_task_table(self, columns, max_annotation_count, tasks):
         table = asciitable.DataTable()
 
+        description_column_index = 0
         for column in columns:
             column = column.strip()
             table.add_column(column)
+            if column == 'description':
+                description_column_index = len(table.columns) - 1
 
         for task in tasks:
             row_values = []
@@ -125,9 +132,19 @@ class ReportCommandBase(FilterCommandBase):
                     value = ''
                 row_values.append(value)
             table.add_row(*row_values)
-        
+
+            if max_annotation_count > 0:
+                annotations_by_date = sorted(task.annotations, key=lambda a: a.created)
+                truncated_annotations = annotations_by_date[max_annotation_count*-1:]
+                for annotation in truncated_annotations:
+                    row_values = []
+                    for row in range(0, description_column_index):
+                        row_values.append('')
+                    row_values.append(f'\t{annotation.created}: {annotation.message}')
+                    table.add_row(*row_values)
+
         return table
-    
+
     def print_table(self, table):
         c = console.ConsoleFactory().get_console()
         c.foreground_colour = self.context.settings.table_row_forecolour

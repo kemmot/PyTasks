@@ -21,7 +21,9 @@ class SettingNames:
 	data_location = 'data.location'
 	data_pending_filename = 'data.pending.filename'
 	report_list_columns = 'report.list.columns'
+	report_list_max_annotation_count = 'report.list.max_annotation_count'
 	report_next_columns = 'report.next.columns'
+	report_next_max_annotation_count = 'report.next.max_annotation_count'
 	table_column_separator = 'table.column.separator'
 	table_header_underline = 'table.header.underline'
 	table_row_alt_backcolour = 'table.row.alt_backcolour'
@@ -110,8 +112,16 @@ class SettingsFacade:
 		return self.__settings_provider.get_value(SettingNames.report_list_columns)
 
 	@property
+	def report_list_max_annotation_count(self):
+		return self.__settings_provider.get_value_integer(SettingNames.report_list_max_annotation_count)
+
+	@property
 	def report_next_columns(self):
 		return self.__settings_provider.get_value(SettingNames.report_next_columns)
+
+	@property
+	def report_next_max_annotation_count(self):
+		return self.__settings_provider.get_value_integer(SettingNames.report_next_max_annotation_count)
 
 	@property
 	def table_column_separator(self):
@@ -216,8 +226,12 @@ class DefaultSettingsProvider(SettingsProviderBase):
 			return 'pending.data'
 		elif key == SettingNames.report_list_columns:
 			return 'id,status,project,priority,description'
+		elif key == SettingNames.report_list_max_annotation_count:
+			return '3'
 		elif key == SettingNames.report_next_columns:
 			return 'id,status,project,priority,description'
+		elif key == SettingNames.report_next_max_annotation_count:
+			return '3'
 		elif key == SettingNames.table_column_separator:
 			return ' | '
 		elif key == SettingNames.table_header_underline:
