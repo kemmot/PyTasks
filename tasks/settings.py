@@ -7,12 +7,13 @@ class SettingNames:
 	command_add_format = 'command.add.format'
 	command_add_next_key_id = 'command.add.next_key_id'
 	command_add_next_key_id = 'command.add.next_key_id'
+	command_annotate_confirm = 'command.annotate.confirm'
 	command_default = 'command.default'
 	command_default_zero_items = 'command.default.zero_items'
 	command_default_one_item = 'command.default.one_item'
 	command_default_multi_items = 'command.default.multi_items'
-	command_annotate_confirm = 'command.annotate.confirm'
 	command_done_confirm = 'command.done.confirm'
+	command_edit_editor = 'command.edit.editor'
 	command_modify_confirm = 'command.modify.confirm'
 	command_modify_summary = 'command.modify.summary'
 	command_start_confirm = 'command.start.confirm'
@@ -69,16 +70,12 @@ class SettingsFacade:
 		return self.__settings_provider.get_value_boolean(SettingNames.command_annotate_confirm)
 
 	@property
-	def command_edit_editor(self):
-		return self._get_value('command.edit.editor')
-
-	@property
-	def command_modify_confirm(self):
-		return self._get_value_boolean('command.modify.confirm')
-
-	@property
 	def command_done_confirm(self):
 		return self.__settings_provider.get_value_boolean(SettingNames.command_done_confirm)
+
+	@property
+	def command_edit_editor(self):
+		return self._get_value(SettingNames.command_edit_editor)
 
 	@property
 	def command_modify_confirm(self):
@@ -211,6 +208,8 @@ class DefaultSettingsProvider(SettingsProviderBase):
 			return 'next'
 		elif key == SettingNames.command_done_confirm:
 			return 'True'
+		elif key == SettingNames.command_edit_editor:
+			return 'vim'
 		elif key == SettingNames.command_modify_confirm:
 			return 'True'
 		elif key == SettingNames.command_modify_summary:
