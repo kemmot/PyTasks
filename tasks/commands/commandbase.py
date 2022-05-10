@@ -49,10 +49,15 @@ class FilterCommandBase(CommandBase):
         '''
         Executes the logic of this command.
         '''
+        self.pre_filter()
         filtered_tasks = self.get_filtered_tasks()
         self.execute_tasks(filtered_tasks)
         self._logger.debug('Executed {} command on {} tasks'.format(self.__class__.__name__, len(filtered_tasks)))
 
+    def pre_filter(self):
+        # by default do nothing
+        pass
+    
     def execute_tasks(self, tasks):
         '''
         Executes the logic of this command against the filtered tasks.
