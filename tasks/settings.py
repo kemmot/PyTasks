@@ -75,7 +75,7 @@ class SettingsFacade:
 
 	@property
 	def command_edit_editor(self):
-		return self._get_value(SettingNames.command_edit_editor)
+		return self.__settings_provider.get_value(SettingNames.command_edit_editor)
 
 	@property
 	def command_modify_confirm(self):
