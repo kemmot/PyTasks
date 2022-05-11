@@ -1,4 +1,5 @@
 import commands.commandbase as commandbase
+import entities
 import filters.confirmfilter as confirmfilter
 
 
@@ -28,9 +29,11 @@ class ModifyCommand(commandbase.FilterCommandBase):
     def _print_changes(self):
         if self.context.settings.command_modify_summary:
             if self.template_task.name:
-                self._print_change('name', self.template_task.name)
+                self._print_change(entities.TaskAttributeName.NAME, self.template_task.name)
+            
             if self.template_task.wait_time:
-                self._print_change('wait', self.template_task.wait_time)
+                self._print_change(entities.TaskAttributeName.WAIT, self.template_task.wait_time)
+            
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 self._print_change(attribute_name, attribute_value)
 

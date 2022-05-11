@@ -112,7 +112,7 @@ class ReportCommandBase(FilterCommandBase):
         for column in columns:
             column = column.strip()
             table.add_column(column)
-            if column == 'description':
+            if column == entities.TaskAttributeName.DESCRIPTION:
                 description_column_index = len(table.columns) - 1
 
         for task in tasks:
@@ -121,15 +121,15 @@ class ReportCommandBase(FilterCommandBase):
                 column = column.strip()
                 if column == 'annotation.count':
                     value = str(len(task.annotations))
-                elif column == 'id':
+                elif column == entities.TaskAttributeName.ID:
                     value = str(task.index)
-                elif column == 'description':
+                elif column == entities.TaskAttributeName.DESCRIPTION:
                     value = task.name
-                elif column == 'status':
+                elif column == entities.TaskAttributeName.STATUS:
                     value = task.status
-                elif column == 'start':
+                elif column == entities.TaskAttributeName.START:
                     value = str(task.started_time)
-                elif column == 'wait':
+                elif column == entities.TaskAttributeName.WAIT:
                     value = str(task.wait_time)
                 elif column in task.attributes:
                     value = str(task.attributes[column])

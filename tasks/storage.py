@@ -19,11 +19,11 @@ class EditFormatter:
         output += self._format_comment_line('lines beginning with ''#'' will be ignored')
         output += self._format_comment_line(self._format_key_value_line('uuid', task.id_number, end=''))
         output += self._format_comment_line(self._format_key_value_line('created time', task.created_time, end=''))
-        output += self._format_key_value_line('description', task.name)
-        output += self._format_key_value_line('status', task.status)
-        output += self._format_key_value_line('start', task.started_time)
-        output += self._format_key_value_line('end', task.end_time)
-        output += self._format_key_value_line('wait', task.wait_time)
+        output += self._format_key_value_line(entities.TaskAttributeName.DESCRIPTION, task.name)
+        output += self._format_key_value_line(entities.TaskAttributeName.STATUS, task.status)
+        output += self._format_key_value_line(entities.TaskAttributeName.START, task.started_time)
+        output += self._format_key_value_line(entities.TaskAttributeName.END, task.end_time)
+        output += self._format_key_value_line(entities.TaskAttributeName.WAIT, task.wait_time)
 
         output += self._format_empty_line()
         output += self._format_comment_line('custom attributes')
@@ -69,17 +69,17 @@ class EditFormatter:
             elif ':' in line:
                 parts = line.split(':')
                 key = parts[0]
-                key_upper = key.upper()
+                key_lower = key.lower()
                 value = ':'.join(parts[1:]).strip()
-                if key_upper == 'DESCRIPTION':
+                if key_lower == entities.TaskAttributeName.DESCRIPTION:
                     task.name = value
-                elif key_upper == 'END':
+                elif key_lower == entities.TaskAttributeName.END:
                     task.end_time = self._parse_datetime(value)
-                elif key_upper == 'START':
+                elif key_lower == entities.TaskAttributeName.START:
                     task.started_time = self._parse_datetime(value)
-                elif key_upper == 'STATUS':
+                elif key_lower == entities.TaskAttributeName.STATUS:
                     task.status = value
-                elif key_upper == 'WAIT':
+                elif key_lower == entities.TaskAttributeName.WAIT:
                     task.wait_time = self._parse_datetime(value)
                 else:
                     task.attributes[key] = value
@@ -102,19 +102,19 @@ class TaskWarriorFormatter:
         '''
 
         output_key_values = {}
-        output_key_values['description'] = task.name
-        output_key_values['entry'] = calendar.timegm(task.created_time.utctimetuple())
-        output_key_values['status'] = task.status
-        output_key_values['uuid'] = task.id_number
+        output_key_values[entities.TaskAttributeName.DESCRIPTION] = task.name
+        output_key_values[entities.TaskAttributeName.ENTRY] = calendar.timegm(task.created_time.utctimetuple())
+        output_key_values[entities.TaskAttributeName.STATUS] = task.status
+        output_key_values[entities.TaskAttributeName.UUID] = task.id_number
 
         if task.is_started:
-            output_key_values['start'] = calendar.timegm(task.started_time.utctimetuple())
+            output_key_values[entities.TaskAttributeName.START] = calendar.timegm(task.started_time.utctimetuple())
 
         if task.is_ended:
-            output_key_values['end'] = calendar.timegm(task.end_time.utctimetuple())
+            output_key_values[entities.TaskAttributeName.END] = calendar.timegm(task.end_time.utctimetuple())
 
         if task.wait_time:
-            output_key_values['wait'] = calendar.timegm(task.wait_time.utctimetuple())
+            output_key_values[entities.TaskAttributeName.WAIT] = calendar.timegm(task.wait_time.utctimetuple())
 
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
@@ -144,19 +144,19 @@ class TaskWarriorFormatter:
         for match in re.finditer(pattern, line):
             key = match.group('name')
             value = match.group('value')
-            if key == 'description':
+            if key == entities.TaskAttributeName.DESCRIPTION:
                 task.name = value
-            elif key == 'end':
+            elif key == entities.TaskAttributeName.END:
                 task.end_time = self._parse_datetime(value)
-            elif key == 'entry':
+            elif key == entities.TaskAttributeName.ENTRY:
                 task.created_time = self._parse_datetime(value)
-            elif key == 'start':
+            elif key == entities.TaskAttributeName.START:
                 task.started_time = self._parse_datetime(value)
-            elif key == 'status':
+            elif key == entities.TaskAttributeName.STATUS:
                 task.status = value
-            elif key == 'uuid':
+            elif key == entities.TaskAttributeName.UUID:
                 task.id_number = value
-            elif key == 'wait':
+            elif key == entities.TaskAttributeName.WAIT:
                 task.wait_time = self._parse_datetime(value)
             elif key.startswith('annotation_'):
                 created_timestamp = key[11:]

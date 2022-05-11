@@ -80,7 +80,7 @@ class ColumnsCommand(commandbase.FilterCommandBase):
 
     def _get_rows_for_desc_attribute(self):
         rows = []
-        rows.append(self._get_row('description', 'string', True, 'desc', 'Move your clothes down on to the lower peg'))
+        rows.append(self._get_row(entities.TaskAttributeName.DESCRIPTION, 'string', True, 'desc', 'Move your clothes down on to the lower peg'))
         return rows
 
     def _get_rows_for_date_attribute(self, name, modifiable):

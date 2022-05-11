@@ -39,6 +39,7 @@ class TaskAttributeName:
     ID = 'id'
     START = 'start'
     STATUS = 'status'
+    UUID = 'uuid'
     WAIT = 'wait'
 
     @staticmethod
