@@ -3,6 +3,11 @@ import logging
 import os
 
 
+class SettingException(Exception):
+    def __init__(self, message='',):
+        Exception.__init__(self, message)
+
+
 class SettingNames:
 	command_add_format = 'command.add.format'
 	command_add_next_key_id = 'command.add.next_key_id'
@@ -190,7 +195,6 @@ class SettingsProviderBase:
 
 
 class DefaultSettingsProvider(SettingsProviderBase):
-	@property
 	def get_value(self, key):
 		if key == SettingNames.command_add_format:
 			return '{name}'
@@ -245,13 +249,13 @@ class DefaultSettingsProvider(SettingsProviderBase):
 		elif key == SettingNames.table_row_forecolour:
 			return 'white'
 		else:
-			raise Exception(f'Default value not found for setting: [{key}]')
+			raise SettingException(f'Default value not found for setting: [{key}]')
 	
 	def has_value(self, key):
 		try:
 			self.get_value(key)
 			return True
-		except Exception:
+		except SettingException as ex:
 			return False
 
 	def read(self):
@@ -268,7 +272,9 @@ class LayeredSettingsProvider(SettingsProviderBase):
 
 	def get_value(self, key):
 		for setting_provider in self.__settings_provider_list:
-			if setting_provider.has_value(key):
+			has_value = setting_provider.has_value(key)
+			self._logger.debug(f'Provider [{setting_provider.__class__.__name__}], setting [{key}], found: {has_value}')
+			if has_value:
 				return setting_provider.get_value(key)
 		raise Exception(f'Value not found for setting: [{key}]')
 	
