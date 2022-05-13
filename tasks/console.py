@@ -256,8 +256,16 @@ class Console:
         return result
     
     def print_table(self, data_table, alt_foreground_colour, alt_background_colour):
-        row_style_1 = rich.style.Style(color=self.foreground_colour, bgcolor=self.background_colour)
-        row_style_2 = rich.style.Style(color=alt_foreground_colour, bgcolor=alt_background_colour)
+        from rich.theme import Theme
+        custom_theme = Theme({
+            "next_row": "light_slate_grey",
+            "next_row_alt": "grey39",
+            "danger": "bold red"
+        })
+        row_style_1 = 'next_row'
+        row_style_2 = 'next_row_alt'
+        #row_style_1 = rich.style.Style(color=self.foreground_colour, bgcolor=self.background_colour)
+        #row_style_2 = rich.style.Style(color=alt_foreground_colour, bgcolor=alt_background_colour)
         table = rich.table.Table(show_header=True, header_style="bold", row_styles=[row_style_1, row_style_2])
 
         for column in data_table.columns:
@@ -266,7 +274,7 @@ class Console:
         for row in data_table.rows:
             table.add_row(*row)
         
-        console = rich.console.Console()
+        console = rich.console.Console(theme=custom_theme)
         console.print(table)
 
     def set_cursor_position(self, y, x):
