@@ -23,7 +23,7 @@ class ModifyCommand(commandbase.FilterCommandBase):
     def template_task(self, value):
         self._template_task = value
 
-    def pre_filter(self):
+    def before_execute(self):
         self._print_changes()
 
     def _print_changes(self):
