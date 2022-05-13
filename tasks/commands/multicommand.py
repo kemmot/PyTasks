@@ -1,5 +1,6 @@
 import commandline
 import commands.commandbase as commandbase
+#from tasks.commands.commandbase import FilterCommandBase
 
 
 class MultiCommand(commandbase.FilterCommandBase):
@@ -27,23 +28,26 @@ class MultiCommand(commandbase.FilterCommandBase):
         '''
         tasks = self.get_filtered_tasks()
         task_count = len(tasks)
+        
         if task_count == 0:
-            if self._zero_item_action is None:
-                raise Exception(f'Cannot process {len(tasks)} items in default command')
-            self._zero_item_action.before_execute()
-            self._zero_item_action.execute()
+            command = self._zero_item_action
         elif task_count == 1:
-            self._execute_command(tasks, self._one_item_action)
+            command = self._one_item_action
         else:
-            self._execute_command(tasks, self._multi_item_action)
-
-    def _execute_command(self, tasks, command):
+            command = self._multi_item_action
+        
         if command is None:
             raise Exception(f'Cannot process {len(tasks)} items in default command')
+
+        # need to allow the individual commands reload the tasks as garbage collection may change the indexes
+        
+        self._execute_command(command)
+
+    def _execute_command(self, command):
+        command.filter = self.filter        
         try:
             command.before_execute()
-            command.execute_tasks(tasks)
-            self._logger.debug('Executed {} command on {} tasks'.format(command.__class__.__name__, len(tasks)))
+            command.execute()
         except commandline.ExitCodeException:
             raise
         except Exception as ex:
