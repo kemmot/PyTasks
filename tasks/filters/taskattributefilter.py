@@ -22,16 +22,21 @@ class TaskAttributeFilter(filterbase.FilterBase):
         return self.attribute_name
 
     def is_match(self, task):
-        if self.attribute_name in task.attributes:
+        task_has_attribute = self.attribute_name in task.attributes
+        if self.attribute_value == '':
+            if task_has_attribute:
+                result = False 
+                reason = 'attribute exists when filter requested it not to'
+            else:
+                result = True 
+                reason = 'attribute does not exist as searched for'
+        elif task_has_attribute:
             if task.attributes[self.attribute_name].startswith(self.attribute_value):
                 result = True
                 reason = 'attribute value matches'
             else:
                 result = False
                 reason = 'attribute value does not match'
-        elif self.attribute_value == '':
-            result = True
-            reason = 'attribute does not exist as searched for'
         else:
             result = False
             reason = 'attribute does not exist'
