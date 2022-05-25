@@ -60,7 +60,7 @@ class ColumnsCommand(commandbase.FilterCommandBase):
                 for row in self._get_rows_for_date_attribute(entities.TaskAttributeName.WAIT, modifiable=False):
                     table.add_row(*row)
             else:
-                for row in self._get_rows_for_custom_attribute(attribute_name, custom_attribute_values[attribute_name]):
+                for row in sorted(self._get_rows_for_custom_attribute(attribute_name, custom_attribute_values[attribute_name])):
                     table.add_row(*row)
 
         self.context.console.foreground_colour = foreground_colour
