@@ -1,4 +1,5 @@
 import logging
+import entities
 import filters.filterbase as filterbase
 
 
@@ -22,13 +23,15 @@ class TaskAttributeFilter(filterbase.FilterBase):
         return self.attribute_name
 
     def is_match(self, task):
-        task_has_attribute = self.attribute_name in task.attributes
+        retriever = entities.TaskAttributeRetriever()
+        value = retriever.get_value(task, self.attribute_name)
+        task_has_attribute = value != '' and value != None
         if self.attribute_value == '':
             if task_has_attribute:
                 result = False 
-                reason = 'attribute exists when filter requested it not to'
+                reason = 'attribute exists when filter requested it not to value'
             else:
-                result = True 
+                result = True
                 reason = 'attribute does not exist as searched for'
         elif task_has_attribute:
             if task.attributes[self.attribute_name].startswith(self.attribute_value):

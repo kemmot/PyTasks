@@ -56,6 +56,9 @@ class ColumnsCommand(commandbase.FilterCommandBase):
             elif attribute_name == entities.TaskAttributeName.STATUS:
                 for row in self._get_rows_for_status_attribute():
                     table.add_row(*row)
+            elif attribute_name == entities.TaskAttributeName.UUID:
+                for row in self._get_rows_for_uuid_attribute():
+                    table.add_row(*row)
             elif attribute_name == entities.TaskAttributeName.WAIT:
                 for row in self._get_rows_for_date_attribute(entities.TaskAttributeName.WAIT, modifiable=False):
                     table.add_row(*row)
@@ -98,6 +101,11 @@ class ColumnsCommand(commandbase.FilterCommandBase):
         rows = []
         rows.append(self._get_row(entities.TaskAttributeName.STATUS, 'string', True, 'long*', 'Pending'))
         rows.append(self._get_additional_format_row('short', 'P'))
+        return rows
+
+    def _get_rows_for_uuid_attribute(self):
+        rows = []
+        rows.append(self._get_row(entities.TaskAttributeName.UUID, 'guid',  False, '', ''))
         return rows
 
     def _get_additional_format_row(self, format, example):

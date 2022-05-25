@@ -29,6 +29,7 @@ class TaskAttributeType(enum.Enum):
     ID = 40
     START = 50
     STATUS = 60
+    UUID = 65
     WAIT = 70
 
 
@@ -51,6 +52,7 @@ class TaskAttributeName:
         names.append(TaskAttributeName.ID)
         names.append(TaskAttributeName.START)
         names.append(TaskAttributeName.STATUS)
+        names.append(TaskAttributeName.UUID)
         names.append(TaskAttributeName.WAIT)
         return names
 
@@ -74,6 +76,9 @@ class TaskAttributeName:
         if task_type_attribute_enum == TaskAttributeType.STATUS:
             return TaskAttributeName.STATUS
 
+        if task_type_attribute_enum == TaskAttributeType.UUID:
+            return TaskAttributeName.UUID
+
         if task_type_attribute_enum == TaskAttributeType.WAIT:
             return TaskAttributeName.WAIT
 
@@ -81,28 +86,40 @@ class TaskAttributeName:
 
     @staticmethod
     def is_name_valid(attribute_name):
+        return attribute_name in TaskAttributeName.get_names()
+
+
+class TaskAttributeRetriever:
+    def get_value(self, task, attribute_name):
+        value = ''
+        if TaskAttributeName.is_name_valid(attribute_name):
+            return self.__get_well_known_value(task, attribute_name)
+        else:
+            return self.__get_attribute_value(task, attribute_name)
+
+    def __get_well_known_value(self, task, attribute_name):
         if attribute_name == TaskAttributeName.DESCRIPTION:
-            return True
+            return task.name
+        elif attribute_name == TaskAttributeName.END:
+            return task.end_time
+        elif attribute_name == TaskAttributeName.ENTRY:
+            return task.started_time
+        elif attribute_name == TaskAttributeName.ID:
+            return task.index
+        elif attribute_name == TaskAttributeName.START:
+            return task.started_time
+        elif attribute_name == TaskAttributeName.STATUS:
+            return task.status
+        elif attribute_name == TaskAttributeName.WAIT:
+            return task.wait_time
+        else:
+            raise Exception(f'Value not supported: {attribute_name}')
 
-        if attribute_name == TaskAttributeName.END:
-            return True
-
-        if attribute_name == TaskAttributeName.ENTRY:
-            return True
-
-        if attribute_name == TaskAttributeName.ID:
-            return True
-
-        if attribute_name == TaskAttributeName.START:
-            return True
-
-        if attribute_name == TaskAttributeName.STATUS:
-            return True
-
-        if attribute_name == TaskAttributeName.WAIT:
-            return True
-
-        return False
+    def __get_attribute_value(self, task, attribute_name):
+        if attribute_name in task.attributes:
+            return task.attributes[attribute_name]
+        else:
+            return ''
 
 
 class Task:
