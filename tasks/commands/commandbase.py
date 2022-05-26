@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 import asciitable
@@ -60,9 +61,26 @@ class FilterCommandBase(CommandBase):
         raise Exception('Execute(tasks) not implemented in {}'.format(__class__.__name__))
 
     def get_filtered_tasks(self):
-        items = self.context.storage.read_all()
-        filtered_items = self.filter.filter_items(items)
-        self._logger.debug('Filtered {} items to {}'.format(len(items), len(filtered_items)))
+        tasks = self.__get_tasks()
+        self.__remove_old_wait_dates(tasks)
+        return self.__apply_user_filters(tasks)
+    
+    def __get_tasks(self):
+        return self.context.storage.read_all()
+    
+    def __remove_old_wait_dates(self, tasks):
+        # this allows filtering on tasks with old wait times as if they have no wait time
+        # e.g. task wait: list
+        counter = 0
+        for task in tasks:
+            if not task.wait_time is None and task.wait_time < datetime.datetime.now():
+                task.wait_time = None
+                counter += 1
+        self._logger.debug(f'Removed wait time from {counter}/{len(tasks)} tasks')
+
+    def __apply_user_filters(self, tasks):
+        filtered_items = self.filter.filter_items(tasks)
+        self._logger.debug('Filtered {} items to {}'.format(len(tasks), len(filtered_items)))
         return filtered_items
 
 
