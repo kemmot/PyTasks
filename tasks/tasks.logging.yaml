@@ -28,6 +28,18 @@ root:
   handlers: [console_handler, file_handler]
 
 loggers:
+  CommandFactory:
+    level: INFO
+    handlers: [console_handler, file_handler]
+    propogate: no
+  LayeredSettingsProvider:
+    level: INFO
+    handlers: [console_handler, file_handler]
+    propogate: no
+  TaskAttributeFilter:
+    level: INFO
+    handlers: [console_handler, file_handler]
+    propogate: no
   TaskIndexFilter:
     level: INFO
     handlers: [console_handler, file_handler]
