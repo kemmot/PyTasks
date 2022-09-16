@@ -58,6 +58,7 @@ class AnnotateCommandParser(commandbase.FilterCommandParserBase):
         command.message = ''
         created_date_set = False
         for arg in args:
+            arg_is_attribute = False
             if ':' in arg:
                 attribute_parts = arg.split(':')
                 if attribute_parts[0] == 'created':
@@ -66,9 +67,8 @@ class AnnotateCommandParser(commandbase.FilterCommandParserBase):
                     else:
                         command.created = datetimeparser.DateTimeParser().parse(attribute_parts[1])
                         created_date_set = True
-                else:
-                    raise Exception('Unknown attribute: [{}]'.format(attribute_parts[0]))
-            else:
+                    arg_is_attribute = True
+            if not arg_is_attribute:
                 if command.message:
                     command.message += ' '
                 command.message += arg
