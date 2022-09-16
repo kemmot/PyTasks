@@ -29,7 +29,7 @@ class ModifyCommand(commandbase.FilterCommandBase):
     def _print_changes(self):
         if self.context.settings.command_modify_summary:
             if self.template_task.name:
-                self._print_change(entities.TaskAttributeName.NAME, self.template_task.name)
+                self._print_change(entities.TaskAttributeName.DESCRIPTION, self.template_task.name)
             
             if self.template_task.wait_time:
                 self._print_change(entities.TaskAttributeName.WAIT, self.template_task.wait_time)
