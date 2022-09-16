@@ -24,6 +24,9 @@ class EditFormatter:
         output += self._format_key_value_line(entities.TaskAttributeName.START, task.started_time)
         output += self._format_key_value_line(entities.TaskAttributeName.END, task.end_time)
         output += self._format_key_value_line(entities.TaskAttributeName.WAIT, task.wait_time)
+        
+        tag_string = entities.TaskAttributeRetriever().get_value(task, entities.TaskAttributeName.TAGS)
+        output += self._format_key_value_line(entities.TaskAttributeName.TAGS, tag_string)
 
         output += self._format_empty_line()
         output += self._format_comment_line('custom attributes')
@@ -79,6 +82,9 @@ class EditFormatter:
                     task.started_time = self._parse_datetime(value)
                 elif key_lower == entities.TaskAttributeName.STATUS:
                     task.status = value
+                elif key_lower == entities.TaskAttributeName.TAGS:
+                    for tag_name in value.split(','):
+                        task.add_tag(tag_name)
                 elif key_lower == entities.TaskAttributeName.WAIT:
                     task.wait_time = self._parse_datetime(value)
                 else:
@@ -100,7 +106,6 @@ class TaskWarriorFormatter:
         '''
         Formats the task.
         '''
-
         output_key_values = {}
         output_key_values[entities.TaskAttributeName.DESCRIPTION] = task.name
         output_key_values[entities.TaskAttributeName.ENTRY] = calendar.timegm(task.created_time.utctimetuple())
@@ -119,6 +124,10 @@ class TaskWarriorFormatter:
         for annotation in task.annotations:
             created_output = calendar.timegm(annotation.created.utctimetuple())
             output_key_values['annotation_{}'.format(created_output)] = annotation.message
+
+        tag_string = entities.TaskAttributeRetriever().get_value(task, entities.TaskAttributeName.TAGS)
+        if tag_string:
+            output_key_values[entities.TaskAttributeName.TAGS] = tag_string
 
         for attribute_name, attribute_value in task.attributes.items():
             output_key_values[attribute_name] = attribute_value
@@ -154,6 +163,9 @@ class TaskWarriorFormatter:
                 task.started_time = self._parse_datetime(value)
             elif key == entities.TaskAttributeName.STATUS:
                 task.status = value
+            elif key == entities.TaskAttributeName.TAGS:
+                for tag_name in value.split(','):
+                    task.add_tag(tag_name)
             elif key == entities.TaskAttributeName.UUID:
                 task.id_number = value
             elif key == entities.TaskAttributeName.WAIT:

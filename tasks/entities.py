@@ -29,6 +29,7 @@ class TaskAttributeType(enum.Enum):
     ID = 40
     START = 50
     STATUS = 60
+    TAGS = 62
     UUID = 65
     WAIT = 70
 
@@ -40,6 +41,7 @@ class TaskAttributeName:
     ID = 'id'
     START = 'start'
     STATUS = 'status'
+    TAGS = 'tags'
     UUID = 'uuid'
     WAIT = 'wait'
 
@@ -52,6 +54,7 @@ class TaskAttributeName:
         names.append(TaskAttributeName.ID)
         names.append(TaskAttributeName.START)
         names.append(TaskAttributeName.STATUS)
+        names.append(TaskAttributeName.TAGS)
         names.append(TaskAttributeName.UUID)
         names.append(TaskAttributeName.WAIT)
         return names
@@ -75,6 +78,9 @@ class TaskAttributeName:
 
         if task_type_attribute_enum == TaskAttributeType.STATUS:
             return TaskAttributeName.STATUS
+
+        if task_type_attribute_enum == TaskAttributeType.TAGS:
+            return TaskAttributeName.TAGS
 
         if task_type_attribute_enum == TaskAttributeType.UUID:
             return TaskAttributeName.UUID
@@ -110,6 +116,12 @@ class TaskAttributeRetriever:
             return task.started_time
         elif attribute_name == TaskAttributeName.STATUS:
             return task.status
+        elif attribute_name == TaskAttributeName.TAGS:
+            tag_string = ''
+            for tag_name in task.tags:
+                if tag_string: tag_string += ','
+                tag_string += tag_name
+            return tag_string
         elif attribute_name == TaskAttributeName.WAIT:
             return task.wait_time
         else:
@@ -136,6 +148,7 @@ class Task:
         self._name = ''
         self._started_time = None
         self._status = ''
+        self._tags = []
         self._wait_time = None
 
     @property
@@ -240,6 +253,10 @@ class Task:
     @started_time.setter
     def started_time(self, value):
         self._started_time = value
+    
+    @property
+    def tags(self):
+        return self._tags
 
     @property
     def wait_time(self):
@@ -251,9 +268,17 @@ class Task:
     @wait_time.setter
     def wait_time(self, value):
         self._wait_time = value
+    
+    def add_tag(self, tag_name):
+        if not tag_name in self._tags:
+            self._tags.append(tag_name)
 
     def end(self):
         self.end_time = datetime.datetime.now()
+    
+    def remove_tag(self, tag_name):
+        if tag_name in self._tags:
+            self._tags.remove(tag_name)
 
     def start(self):
         self.started_time = datetime.datetime.now()

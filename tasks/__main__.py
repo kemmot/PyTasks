@@ -34,6 +34,7 @@ import filters.filterfactory as filterfactory
 import filters.taskattributefilter as taskattributefilter
 import filters.taskindexfilter as taskindexfilter
 import filters.tasknamefilter as tasknamefilter
+import filters.tasktagfilter as tasktagfilter
 
 import settings
 import storage

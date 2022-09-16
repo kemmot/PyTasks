@@ -128,26 +128,15 @@ class ReportCommandBase(FilterCommandBase):
             if column == entities.TaskAttributeName.DESCRIPTION:
                 description_column_index = len(table.columns) - 1
 
+        retriever = entities.TaskAttributeRetriever()
         for task in tasks:
             row_values = []
             for column in columns:
                 column = column.strip()
                 if column == 'annotation.count':
                     value = str(len(task.annotations))
-                elif column == entities.TaskAttributeName.ID:
-                    value = str(task.index)
-                elif column == entities.TaskAttributeName.DESCRIPTION:
-                    value = task.name
-                elif column == entities.TaskAttributeName.STATUS:
-                    value = task.status
-                elif column == entities.TaskAttributeName.START:
-                    value = str(task.started_time)
-                elif column == entities.TaskAttributeName.WAIT:
-                    value = str(task.wait_time)
-                elif column in task.attributes:
-                    value = str(task.attributes[column])
                 else:
-                    value = ''
+                    value = str(retriever.get_value(task, column))
                 row_values.append(value)
             table.add_row(*row_values)
 
@@ -193,6 +182,7 @@ class CommandParserBase:
 
     def parse_template_task(self, args):
         template_task = entities.Task()
+        template_task.tags_to_remove = []
         for arg in args:
             if ':' in arg:
                 attribute_parts = arg.split(':')
@@ -202,6 +192,12 @@ class CommandParserBase:
                     template_task.wait_time = datetimeparser.DateTimeParser().parse(attribute_parts[1])
                 else:
                     template_task.attributes[attribute_parts[0]] = attribute_parts[1]
+            elif arg[0] == '+':
+                tag_name = arg[1:]
+                template_task.tags.append(tag_name)
+            elif arg[0] == '-':
+                tag_name = arg[1:]
+                template_task.tags_to_remove.append(tag_name)
             else:
                 if template_task.name:
                     template_task.name += ' '

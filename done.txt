@@ -46,3 +46,5 @@
 [description:"FEAT-0093: list command should support prioritization" end:"1650557253" entry:"1650538433" project:"cmd.list" status:"pending" uuid:"f98a7805-8bfe-47aa-a1ef-5f28ba67a3d2"]
 [description:"FEAT-0088: Should only write config if it has changed" end:"1650557961" entry:"1648223419" project:"config" status:"pending" uuid:"3dc8a4a8-b595-4b26-ad9c-39d993065b6b"]
 [description:"FEAT-0095: wait property should understand relative dates" end:"1650579747" entry:"1650538413" project:"cmd.done" status:"pending" uuid:"bc8f3cfa-dc68-42f5-b393-eefd95de25b5" wait:"1650758400"]
+[description:"FEAT-0087: Filters should support fuzzy matching" end:"1650580929" entry:"1618864152" project:"filter" status:"pending" uuid:"87c42e6e-9b91-454a-a0ee-0d625df1c5bb"]
+[description:"FEAT-0074: Add tag support" end:"1663353134" entry:"1615467397" project:"filter" status:"pending" uuid:"c661dc42-a213-47f2-8638-c52a1074b0bc"]

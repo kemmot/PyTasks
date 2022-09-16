@@ -36,6 +36,12 @@ class ModifyCommand(commandbase.FilterCommandBase):
             
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 self._print_change(attribute_name, attribute_value)
+            
+            for tag_name in self.template_task.tags:
+                self.context.console.print(f'Adding tag: {tag_name}')
+            
+            for tag_name in self.template_task.tags_to_remove:
+                self.context.console.print(f'Removing tag: {tag_name}')
 
     def _print_change(self, modified_attribute, new_value):
         self.context.console.print(f'Changing {modified_attribute} to {new_value}')
@@ -49,6 +55,12 @@ class ModifyCommand(commandbase.FilterCommandBase):
                 task.name = self.template_task.name
             if self.template_task.wait_time:
                 task.wait_time = self.template_task.wait_time
+            if self.template_task.tags:
+                for tag_name in self.template_task.tags:
+                    task.add_tag(tag_name)
+            if self.template_task.tags_to_remove:
+                for tag_name in self.template_task.tags_to_remove:
+                    task.remove_tag(tag_name)
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 task.attributes[attribute_name] = attribute_value
         self.context.storage.update(tasks)

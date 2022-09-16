@@ -1,4 +1,6 @@
 import commands.commandbase as commandbase
+import entities as entities
+import storage as storage
 
 
 class InfoCommand(commandbase.FilterCommandBase):
@@ -17,6 +19,10 @@ class InfoCommand(commandbase.FilterCommandBase):
             values['Entered'] = task.created_time
             values['UUID'] = task.id_number
             values['Wait'] = task.wait_time
+            
+            tag_string = entities.TaskAttributeRetriever().get_value(task, entities.TaskAttributeName.TAGS)
+            if tag_string:
+                values['Tags'] = tag_string
 
             for attribute_name, attribute_value in task.attributes.items():
                 values[attribute_name] = attribute_value
