@@ -9,7 +9,7 @@ class FilterFactory(typefactory.TypeFactory):
 
     def parse(self, context, arg):
         task_filter = None
-        for parser in self.types:
+        for parser in sorted(self.types, key=lambda x: x.priority.value, reverse=True):
             task_filter = parser.parse(context, arg)
             if task_filter is not None:
                 break

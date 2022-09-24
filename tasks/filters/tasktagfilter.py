@@ -50,6 +50,9 @@ class TaskTagFilter(filterbase.FilterBase):
 
 
 class TaskTagFilterParser(filterbase.FilterParserBase):
+    def __init__(self):
+        super().__init__(filterbase.FilterParserPriority.MEDIUM)
+
     def parse(self, context, arg):
         if arg[0] == '+':
             tag_name = arg[1:]

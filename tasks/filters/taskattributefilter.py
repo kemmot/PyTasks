@@ -52,6 +52,9 @@ class TaskAttributeFilter(filterbase.FilterBase):
 
 
 class TaskAttributeFilterParser(filterbase.FilterParserBase):
+    def __init__(self):
+        super().__init__(filterbase.FilterParserPriority.MEDIUM)
+
     def parse(self, context, arg):
         if arg and ':' in arg:
             attribute_parts = arg.split(':')

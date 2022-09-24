@@ -26,6 +26,9 @@ class TaskNameFilter(filterbase.FilterBase):
 
 
 class TaskNameFilterParser(filterbase.FilterParserBase):
+    def __init__(self):
+        super().__init__(filterbase.FilterParserPriority.LOW)
+
     def parse(self, context, arg):
         if arg:
             search_term = arg

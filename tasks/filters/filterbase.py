@@ -1,3 +1,6 @@
+import enum
+
+
 class FilterBase:
     def __init__(self, context):
         self._context = context
@@ -61,8 +64,21 @@ class BatchFilter(FilterBase):
 
 
 class FilterParserBase:
+    def __init__(self, priority):
+        self._priority = priority
+
+    @property
+    def priority(self):
+        return self._priority
+
     def parse(self, context, arg):
         '''
         Parses a filter from an argument.
         '''
         raise Exception('parse not implemented in {}'.format(__class__.__name__))
+
+
+class FilterParserPriority(enum.Enum):
+    LOW = 10
+    MEDIUM = 20
+    HIGH = 30

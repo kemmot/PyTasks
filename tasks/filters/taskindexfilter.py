@@ -105,6 +105,9 @@ class TaskIndexRangeFilter(filterbase.FilterBase):
 
 
 class TaskIndexFilterParser(filterbase.FilterParserBase):
+    def __init__(self):
+        super().__init__(filterbase.FilterParserPriority.HIGH)
+
     def parse(self, context, arg):
         task_filters = anybatchfilter.AnyBatchFilter(context)
         filter_count = 0
