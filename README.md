@@ -23,6 +23,7 @@ The following commands are available:
 * [list](#list-command)
 * [modify](#modify-command)
 * [next](#next-command)
+* [projects](#projects-command)
 * [shell](#shell-command)
 * [start](#start-command)
 * [stop](#stop-command)
@@ -265,6 +266,22 @@ tasks [filter] next
 * [table.row.alt_forecolour](#tablerowalt_forecolour)
 * [table.row.backcolour](#tablerowbackcolour)
 * [table.row.forecolour](#tablerowforecolour)
+
+-----------------------------------------------------------------------------------------------------
+
+## Projects Command
+Lists the active projects and their task counts.
+
+### Usage
+```
+tasks projects
+```
+
+### Positional Arguments
+None.
+
+### Applicable Settings
+None.
 
 -----------------------------------------------------------------------------------------------------
 

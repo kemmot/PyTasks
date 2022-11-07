@@ -16,6 +16,7 @@ import commands.infocommand
 import commands.listcommand
 import commands.modifycommand
 import commands.nextcommand
+import commands.projectscommand
 import commands.shellcommand
 import commands.startcommand
 import commands.stopcommand
