@@ -63,7 +63,11 @@ class ColumnsCommand(commandbase.FilterCommandBase):
                 for row in self._get_rows_for_date_attribute(entities.TaskAttributeName.WAIT, modifiable=False):
                     table.add_row(*row)
             else:
-                for row in sorted(self._get_rows_for_custom_attribute(attribute_name, custom_attribute_values[attribute_name])):
+                if attribute_name in custom_attribute_values:
+                    values = sorted(custom_attribute_values[attribute_name])
+                else:
+                    values = []
+                for row in self._get_rows_for_custom_attribute(attribute_name, values):
                     table.add_row(*row)
 
         self.context.console.foreground_colour = foreground_colour
@@ -76,8 +80,12 @@ class ColumnsCommand(commandbase.FilterCommandBase):
 
     def _get_rows_for_custom_attribute(self, name, values):
         rows = []
-        rows.append(self._get_row(name, 'string', True, '', ''))
-        for value in values:
+        if values:
+            example = values[0]
+        else:
+            example = ''
+        rows.append(self._get_row(name, 'string', True, '', example))
+        for value in values[1:]:
             rows.append(self._get_additional_format_row('', value))
         return rows
 
