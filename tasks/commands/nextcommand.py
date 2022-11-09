@@ -26,10 +26,24 @@ class NextTaskCommand(commandbase.ReportCommandBase):
     def __task_sort(a, b):
         result = NextTaskCommand.__task_sort_by_started(a, b)
         if result == 0:
+            result = NextTaskCommand.__task_sort_by_blocked(a, b)
+        if result == 0:
             result = NextTaskCommand.__task_sort_by_due(a, b)
         if result == 0:
             result = NextTaskCommand.__task_sort_by_priority(a, b)
         return result
+    
+    def __task_sort_by_blocked(a, b):
+        if a.is_blocked:
+            if b.is_blocked:
+                result = 0
+            else:
+                result = -1
+        elif b.is_blocked:
+            result = 1
+        else:
+            result = 0
+        return result * -1
     
     def __task_sort_by_started(a, b):
         if a.is_started:

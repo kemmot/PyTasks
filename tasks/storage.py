@@ -8,6 +8,7 @@ import logging
 import re
 import os
 import time
+import uuid
 
 import __main__
 import entities
@@ -27,6 +28,11 @@ class EditFormatter:
         
         tag_string = entities.TaskAttributeRetriever().get_value(task, entities.TaskAttributeName.TAGS)
         output += self._format_key_value_line(entities.TaskAttributeName.TAGS, tag_string)
+
+        output += self._format_empty_line()
+        output += self._format_comment_line('dependencies')
+        for dependency in sorted(task.dependencies):
+            output += self._format_line(dependency)
 
         output += self._format_empty_line()
         output += self._format_comment_line('custom attributes')
@@ -89,13 +95,22 @@ class EditFormatter:
                     task.wait_time = self._parse_datetime(value)
                 else:
                     task.attributes[key] = value
+            else:
+                id = self._try_parse_guid(line)
+                if id:
+                    task.dependency_ids.append(id)
         return task
 
     def _parse_datetime(self, string_value):
         if not string_value:
             return None
         return datetime.datetime.strptime(string_value, '%Y-%m-%d %H:%M:%S')
-
+    
+    def _try_parse_guid(self, string_value):
+        try:
+            return uuid.UUID(string_value)
+        except ValueError:
+            return None 
 
 
 class TaskWarriorFormatter:
@@ -132,6 +147,11 @@ class TaskWarriorFormatter:
         for attribute_name, attribute_value in task.attributes.items():
             output_key_values[attribute_name] = attribute_value
 
+        dependency_index = 0
+        for dependency_id in task.dependency_ids:
+            output_key_values['dependency_{}'.format(dependency_index)] = dependency_id
+            dependency_index += 1
+
         output = '['
         first_value = True
         for key, value in sorted(output_key_values.items()):
@@ -167,7 +187,7 @@ class TaskWarriorFormatter:
                 for tag_name in value.split(','):
                     task.add_tag(tag_name)
             elif key == entities.TaskAttributeName.UUID:
-                task.id_number = value
+                task.id_number = uuid.UUID(value)
             elif key == entities.TaskAttributeName.WAIT:
                 task.wait_time = self._parse_datetime(value)
             elif key.startswith('annotation_'):
@@ -175,6 +195,8 @@ class TaskWarriorFormatter:
                 annotation_created = self._parse_datetime(created_timestamp)
                 annotation = entities.TaskAnnotation(value, annotation_created)
                 task.annotations.append(annotation)
+            elif key.startswith('dependency_'):
+                task.dependency_ids.append(uuid.UUID(value))
             else:
                 task.attributes[key] = value
         return task
@@ -296,7 +318,20 @@ class TaskWarriorStorage:
             self._logger.debug('No garbage collection required')
 
     def read_all(self):
-        return self._pending_storage.read_pending()
+        pending_tasks = self._pending_storage.read_pending()
+        complete_tasks = self.done_storage.read_all()
+        all_tasks = pending_tasks + complete_tasks
+        self.__populate_dependencies(pending_tasks, all_tasks)
+        return pending_tasks
+
+    def __populate_dependencies(self, pending_tasks, all_tasks):
+        tasks_by_id = {}
+        for task in all_tasks:
+            tasks_by_id[task.id_number] = task
+        for task in pending_tasks:
+            for dependency_id in task.dependency_ids:
+                if dependency_id in tasks_by_id:
+                    task.dependencies.append(tasks_by_id[dependency_id])
 
     def update(self, tasks):
         self._pending_storage.update(tasks)

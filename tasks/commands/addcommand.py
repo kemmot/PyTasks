@@ -35,6 +35,18 @@ class AddTaskCommand(commandbase.CommandBase):
         }
         self.task.name = self.context.settings.command_add_format.format(**mappings)
 
+        tasks_by_index = {}
+        for task in self.context.storage.read_all():
+            tasks_by_index[task.index] = task
+
+        dependency_indexes = self.task.dependency_ids.copy()
+        self.task.dependency_ids.clear()
+        for dependency_index in dependency_indexes:
+            if dependency_index in tasks_by_index:
+                self.task.dependency_ids.append(tasks_by_index[dependency_index].id_number)
+            else:
+                self._logger.warn('Dependency index not found: {}'.format(dependency_index))
+
         existing_tasks = self.context.storage.read_all()
         self.context.storage.write(self.task)
         self.context.settings.command_add_next_key_id = key_id + 1

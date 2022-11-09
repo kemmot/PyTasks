@@ -132,12 +132,7 @@ class ReportCommandBase(FilterCommandBase):
         for task in tasks:
             row_values = []
             for column in columns:
-                column = column.strip()
-                if column == 'annotation.count':
-                    value = str(len(task.annotations))
-                else:
-                    value = str(retriever.get_value(task, column))
-                row_values.append(value)
+                row_values.append(str(retriever.get_value(task, column.strip())))
             table.add_row(*row_values)
 
             if max_annotation_count > 0:
@@ -188,6 +183,9 @@ class CommandParserBase:
                 attribute_parts = arg.split(':')
                 if attribute_parts[0] == 'due':
                     template_task.attributes['due'] = datetimeparser.DateTimeParser().parse(attribute_parts[1])
+                elif attribute_parts[0] == entities.TaskAttributeName.DEPENDENCIES:
+                    for dependency_index in attribute_parts[1].split(','):
+                        template_task.dependency_ids.append(int(dependency_index))
                 elif attribute_parts[0] == entities.TaskAttributeName.WAIT:
                     template_task.wait_time = datetimeparser.DateTimeParser().parse(attribute_parts[1])
                 else:

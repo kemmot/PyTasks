@@ -219,7 +219,7 @@ Modifies an existing command.
 
 ### Usage
 ```
-tasks <filter> modify <name> [name ...] [attribute:value ...]
+tasks <filter> modify <name> [name ...] [attribute:value ...] [+tag_to_add ...] [-tag_to_remove ...]
 ```
 
 ### Positional Arguments
@@ -230,10 +230,23 @@ tasks <filter> modify <name> [name ...] [attribute:value ...]
 |filter   |The optional task filter.|
 |name     |The new name of the item.|
 
+To remove dependencies, list them as negative numbers.
+
 ### Applicable Settings
 
 * [command.modify.confirm](#commandmodifyconfirm)
 * [command.modify.summary](#commandmodifysummary)
+
+### Examples
+Example 1: add 'new' tag and remove 'old' tag from task 1.
+```
+task 1 modify +new -old
+```
+
+Example 2: modify task 10 to add 3 as a dependant task and remove 5 as a dependant task.
+```
+task 10 modfy depends:3,-5
+```
 
 -----------------------------------------------------------------------------------------------------
 
@@ -244,6 +257,7 @@ The order is based on the following...
 * Started tasks first.
 * Tasks with a due date with earliest due dates first.
 * Tasks with a priority in order of H, then M then L.
+* Blocked tasks last.
 
 ### Usage
 ```
@@ -618,14 +632,16 @@ Default value: White
 # Supported Columns
 The following columns are supported:
 
-|Name            |Description                                        |
-|---------------:|:--------------------------------------------------|
-|annotation.count|An integer showing the annotate count for the task.|
-|description     |The description of the task.                       |
-|id              |The index ID of the task.                          |
-|start           |The time that the task was started.                |
-|status          |The current task status.                           |
-|wait            |The target wait time for the task.                 |
+|Name            |Description                                                      |
+|---------------:|:----------------------------------------------------------------|
+|annotation.count|An integer showing the annotate count for the task.              |
+|blocked         |Whether the task has incomplete dependencies.                    |
+|depends         |A comma delimited list of the index IDs of the task dependancies.|
+|description     |The description of the task.                                     |
+|id              |The index ID of the task.                                        |
+|start           |The time that the task was started.                              |
+|status          |The current task status.                                         |
+|wait            |The target wait time for the task.                               |
 
 # Supported Date Formats
 Dates can be specified in a number of formats:

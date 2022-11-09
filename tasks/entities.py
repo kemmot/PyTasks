@@ -23,6 +23,7 @@ class TaskAnnotation:
 
 
 class TaskAttributeType(enum.Enum):
+    DEPENDENCIES = 5
     DESCRIPTION = 10
     END = 20
     ENTRY = 30
@@ -35,6 +36,7 @@ class TaskAttributeType(enum.Enum):
 
 
 class TaskAttributeName:
+    DEPENDENCIES = 'depends'
     DESCRIPTION = 'description'
     END = 'end'
     ENTRY = 'entry'
@@ -48,6 +50,7 @@ class TaskAttributeName:
     @staticmethod
     def get_names():
         names = []
+        names.append(TaskAttributeName.DEPENDENCIES)
         names.append(TaskAttributeName.DESCRIPTION)
         names.append(TaskAttributeName.END)
         names.append(TaskAttributeName.ENTRY)
@@ -61,6 +64,9 @@ class TaskAttributeName:
 
     @staticmethod
     def get_name(task_type_attribute_enum):
+        if task_type_attribute_enum == TaskAttributeType.DEPENDENCIES:
+            return TaskAttributeName.DEPENDENCIES
+
         if task_type_attribute_enum == TaskAttributeType.DESCRIPTION:
             return TaskAttributeName.DESCRIPTION
 
@@ -97,14 +103,19 @@ class TaskAttributeName:
 
 class TaskAttributeRetriever:
     def get_value(self, task, attribute_name):
-        value = ''
-        if TaskAttributeName.is_name_valid(attribute_name):
+        if attribute_name == 'annotation.count':
+            return len(task.annotations)
+        elif attribute_name == 'blocked':
+            return task.is_blocked
+        elif TaskAttributeName.is_name_valid(attribute_name):
             return self.__get_well_known_value(task, attribute_name)
         else:
             return self.__get_attribute_value(task, attribute_name)
 
     def __get_well_known_value(self, task, attribute_name):
-        if attribute_name == TaskAttributeName.DESCRIPTION:
+        if attribute_name == TaskAttributeName.DEPENDENCIES:
+            return ','.join([str(x.index) for x in task.dependencies if not x.is_ended])
+        elif attribute_name == TaskAttributeName.DESCRIPTION:
             return task.name
         elif attribute_name == TaskAttributeName.END:
             return task.end_time
@@ -142,6 +153,8 @@ class Task:
         self._annotations = []
         self._attributes = {}
         self._created_time = datetime.datetime.now()
+        self._dependencies = []
+        self._dependency_ids = []
         self._end_time = None
         self._id_number = ''
         self._index = -1
@@ -177,6 +190,14 @@ class Task:
         self._created_time = value
 
     @property
+    def dependencies(self):
+        return self._dependencies
+
+    @property
+    def dependency_ids(self):
+        return self._dependency_ids
+
+    @property
     def end_time(self):
         '''
         The time the task was completed.
@@ -208,6 +229,13 @@ class Task:
     @index.setter
     def index(self, value):
         self._index = value
+
+    @property
+    def is_blocked(self):
+        for dependency in self.dependencies:
+            if not dependency.is_ended:
+                return True
+        return False
 
     @property
     def is_ended(self):

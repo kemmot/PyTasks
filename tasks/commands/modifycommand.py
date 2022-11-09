@@ -42,6 +42,12 @@ class ModifyCommand(commandbase.FilterCommandBase):
             
             for tag_name in self.template_task.tags_to_remove:
                 self.context.console.print(f'Removing tag: {tag_name}')
+            
+            for dependency_index in self.template_task.dependency_ids:
+                if dependency_index > 0:
+                    self.context.console.print(f'Add dependency: {dependency_index}')
+                else:
+                    self.context.console.print(f'Remove dependency: {dependency_index * -1}')
 
     def _print_change(self, modified_attribute, new_value):
         self.context.console.print(f'Changing {modified_attribute} to {new_value}')
@@ -50,6 +56,10 @@ class ModifyCommand(commandbase.FilterCommandBase):
         '''
         Executes the logic of this command.
         '''
+        tasks_by_index = {}
+        for task in self.context.storage.read_all():
+            tasks_by_index[task.index] = task
+        
         for task in tasks:
             if self.template_task.name:
                 task.name = self.template_task.name
@@ -63,9 +73,29 @@ class ModifyCommand(commandbase.FilterCommandBase):
                     task.remove_tag(tag_name)
             for attribute_name, attribute_value in self.template_task.attributes.items():
                 task.attributes[attribute_name] = attribute_value
+            self.__alter_dependencies(task, tasks_by_index)
+
         self.context.storage.update(tasks)
         if self.context.settings.command_modify_summary:
             self.context.console.print(f'{len(tasks)} tasks modified')
+    
+    def __alter_dependencies(self, task, tasks_by_index):
+        for dependency_index in self.template_task.dependency_ids:
+            if dependency_index > 0:
+                is_adding = True
+            else:
+                is_adding = False
+                dependency_index *= -1
+            if dependency_index in tasks_by_index:
+                dependency_id = tasks_by_index[dependency_index].id_number
+                if is_adding:
+                    if not dependency_id in task.dependency_ids:
+                        task.dependency_ids.append(dependency_id)
+                else:
+                    if dependency_id in task.dependency_ids:
+                        task.dependency_ids.remove(dependency_id)
+            else:
+                self._logger.warn('Dependency index not found: {}'.format(dependency_index))
 
 
 class ModifyCommandParser(commandbase.FilterCommandParserBase):
