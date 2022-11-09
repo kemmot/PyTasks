@@ -45,6 +45,7 @@ class TaskAttributeName:
     STATUS = 'status'
     TAGS = 'tags'
     UUID = 'uuid'
+    VTAGS = 'vtags'
     WAIT = 'wait'
 
     @staticmethod
@@ -59,6 +60,7 @@ class TaskAttributeName:
         names.append(TaskAttributeName.STATUS)
         names.append(TaskAttributeName.TAGS)
         names.append(TaskAttributeName.UUID)
+        names.append(TaskAttributeName.VTAGS)
         names.append(TaskAttributeName.WAIT)
         return names
 
@@ -91,6 +93,9 @@ class TaskAttributeName:
         if task_type_attribute_enum == TaskAttributeType.UUID:
             return TaskAttributeName.UUID
 
+        if task_type_attribute_enum == TaskAttributeType.VTAGS:
+            return TaskAttributeName.VTAGS
+
         if task_type_attribute_enum == TaskAttributeType.WAIT:
             return TaskAttributeName.WAIT
 
@@ -105,8 +110,8 @@ class TaskAttributeRetriever:
     def get_value(self, task, attribute_name):
         if attribute_name == 'annotation.count':
             return len(task.annotations)
-        elif attribute_name == 'blocked':
-            return task.is_blocked
+        elif VirtualTagName.is_name_valid(attribute_name.upper()):
+            return attribute_name.upper() in task.virtual_tags
         elif TaskAttributeName.is_name_valid(attribute_name):
             return self.__get_well_known_value(task, attribute_name)
         else:
@@ -128,11 +133,9 @@ class TaskAttributeRetriever:
         elif attribute_name == TaskAttributeName.STATUS:
             return task.status
         elif attribute_name == TaskAttributeName.TAGS:
-            tag_string = ''
-            for tag_name in task.tags:
-                if tag_string: tag_string += ','
-                tag_string += tag_name
-            return tag_string
+            return ','.join(task.tags)
+        elif attribute_name == TaskAttributeName.VTAGS:
+            return ','.join(task.virtual_tags)
         elif attribute_name == TaskAttributeName.WAIT:
             return task.wait_time
         else:
@@ -163,6 +166,10 @@ class Task:
         self._status = ''
         self._tags = []
         self._wait_time = None
+
+    @property
+    def all_tags(self):
+        return self.tags + self.virtual_tags
 
     @property
     def annotations(self):
@@ -285,6 +292,14 @@ class Task:
     @property
     def tags(self):
         return self._tags
+    
+    @property
+    def virtual_tags(self):
+        vtags = []
+        if self.is_blocked: vtags.append(VirtualTagName.BLOCKED)
+        if self.is_started: vtags.append(VirtualTagName.STARTED)
+        if self.is_waiting: vtags.append(VirtualTagName.WAITING)
+        return vtags
 
     @property
     def wait_time(self):
@@ -298,6 +313,8 @@ class Task:
         self._wait_time = value
     
     def add_tag(self, tag_name):
+        if tag_name.upper() in VirtualTagName.get_names():
+            raise Exception('Cannot add virtual tag: {}'.format(tag_name))
         if not tag_name in self._tags:
             self._tags.append(tag_name)
 
@@ -305,6 +322,8 @@ class Task:
         self.end_time = datetime.datetime.now()
     
     def remove_tag(self, tag_name):
+        if tag_name.upper() in VirtualTagName.get_names():
+            raise Exception('Cannot remove virtual tag: {}'.format(tag_name))
         if tag_name in self._tags:
             self._tags.remove(tag_name)
 
@@ -316,3 +335,37 @@ class Task:
 
     def __str__(self):
         return 'index: {}, name: {}'.format(self.index, self.name)
+
+
+class VirtualTagType(enum.Enum):
+    BLOCKED = 10
+    STARTED = 20
+    WAITING = 30
+
+
+class VirtualTagName:
+    BLOCKED = 'BLOCKED'
+    STARTED = 'STARTED'
+    WAITING = 'WAITING'
+
+    @staticmethod
+    def get_names():
+        names = []
+        names.append(VirtualTagName.BLOCKED)
+        names.append(VirtualTagName.STARTED)
+        names.append(VirtualTagName.WAITING)
+        return names
+
+    @staticmethod
+    def get_name(virtual_tag_type_enum):
+        if virtual_tag_type_enum == TaskAttributeType.BLOCKED:
+            return TaskAttributeName.BLOCKED
+        elif virtual_tag_type_enum == TaskAttributeType.STARTED:
+            return TaskAttributeName.STARTED
+        elif virtual_tag_type_enum == TaskAttributeType.WAITING:
+            return TaskAttributeName.WAITING
+        raise exceptions.NotSupportedException('Virtual tag not supported: [{}]'.format(virtual_tag_type_enum))
+
+    @staticmethod
+    def is_name_valid(name):
+        return name in VirtualTagName.get_names()

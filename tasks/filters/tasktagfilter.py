@@ -23,7 +23,7 @@ class TaskTagFilter(filterbase.FilterBase):
         return self._tag_present
 
     def is_match(self, task):
-        if self.tag_name in task.tags:
+        if self.tag_name.upper() in [t.upper() for t in task.all_tags]:
             if self.tag_present:
                 result = True 
                 reason = 'tag exists and should'
