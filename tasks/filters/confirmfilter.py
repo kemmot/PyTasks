@@ -5,6 +5,8 @@ class ConfirmFilter(filterbase.FilterBase):
     def __init__(self, context, action_name):
         super().__init__(context)
         self._action_name = action_name
+        self._all_confirm = False
+        self._all_deny = False
 
     @property
     def action_name(self):
@@ -36,7 +38,10 @@ class ConfirmFilter(filterbase.FilterBase):
         return self._query_single(task)
     
     def _query_single(self, task):
-        message = '{}? [y/n]... ID: {}, name: "{}"> '.format( \
+        if self._all_confirm: return True
+        if self._all_deny: return False
+        
+        message = '{}? [y]es/[n]o/[a]ll/[z]ero... ID: {}, name: "{}"> '.format( \
             self.action_name, \
             task.index, \
             task.name)
@@ -47,6 +52,13 @@ class ConfirmFilter(filterbase.FilterBase):
         return self._query(message)
     
     def _query(self, message):
-        if self.context.console.input(message).startswith('y'):
+        input = self.context.console.input(message)
+        if input.startswith('y'):
             return True
+        if input.startswith('a'):
+            self._all_confirm = True
+            return True
+        if input.startswith('z'):
+            self._all_deny = True
+            return False
         return False
