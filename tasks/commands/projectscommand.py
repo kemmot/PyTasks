@@ -19,16 +19,18 @@ class ProjectsCommand(commandbase.FilterCommandBase):
         for task in tasks:
             if 'project' in task.attributes:
                 project = task.attributes['project']
-                project_path = ''
-                for project_part in project.split('.'):
-                    if project_path:
-                        project_path += '.'
-                    project_path += project_part
-                    if project_path in project_counts:
-                        count = project_counts[project_path] + 1
-                    else:
-                        count = 1
-                    project_counts[project_path] = count
+            else:
+                project = '(none)'
+            project_path = ''
+            for project_part in project.split('.'):
+                if project_path:
+                    project_path += '.'
+                project_path += project_part
+                if project_path in project_counts:
+                    count = project_counts[project_path] + 1
+                else:
+                    count = 1
+                project_counts[project_path] = count
         
         table = asciitable.DataTable()
         table.add_column('Project')
