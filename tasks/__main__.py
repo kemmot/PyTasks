@@ -20,6 +20,7 @@ import commands.projectscommand
 import commands.shellcommand
 import commands.startcommand
 import commands.stopcommand
+import commands.tagscommand
 
 import logging
 import logging.config

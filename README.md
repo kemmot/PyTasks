@@ -27,6 +27,7 @@ The following commands are available:
 * [shell](#shell-command)
 * [start](#start-command)
 * [stop](#stop-command)
+* [tags](#tags-command)
 
 The following additional information is available.
 
@@ -353,6 +354,22 @@ tasks <filter> stop
 ### Applicable Settings
 
 * [command.stop.confirm](#commandstopconfirm)
+
+-----------------------------------------------------------------------------------------------------
+
+## Tags Command
+Lists the active tags and their task counts.
+
+### Usage
+```
+tasks tags
+```
+
+### Positional Arguments
+None.
+
+### Applicable Settings
+None.
 
 -----------------------------------------------------------------------------------------------------
 
