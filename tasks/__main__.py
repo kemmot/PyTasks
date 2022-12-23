@@ -11,6 +11,7 @@ import commands.annotatecommand
 import commands.columnscommand
 import commands.donecommand
 import commands.editcommand
+import commands.guicommand
 import commands.helpcommand
 import commands.infocommand
 import commands.listcommand
