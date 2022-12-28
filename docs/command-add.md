@@ -5,7 +5,7 @@ Adds a task.
 ## Usage
 
 ```bash
-tasks add <name> [name ...] [attribute:value ...]
+tasks add <name> [name ...] [attribute:value ...] [+tag_to_add ...]
 ```
 
 ## Positional Arguments

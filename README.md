@@ -23,6 +23,7 @@ The following commands are available:
 * [add](docs/command-add.md)
 * [annotate](docs/command-annotate.md)
 * [columns](docs/command-columns.md)
+* [context](docs/command-context.md)
 * [done](docs/command-done.md)
 * [edit](docs/command-edit.md)
 * [help](docs/command-help.md)

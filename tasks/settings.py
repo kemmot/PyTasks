@@ -23,6 +23,7 @@ class SettingNames:
 	command_modify_summary = 'command.modify.summary'
 	command_start_confirm = 'command.start.confirm'
 	command_stop_confirm = 'command.stop.confirm'
+	context = 'context'
 	data_done_filename = 'data.done.filename'
 	data_location = 'data.location'
 	data_pending_filename = 'data.pending.filename'
@@ -99,6 +100,10 @@ class SettingsFacade:
 		return self.__settings_provider.get_value_boolean(SettingNames.command_stop_confirm)
 
 	@property
+	def context(self):
+		return self.__settings_provider.get_value(SettingNames.context)
+
+	@property
 	def data_done_filename(self):
 		return self.__settings_provider.get_value(SettingNames.data_done_filename)
 
@@ -149,6 +154,16 @@ class SettingsFacade:
 	@property
 	def table_row_forecolour(self):
 		return self.__settings_provider.get_value(SettingNames.table_row_forecolour)
+
+	def create_context(self, name, definition):
+		setting_name = 'context.{}'.format(name)
+		self.__settings_provider.set_value(setting_name, definition)
+
+	def delete_context(self, name):
+		raise Exception('deleting context config is not implemented, name: {}'.format(name))
+
+	def get_contexts(self):
+		raise Exception('getting contexts config is not implemented')
 
 	def read(self):
 		self.__settings_provider.read()
@@ -222,6 +237,8 @@ class DefaultSettingsProvider(SettingsProviderBase):
 			return 'True'
 		elif key == SettingNames.command_stop_confirm:
 			return 'True'
+		elif key == SettingNames.context:
+			return 'none'
 		elif key == SettingNames.data_done_filename:
 			return 'completed.data'
 		elif key == SettingNames.data_location:

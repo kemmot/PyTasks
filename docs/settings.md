@@ -12,6 +12,7 @@ The following settings are available:
 * [command.modify.summary](#commandmodifysummary)
 * [command.start.confirm](#commandstartconfirm)
 * [command.stop.confirm](#commandstopconfirm)
+* [context](#context)
 * [data.location](#datalocation)
 * [data.done.filename](#datadonefilename)
 * [data.pending.filename](#datapendingfilename)
@@ -125,6 +126,15 @@ Possible values
 * True
 
 Default value: True
+
+## context
+
+The name of the currently active context.
+
+Default value: ```<empty string>```
+
+This value shouldn't be set manually.
+Instead, the [context](command-context.md) command should be used.
 
 ## data.location
 

@@ -9,6 +9,7 @@ import commands.commandfactory as commandfactory
 import commands.addcommand
 import commands.annotatecommand
 import commands.columnscommand
+import commands.contextcommand
 import commands.donecommand
 import commands.editcommand
 import commands.helpcommand
