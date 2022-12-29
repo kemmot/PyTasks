@@ -61,3 +61,5 @@
 [description:"FEAT-0017 List command output should be sorted" end:"1672227686" entry:"0" project:"cmd.list" status:"pending" uuid:"6bdcb644-7f0e-4f14-96df-427d3052f3b7"]
 [description:"FEAT-0079: Add command should support wait property" end:"1672227716" entry:"1617744803" project:"cmd.add" status:"pending" uuid:"f9564dbd-0c5d-401b-bac9-644e66df6b7a"]
 [description:"FEAT-0073: Modify command tag support" end:"1672227877" entry:"1615467379" module:"cmd-modify" project:"cmd.modify" status:"pending" uuid:"d4c51b6b-0548-4321-baf6-56cfdca01e83"]
+[description:"FEAT-0098: support context for attributes and tags" end:"1672331821" entry:"1672227952" status:"pending" uuid:"f2d051ce-b22c-4100-9629-cfdbf912881b"]
+[description:"FEAT-0089: List command should print count of displayed tasks" end:"1672334747" entry:"1648224397" project:"cmd.list" status:"pending" uuid:"f4ffdce6-f322-4803-a4b1-7ebde494357a"]
