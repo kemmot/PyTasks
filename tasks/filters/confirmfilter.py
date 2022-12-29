@@ -45,11 +45,11 @@ class ConfirmFilter(filterbase.FilterBase):
             self.action_name, \
             task.index, \
             task.name)
-        return self._query(message)
+        return self.query(message)
     
     def _query_multiple(self, tasks):
         message = '{}? [y/n]... {} items> '.format(self.action_name, len(tasks))
-        return self._query(message)
+        return self.query(message)
     
     def query(self, message=None):
         if not message:
