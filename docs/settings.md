@@ -5,6 +5,8 @@ The following settings are available:
 * [command.add.format](#commandaddformat)
 * [command.add.next_key_id](#commandaddnext_key_id)
 * [command.annotate.confirm](#commandannotateconfirm)
+* [command.context.define.confirm](#commandcontextdefineconfirm)
+* [command.context.delete.confirm](#commandcontextdeleteconfirm)
 * [command.default](#commanddefault)
 * [command.done.confirm](#commanddoneconfirm)
 * [command.edit.editor](#commandediteditor)
@@ -49,6 +51,28 @@ An auto incrementing key ID for use with the command.add.format setting.
 ## command.annotate.confirm
 
 Whether the annotate command should request confirmation before making changes.
+
+Possible values
+
+* False
+* True
+
+Default value: True
+
+## command.context.define.confirm
+
+Whether the context define command should request confirmation before making changes.
+
+Possible values
+
+* False
+* True
+
+Default value: True
+
+## command.context.delete.confirm
+
+Whether the context delete command should request confirmation before making changes.
 
 Possible values
 

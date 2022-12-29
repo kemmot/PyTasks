@@ -51,7 +51,9 @@ class ConfirmFilter(filterbase.FilterBase):
         message = '{}? [y/n]... {} items> '.format(self.action_name, len(tasks))
         return self._query(message)
     
-    def _query(self, message):
+    def query(self, message=None):
+        if not message:
+            message = '{}? [y/n]>'.format(self.action_name)
         input = self.context.console.input(message)
         if input.startswith('y'):
             return True

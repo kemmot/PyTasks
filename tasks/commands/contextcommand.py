@@ -1,5 +1,6 @@
 import asciitable
 import commands.commandbase as commandbase
+import filters.confirmfilter as confirmfilter
 import console
 
 
@@ -25,7 +26,7 @@ class ActivateContextCommand(commandbase.CommandBase):
         Executes the logic of this command.
         '''
         self.context.settings.context = self.context_name
-        self.context.console.print('Context activated: {}'.format(self.context_name))
+        self.context.console.print('Context ''{}'' set. Use ''task context none'' to remove'.format(self.context_name))
 
 
 class DeactivateContextCommand(commandbase.CommandBase):
@@ -41,7 +42,7 @@ class DeactivateContextCommand(commandbase.CommandBase):
         Executes the logic of this command.
         '''
         self.context.settings.context = 'none'
-        self.context.console.print('Context deactivated')
+        self.context.console.print('Context unset.')
 
 
 class DefineContextCommand(commandbase.CommandBase):
@@ -51,8 +52,17 @@ class DefineContextCommand(commandbase.CommandBase):
 
     def __init__(self, context):
         super().__init__(context)
+        self._confirm_filter = None
         self._context_name = ''
         self._task = None
+
+    @property
+    def confirm_filter(self):
+        return self._confirm_filter
+
+    @confirm_filter.setter
+    def confirm_filter(self, value):
+        self._confirm_filter = value
 
     @property
     def context_name(self):
@@ -77,19 +87,24 @@ class DefineContextCommand(commandbase.CommandBase):
         '''
         Executes the logic of this command.
         '''
-        definition = ''
+        can_execute = True
+        if self.confirm_filter:
+            can_execute = self.confirm_filter.query()
+        
+        if can_execute:
+            definition = ''
 
-        for tag in self.task.tags:
-            if definition: definition += ' '
-            definition += '+{}'.format(tag)
+            for tag in self.task.tags:
+                if definition: definition += ' '
+                definition += '+{}'.format(tag)
 
-        for key in self.task.attributes:
-            value = self.task.attributes[key]
-            if definition: definition += ' '
-            definition += '{}:{}'.format(key, value)
+            for key in self.task.attributes:
+                value = self.task.attributes[key]
+                if definition: definition += ' '
+                definition += '{}:{}'.format(key, value)
 
-        self.context.settings.create_context(self.context_name, definition)
-        self.context.console.print('Context created: {}'.format(self.context_name))
+            self.context.settings.create_context(self.context_name, definition)
+            self.context.console.print('Context created: {}'.format(self.context_name))
 
 
 class DeleteContextCommand(commandbase.CommandBase):
@@ -99,7 +114,16 @@ class DeleteContextCommand(commandbase.CommandBase):
 
     def __init__(self, context):
         super().__init__(context)
+        self._confirm_filter = None
         self._context_name = ''
+
+    @property
+    def confirm_filter(self):
+        return self._confirm_filter
+
+    @confirm_filter.setter
+    def confirm_filter(self, value):
+        self._confirm_filter = value
 
     @property
     def context_name(self):
@@ -113,8 +137,13 @@ class DeleteContextCommand(commandbase.CommandBase):
         '''
         Executes the logic of this command.
         '''
-        self.context.settings.delete_context(self.context_name)
-        self.context.console.print('Context deleted: {}'.format(self.context_name))
+        can_execute = True
+        if self.confirm_filter:
+            can_execute = self.confirm_filter.query()
+        
+        if can_execute:
+            self.context.settings.delete_context(self.context_name)
+            self.context.console.print('Context deleted: {}'.format(self.context_name))
 
 
 class ListContextCommand(commandbase.CommandBase):
@@ -172,10 +201,16 @@ class ContextCommandParser(commandbase.CommandParserBase):
             command = DefineContextCommand(context)
             command.context_name = args[1]
             command.task = self.parse_template_task(args[2:])
+            if context.settings.command_context_define_confirm:
+                prompt = 'Define context "{}"'.format(command.context_name)
+                command.confirm_filter  = confirmfilter.ConfirmFilter(context, prompt)
             return command
         elif args[0] == 'delete':
             command = DeleteContextCommand(context)
             command.context_name = args[1]
+            if context.settings.command_context_delete_confirm:
+                prompt = 'Delete context "{}"'.format(command.context_name)
+                command.confirm_filter = confirmfilter.ConfirmFilter(context, prompt)
             return command
         elif args[0] == 'list':
             return ListContextCommand(context)

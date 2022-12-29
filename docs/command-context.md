@@ -126,4 +126,6 @@ tasks context show
 
 ## Applicable Settings
 
+* [command.context.define.confirm](settings.md#commandcontextdefineconfirm)
+* [command.context.delete.confirm](settings.md#commandcontextdeleteconfirm)
 * [context](settings.md#context)

@@ -13,6 +13,8 @@ class SettingNames:
 	command_add_next_key_id = 'command.add.next_key_id'
 	command_add_next_key_id = 'command.add.next_key_id'
 	command_annotate_confirm = 'command.annotate.confirm'
+	command_context_define_confirm = 'command.context.define.confirm'
+	command_context_delete_confirm = 'command.context.delete.confirm'
 	command_default = 'command.default'
 	command_default_zero_items = 'command.default.zero_items'
 	command_default_one_item = 'command.default.one_item'
@@ -74,6 +76,14 @@ class SettingsFacade:
 	@property
 	def command_annotate_confirm(self):
 		return self.__settings_provider.get_value_boolean(SettingNames.command_annotate_confirm)
+
+	@property
+	def command_context_define_confirm(self):
+		return self.__settings_provider.get_value_boolean(SettingNames.command_context_define_confirm)
+
+	@property
+	def command_context_delete_confirm(self):
+		return self.__settings_provider.get_value_boolean(SettingNames.command_context_delete_confirm)
 
 	@property
 	def command_done_confirm(self):
@@ -238,6 +248,10 @@ class DefaultSettingsProvider(SettingsProviderBase):
 		elif key == SettingNames.command_add_next_key_id:
 			return '1'
 		elif key == SettingNames.command_annotate_confirm:
+			return 'True'
+		elif key == SettingNames.command_context_define_confirm:
+			return 'True'
+		elif key == SettingNames.command_context_delete_confirm:
 			return 'True'
 		elif key == SettingNames.command_default:
 			return '{name}'
