@@ -156,11 +156,15 @@ class SettingsFacade:
 		return self.__settings_provider.get_value(SettingNames.table_row_forecolour)
 
 	def create_context(self, name, definition):
-		setting_name = 'context.{}'.format(name)
+		setting_name = self.__get_context_setting_name(name)
 		self.__settings_provider.set_value(setting_name, definition)
 
 	def delete_context(self, name):
-		raise Exception('deleting context config is not implemented, name: {}'.format(name))
+		setting_name = self.__get_context_setting_name(name)
+		self.__settings_provider.remove_value(setting_name)
+
+	def __get_context_setting_name(self, context_name):
+		return 'context.{}'.format(context_name)
 
 	def get_contexts(self):
 		raise Exception('getting contexts config is not implemented')
@@ -201,6 +205,9 @@ class SettingsProviderBase:
 
 	def read(self):
 		raise Exception(f'read not implemented in {__class__.__name__}')
+
+	def remove_value(self, key):
+		pass
 
 	def save_if_needed(self):
 		raise Exception(f'save_if_needed not implemented in {__class__.__name__}')
@@ -305,6 +312,10 @@ class LayeredSettingsProvider(SettingsProviderBase):
 		for setting_provider in self.__settings_provider_list:
 			setting_provider.read()
 
+	def remove_value(self, key):
+		for setting_provider in self.__settings_provider_list:
+			setting_provider.remove_value(key)
+
 	def save_if_needed(self):
 		for setting_provider in self.__settings_provider_list:
 			setting_provider.save_if_needed()
@@ -366,6 +377,10 @@ class IniSettingsProvider(SettingsProviderBase):
 				self._logger.debug('Read config from file: [%s]', self.__path)
 			except Exception as ex:
 				raise Exception('Failed to read config from file: [{}]'.format(self.__path)) from ex
+
+	def remove_value(self, key):
+		self.__config.remove_option(self.__category, key)
+		self.__is_dirty = True
 
 	def save_if_needed(self):
 		if self.__is_dirty:

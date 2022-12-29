@@ -114,7 +114,7 @@ class DeleteContextCommand(commandbase.CommandBase):
         Executes the logic of this command.
         '''
         self.context.settings.delete_context(self.context_name)
-        self.context.console.print('Context created: {}'.format(self.context_name))
+        self.context.console.print('Context deleted: {}'.format(self.context_name))
 
 
 class ListContextCommand(commandbase.CommandBase):
