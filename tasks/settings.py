@@ -103,6 +103,10 @@ class SettingsFacade:
 	def context(self):
 		return self.__settings_provider.get_value(SettingNames.context)
 
+	@context.setter
+	def context(self, value):
+		self.__settings_provider.set_value(SettingNames.context, value)
+
 	@property
 	def data_done_filename(self):
 		return self.__settings_provider.get_value(SettingNames.data_done_filename)
