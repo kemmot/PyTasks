@@ -130,11 +130,12 @@ class ListContextCommand(commandbase.CommandBase):
         Executes the logic of this command.
         '''
         table = asciitable.DataTable()
-        table.add_column('context')
-        table.add_column('filter')
+        table.add_column('Name')
+        table.add_column('Definition')
+        table.add_column('Active')
 
-        for name,definition in self.context.settings.get_contexts():
-            table.add_row(name, definition)
+        for name,definition,is_active in self.context.settings.get_contexts():
+            table.add_row(name, definition, str(is_active))
             
         c = console.ConsoleFactory().get_console()
         c.foreground_colour = self.context.settings.table_row_forecolour

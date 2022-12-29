@@ -171,7 +171,15 @@ class SettingsFacade:
 		return 'context.{}'.format(context_name)
 
 	def get_contexts(self):
-		raise Exception('getting contexts config is not implemented')
+		active_context = self.context
+		contexts = []
+		for key in sorted(self.__settings_provider.get_keys()):
+			if key.startswith('context.'):
+				context_name = key.split('.')[1]
+				definition = self.__settings_provider.get_value(key)
+				is_active = context_name == active_context
+				contexts.append([context_name, definition, is_active])
+		return contexts
 
 	def read(self):
 		self.__settings_provider.read()
@@ -191,6 +199,9 @@ class SettingsProviderConfigurator:
 class SettingsProviderBase:
 	def __init__(self):
 		self._logger = logging.getLogger(self.__class__.__name__)
+
+	def get_keys(self):
+		return []
 
 	def get_value(self, key):
 		raise Exception(f'get_value not implemented in {__class__.__name__}')
@@ -298,6 +309,14 @@ class LayeredSettingsProvider(SettingsProviderBase):
 		super().__init__()
 		self.__settings_provider_list = settings_provider_list
 
+	def get_keys(self):
+		keys = []
+		for setting_provider in self.__settings_provider_list:
+			for key in setting_provider.get_keys():
+				if not key in keys:
+					keys.append(key)
+		return keys
+
 	def get_value(self, key):
 		for setting_provider in self.__settings_provider_list:
 			has_value = setting_provider.has_value(key)
@@ -349,6 +368,9 @@ class IniSettingsProvider(SettingsProviderBase):
 	def set_value(self, key, value):
 		self.__config[self.__category][key] = str(value)
 		self.__is_dirty = True
+
+	def get_keys(self):
+		return self.__config[self.__category].keys()
 
 	def get_value_boolean(self, key):
 		if not self.__config.has_option(self.__category, key):
