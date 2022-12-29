@@ -104,9 +104,9 @@ try:
 
     CONTEXT = commandcontext.CommandContext(SETTINGS, STORAGE, FILTER_FACTORY, CONSOLE)
 
-    PARSER = commandfactory.CommandParser()
+    CONTEXT.command_parser = commandfactory.CommandParser()
 
-    COMMAND_FACTORY = commandfactory.CommandFactory(PARSER, CONTEXT)
+    COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT.command_parser, CONTEXT)
     COMMAND_FACTORY.register_known_types()
     CONTEXT.command_factory = COMMAND_FACTORY
 

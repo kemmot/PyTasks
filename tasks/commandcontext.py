@@ -8,6 +8,7 @@ class CommandContext:
         self._filter_factory = filter_factory
         self._console = console
         self._command_factory = None
+        self._command_parser = None
 
     @property
     def command_factory(self):
@@ -16,6 +17,14 @@ class CommandContext:
     @command_factory.setter
     def command_factory(self, value):
         self._command_factory = value
+
+    @property
+    def command_parser(self):
+        return self._command_parser
+
+    @command_parser.setter
+    def command_parser(self, value):
+        self._command_parser = value
 
     @property
     def console(self):

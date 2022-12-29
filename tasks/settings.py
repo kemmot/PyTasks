@@ -180,6 +180,12 @@ class SettingsFacade:
 	def __get_context_setting_name(self, context_name):
 		return 'context.{}'.format(context_name)
 
+	def get_active_context(self):
+		for context_name,definition,is_active in self.get_contexts():
+			if is_active:
+				return context_name,definition
+		return None,None
+
 	def get_contexts(self):
 		active_context = self.context
 		contexts = []

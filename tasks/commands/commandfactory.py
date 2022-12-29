@@ -29,7 +29,7 @@ class CommandFactory(typefactory.TypeFactory):
         parsed_command = self._parser.parse(args)
         self._logger.debug('Parsed command: %s', parsed_command)
 
-        batch_filter = self._get_filters(parsed_command)
+        batch_filter = self.get_filters(parsed_command)
 
         verb_argument = parsed_command.get_verb_value()
         if verb_argument:
@@ -64,7 +64,7 @@ class CommandFactory(typefactory.TypeFactory):
         command = parser.parse(self._command_context, command_arguments)
         return parser, command
 
-    def _get_filters(self, parsed_command):
+    def get_filters(self, parsed_command):
         filters_by_group = {}
         filter_arguments = parsed_command.get_filter_argument_values()
         for filter_argument in filter_arguments:

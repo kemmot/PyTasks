@@ -79,7 +79,10 @@ class FilterCommandBase(CommandBase):
         self._logger.debug(f'Removed wait time from {counter}/{len(tasks)} tasks')
 
     def __apply_user_filters(self, tasks):
-        filtered_items = self.filter.filter_items(tasks)
+        return self.apply_filter(tasks, self.filter)
+
+    def apply_filter(self, tasks, filter):
+        filtered_items = filter.filter_items(tasks)
         self._logger.debug('Filtered {} items to {}'.format(len(tasks), len(filtered_items)))
         return filtered_items
 
@@ -100,7 +103,18 @@ class ReportCommandBase(FilterCommandBase):
         '''
         columns = self.get_columns()
         max_annotation_count = self.get_annotation_count()
-        tasks_to_display = self.filter_tasks(tasks)
+
+        # apply context filters
+        context_name, context_definition = self.context.settings.get_active_context()
+        if context_name:
+            command_definition_args = context_definition.split(' ')
+            parsed_context = self.context.command_parser.parse(command_definition_args)
+            context_filter = self.context.command_factory.get_filters(parsed_context)
+            context_filtered_tasks = self.apply_filter(tasks, context_filter)
+        else:
+            context_filtered_tasks = tasks
+
+        tasks_to_display = self.filter_tasks(context_filtered_tasks)
         self.sort_tasks(tasks_to_display)
         table = self.create_task_table(columns, max_annotation_count, tasks_to_display)
         self.print_table(table)
