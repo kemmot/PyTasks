@@ -7,6 +7,7 @@ import sys
 
 import commands.commandbase as commandbase
 import commands.multicommand as multicommand
+import commands.reportcommand as reportcommand
 import filters.allbatchfilter as allbatchfilter
 import filters.anybatchfilter as anybatchfilter
 import typefactory
@@ -14,17 +15,20 @@ import typefactory
 
 class CommandFactory(typefactory.TypeFactory):
     def __init__(self, parser, command_context):
-        super().__init__(commandbase.CommandParserBase)
+        super().__init__(commandbase.CommandParserBase, 'COMMAND_NAME')
         self._parser = parser
         self._command_context = command_context
         self._logger = logging.getLogger(__class__.__name__)
+
+    def register_reports(self):
+        for report in self._command_context.settings.get_reports():
+            self.register_type(report.name, reportcommand.ReportCommandParser(report))
 
     def get_command(self, args):
         if not args:
             args = self._command_context.settings.command_default.split()
 
-        command_names = [a.command_name for a in self.types]
-        for command_name in command_names:
+        for command_name in self.types.keys():
             self._parser.add_command_name(command_name)
         parsed_command = self._parser.parse(args)
         self._logger.debug('Parsed command: %s', parsed_command)
@@ -57,10 +61,9 @@ class CommandFactory(typefactory.TypeFactory):
         return command
 
     def _get_command(self, verb, command_arguments=[]):
-        parsers = [p for p in self.types if p.command_name == verb]
-        if not parsers:
+        if not verb in self.types.keys():
             raise Exception('Parser not found for verb: [{}]'.format(verb))
-        parser = parsers[0]
+        parser = self.types[verb]
         command = parser.parse(self._command_context, command_arguments)
         return parser, command
 

@@ -108,6 +108,7 @@ try:
 
     COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT.command_parser, CONTEXT)
     COMMAND_FACTORY.register_known_types()
+    COMMAND_FACTORY.register_reports()
     CONTEXT.command_factory = COMMAND_FACTORY
 
     try:
