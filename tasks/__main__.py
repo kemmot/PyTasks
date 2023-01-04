@@ -14,9 +14,7 @@ import commands.donecommand
 import commands.editcommand
 import commands.helpcommand
 import commands.infocommand
-import commands.listcommand
 import commands.modifycommand
-import commands.nextcommand
 import commands.projectscommand
 import commands.shellcommand
 import commands.startcommand
