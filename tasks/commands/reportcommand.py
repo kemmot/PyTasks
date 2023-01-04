@@ -98,7 +98,7 @@ class ReportCommand(commandbase.ReportCommandBase):
 
 
 class ReportCommandParser(commandbase.FilterCommandParserBase):
-    COMMAND_NAME = 'reports'
+    COMMAND_NAME = 'report'
 
     def __init__(self, report_config=None):
         if report_config:
