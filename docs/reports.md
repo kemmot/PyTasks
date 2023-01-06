@@ -4,6 +4,14 @@ Creating a report can be done in configuration and the reports will be accessibl
 
 ## Usage
 
+The following usage will print the available reports.
+
+```bash
+tasks reports
+```
+
+The next usage will cause a specified report to be run.
+
 ```bash
 tasks [filter] <report name>
 ```

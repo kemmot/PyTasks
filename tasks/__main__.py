@@ -16,6 +16,7 @@ import commands.helpcommand
 import commands.infocommand
 import commands.modifycommand
 import commands.projectscommand
+import commands.reportscommand
 import commands.shellcommand
 import commands.startcommand
 import commands.stopcommand

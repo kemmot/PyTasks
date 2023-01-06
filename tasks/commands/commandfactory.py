@@ -7,7 +7,7 @@ import sys
 
 import commands.commandbase as commandbase
 import commands.multicommand as multicommand
-import commands.reportcommand as reportcommand
+import commands.reportscommand as reportscommand
 import filters.allbatchfilter as allbatchfilter
 import filters.anybatchfilter as anybatchfilter
 import typefactory
@@ -22,7 +22,7 @@ class CommandFactory(typefactory.TypeFactory):
 
     def register_reports(self):
         for report in self._command_context.settings.get_reports():
-            self.register_type(report.name, reportcommand.ReportCommandParser(report))
+            self.register_type(report.name, reportscommand.ReportsCommandParser(report))
 
     def get_command(self, args):
         if not args:

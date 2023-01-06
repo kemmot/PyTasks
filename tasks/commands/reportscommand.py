@@ -97,15 +97,23 @@ class ReportCommand(commandbase.ReportCommandBase):
         return value
 
 
-class ReportCommandParser(commandbase.FilterCommandParserBase):
-    COMMAND_NAME = 'report'
+class ReportsCommand(commandbase.CommandBase):
+    def execute(self):
+        for report in self.context.settings.get_reports():
+            self.context.console.print('{}'.format(report.name))
+
+
+class ReportsCommandParser(commandbase.FilterCommandParserBase):
+    COMMAND_NAME = 'reports'
 
     def __init__(self, report_config=None):
         if report_config:
             super().__init__(report_config.name)
         else:
-            super().__init__(ReportCommandParser.COMMAND_NAME)
+            super().__init__(ReportsCommandParser.COMMAND_NAME)
         self.__report_config = report_config
 
     def parse(self, context, args):
-        return ReportCommand(context, self.__report_config)
+        if self.__report_config:
+            return ReportCommand(context, self.__report_config)
+        return ReportsCommand(context)
