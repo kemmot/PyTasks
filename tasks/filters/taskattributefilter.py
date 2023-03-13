@@ -9,6 +9,9 @@ class TaskAttributeFilter(filterbase.FilterBase):
         self._attribute_name = attribute_name
         self._attribute_value = attribute_value
         self._logger = logging.getLogger(__class__.__name__)
+        
+        if not self.context.settings.filter_attribute_case_sensitive:
+            self._attribute_value = self._attribute_value.upper()
 
     @property
     def attribute_name(self):
@@ -28,12 +31,15 @@ class TaskAttributeFilter(filterbase.FilterBase):
         task_has_attribute = value != '' and value != None
         if self.attribute_value == '':
             if task_has_attribute:
-                result = False 
+                result = False
                 reason = 'attribute exists when filter requested it not to value'
             else:
                 result = True
                 reason = 'attribute does not exist as searched for'
         elif task_has_attribute:
+            if not self.context.settings.filter_attribute_case_sensitive:
+                value = value.upper()
+                
             if value.startswith(self.attribute_value):
                 result = True
                 reason = 'attribute value matches'

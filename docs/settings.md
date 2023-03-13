@@ -18,6 +18,7 @@ The following settings are available:
 * [data.location](#datalocation)
 * [data.done.filename](#datadonefilename)
 * [data.pending.filename](#datapendingfilename)
+* [filter.attribute.case_sensitive](#filterattributecase_sensitive)
 * [report.list.columns](#reportlistcolumns)
 * [report.list.max_annotation_count](#reportlistmax_annotation_count)
 * [report.next.columns](#reportnextcolumns)
@@ -177,6 +178,12 @@ Default value: done.txt
 The filename to use for in-progress tasks.  Appended to data.location.
 
 Default value: todo.txt
+
+## filter.attribute.case_sensitive
+
+Whether attribute filter matching is done with case sensitivity.
+
+Default value: true
 
 ## report.list.columns
 

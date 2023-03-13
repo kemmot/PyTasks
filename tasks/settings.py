@@ -29,6 +29,7 @@ class SettingNames:
 	data_done_filename = 'data.done.filename'
 	data_location = 'data.location'
 	data_pending_filename = 'data.pending.filename'
+	filter_attribute_case_sensitive = 'filter.attribute.case_sensitive'
 	report_list_columns = 'report.list.columns'
 	report_list_max_annotation_count = 'report.list.max_annotation_count'
 	report_next_columns = 'report.next.columns'
@@ -177,6 +178,10 @@ class SettingsFacade:
 	@property
 	def data_pending_filename(self):
 		return self.__settings_provider.get_value(SettingNames.data_pending_filename)
+
+	@property
+	def filter_attribute_case_sensitive(self):
+		return self.__settings_provider.get_value_boolean(SettingNames.filter_attribute_case_sensitive)
 
 	@property
 	def report_list_columns(self):
@@ -370,6 +375,8 @@ class DefaultSettingsProvider(SettingsProviderBase):
 			return '~\.task'
 		elif key == SettingNames.data_pending_filename:
 			return 'pending.data'
+		elif key == SettingNames.filter_attribute_case_sensitive:
+			return 'True'
 		elif key == SettingNames.report_list_columns:
 			return 'id,status,project,priority,description'
 		elif key == SettingNames.report_list_max_annotation_count:
@@ -423,9 +430,13 @@ class LayeredSettingsProvider(SettingsProviderBase):
 	def get_value(self, key):
 		for setting_provider in self.__settings_provider_list:
 			has_value = setting_provider.has_value(key)
-			self._logger.debug(f'Provider [{setting_provider.__class__.__name__}], setting [{key}], found: {has_value}')
 			if has_value:
-				return setting_provider.get_value(key)
+				value = setting_provider.get_value(key)
+			else:
+				value = ''
+			self._logger.debug(f'Provider [{setting_provider}], setting [{key}], found: {has_value}, value: {value}')
+			if has_value:
+				return value
 		raise Exception(f'Value not found for setting: [{key}]')
 	
 	def has_value(self, key):
@@ -522,3 +533,7 @@ class IniSettingsProvider(SettingsProviderBase):
 			self._logger.debug('Wrote config to file: [%s]', self.__path)
 		except Exception as ex:
 			raise Exception('Failed to write config to file: [{}]'.format(self.__path)) from ex
+	
+	def __str__(self):
+		return '{}({})'.format(self.__class__.__name__, self.__path)
+

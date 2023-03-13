@@ -15,3 +15,6 @@ Example 2: modify all tasks without a priority.
 ```bash
 task priority: modify wait:+10d
 ```
+## Applicable Settings
+
+* [filter.attribute.case_sensitive](settings.md#filterattributecase_sensitive)
