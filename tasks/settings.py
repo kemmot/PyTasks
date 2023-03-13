@@ -4,8 +4,8 @@ import os
 
 
 class SettingException(Exception):
-    def __init__(self, message='',):
-        Exception.__init__(self, message)
+	def __init__(self, message='',):
+		Exception.__init__(self, message)
 
 
 class SettingNames:
@@ -300,7 +300,13 @@ class SettingsProviderBase:
 		raise Exception(f'get_value not implemented in {__class__.__name__}')
 
 	def get_value_boolean(self, key):
-		return bool(self.get_value(key))
+		value = self.get_value(key).upper()
+		if value in ['TRUE', 'YES']:
+			return True
+		elif value in ['FALSE', 'NO']:
+			return False
+		else:
+			raise Exception('Could not parse value as boolean: [{}]'.format(value))
 
 	def get_value_integer(self, key):
 		return int(self.get_value(key))
