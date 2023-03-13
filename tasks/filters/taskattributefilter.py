@@ -34,7 +34,7 @@ class TaskAttributeFilter(filterbase.FilterBase):
                 result = True
                 reason = 'attribute does not exist as searched for'
         elif task_has_attribute:
-            if task.attributes[self.attribute_name].startswith(self.attribute_value):
+            if value.startswith(self.attribute_value):
                 result = True
                 reason = 'attribute value matches'
             else:

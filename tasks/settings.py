@@ -41,6 +41,55 @@ class SettingNames:
 	table_row_forecolour = 'table.row.forecolour'
 
 
+class ReportSettings:
+	def __init__(self):
+		self.__columns = ''
+		self.__filter = ''
+		self.__max_annotation_count = 0
+		self.__name = ''
+		self.__sort = ''
+
+	@property
+	def columns(self):
+		return self.__columns
+
+	@columns.setter
+	def columns(self, value):
+		self.__columns = value
+
+	@property
+	def filter(self):
+		return self.__filter
+
+	@filter.setter
+	def filter(self, value):
+		self.__filter = value
+
+	@property
+	def max_annotation_count(self):
+		return self.__max_annotation_count
+
+	@max_annotation_count.setter
+	def max_annotation_count(self, value):
+		self.__max_annotation_count = value
+
+	@property
+	def name(self):
+		return self.__name
+
+	@name.setter
+	def name(self, value):
+		self.__name = value
+
+	@property
+	def sort(self):
+		return self.__sort
+
+	@sort.setter
+	def sort(self, value):
+		self.__sort = value
+
+
 class SettingsFacade:
 	def __init__(self, settings_provider):
 		self.__settings_provider = settings_provider
@@ -196,6 +245,34 @@ class SettingsFacade:
 				is_active = context_name == active_context
 				contexts.append([context_name, definition, is_active])
 		return contexts
+
+	def get_reports(self):
+		reports = {}
+		for key in sorted(self.__settings_provider.get_keys()):
+			if key.startswith('report.'):
+				config_parts = key.split('.')
+				if len(config_parts) < 3:
+					raise Exception('Invalid report config: {}'.format(key))
+
+				report_name = config_parts[1]
+				if report_name in reports:
+					report = reports[report_name]
+				else:
+					report = ReportSettings()
+					report.name = report_name
+					reports[report_name] = report
+
+				value = self.__settings_provider.get_value(key)
+				if config_parts[2] == 'columns':
+					report.columns = value
+				elif config_parts[2] == 'filter':
+					report.filter = value
+				elif config_parts[2] == 'max_annotation_count':
+					report.max_annotation_count = int(value)
+				elif config_parts[2] == 'sort':
+					report.sort = value
+
+		return reports.values()
 
 	def read(self):
 		self.__settings_provider.read()

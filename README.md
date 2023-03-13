@@ -57,5 +57,6 @@ The following additional information is available.
 * See [here](docs/columns.md) for supported columns.
 * See [here](docs/date-formats.md) for date formats.
 * See [here](docs/exit-codes.md) for exit codes.
+* See [here](docs/reports.md) for reports.
 * See [here](docs/settings.md) for settings.
 * See [here](docs/virtual-tags.md) for supported virtual tags.

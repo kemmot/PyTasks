@@ -14,10 +14,9 @@ import commands.donecommand
 import commands.editcommand
 import commands.helpcommand
 import commands.infocommand
-import commands.listcommand
 import commands.modifycommand
-import commands.nextcommand
 import commands.projectscommand
+import commands.reportscommand
 import commands.shellcommand
 import commands.startcommand
 import commands.stopcommand
@@ -108,6 +107,7 @@ try:
 
     COMMAND_FACTORY = commandfactory.CommandFactory(CONTEXT.command_parser, CONTEXT)
     COMMAND_FACTORY.register_known_types()
+    COMMAND_FACTORY.register_reports()
     CONTEXT.command_factory = COMMAND_FACTORY
 
     try:

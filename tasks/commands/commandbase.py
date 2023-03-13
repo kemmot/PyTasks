@@ -118,6 +118,8 @@ class ReportCommandBase(FilterCommandBase):
         self.sort_tasks(tasks_to_display)
         table = self.create_task_table(columns, max_annotation_count, tasks_to_display)
         self.print_table(table)
+        self.context.console.print('')
+        self.context.console.print('{} task(s)'.format(len(tasks_to_display)))
 
     def get_annotation_count(self):
         return 0

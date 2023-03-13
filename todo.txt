@@ -18,8 +18,6 @@
 [description:"FEAT-0075: add feature to merge duplicate tasks" entry:"1616668783" status:"pending" uuid:"10b8010f-a573-4752-92a9-5a7d76d2af95"]
 [description:"FEAT-0082: List command should support column labels" entry:"1618566343" project:"cmd.list" status:"pending" uuid:"d5d9a0a9-1701-496b-a762-fa18d4af2185"]
 [description:"FEAT-0083: List command should support print.empty.columns setting" entry:"1618566583" project:"cmd.list" status:"pending" uuid:"9d021904-5567-4ede-bec7-f5ffe111d104"]
-[description:"FEAT-0089: List command should print count of displayed tasks" entry:"1648224397" project:"cmd.list" status:"pending" uuid:"f4ffdce6-f322-4803-a4b1-7ebde494357a"]
 [description:"FEAT-0090: List command should truncate rows displayed to screen size" entry:"1648224421" project:"cmd.list" status:"pending" uuid:"3b2973c1-c155-4dbf-821d-8061ddbf0dcc"]
 [annotation_1668030416:"sample" dependency_0:"cb172001-b0b4-483b-9fe0-74bcefec3205" dependency_1:"58dbb8c2-288b-4c99-8aba-1fa04b1e7c28" description:"FEAT-0092: test" entry:"1668022372" start:"1668036070" status:"pending" tags:"test,test2" uuid:"4f5a9520-8097-4afe-abd4-182eb173d22f"]
 [description:"FEAT-0097: support overriding settings on command line" entry:"1672227743" status:"pending" uuid:"b6b5ed6a-081a-4dfc-b167-a1e95df61316"]
-[description:"FEAT-0098: support context for attributes and tags" entry:"1672227952" status:"pending" uuid:"f2d051ce-b22c-4100-9629-cfdbf912881b"]
