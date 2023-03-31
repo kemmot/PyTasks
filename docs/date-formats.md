@@ -48,6 +48,7 @@ Where:
 The supported relative date units are:
 
 * d: days.
+* w: weeks.
 
 ## Examples
 

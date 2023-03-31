@@ -46,7 +46,7 @@ class DateTimeParser:
         return date
 
     def parse_relative_date(self, date_time_string):
-        regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[d])', re.IGNORECASE)
+        regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[dw])', re.IGNORECASE)
         match = regex.search(date_time_string)
         if not match:
             return None
@@ -54,14 +54,24 @@ class DateTimeParser:
         direction = match.group('direction')
         value = int(match.group('value'))
         unit = match.group('unit')
+        
         if unit.upper() == 'D':
-            days = int(match.group('value'))
+            day_count = int(match.group('value'))
             if direction == '-':
-                days *= -1
-            delta = datetime.timedelta(days=days)
-            date = self.start_date
-            date = date + delta
-            date = datetime.datetime.combine(date, datetime.datetime.min.time())
-            return date
-
+                day_count *= -1
+            return self.__add_days(self.start_date, day_count)
+        
+        if unit.upper() == 'W':
+            week_count = int(match.group('value'))
+            day_count = week_count * 7
+            if direction == '-':
+                day_count *= -1
+            return self.__add_days(self.start_date, day_count)
+        
         raise ValueError('Unrecognised date unit: [{}]'.format(unit))
+    
+    def __add_days(self, date, day_count):
+        delta = datetime.timedelta(days=day_count)
+        date = date + delta
+        date = datetime.datetime.combine(date, datetime.datetime.min.time())
+        return date
