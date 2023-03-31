@@ -47,7 +47,7 @@ class DateTimeParser:
         return date
 
     def parse_relative_date(self, date_time_string):
-        regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[dmw])', re.IGNORECASE)
+        regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[dmwy])', re.IGNORECASE)
         match = regex.search(date_time_string)
         if not match:
             return None
@@ -83,6 +83,15 @@ class DateTimeParser:
             if direction == '-':
                 day_count *= -1
             return self.__add_days(self.start_date, day_count)
+        
+        if unit.upper() == 'Y':
+            year_count = int(match.group('value'))
+            year = self.start_date.year
+            month = self.start_date.month
+            day = self.start_date.day
+            year += year_count
+            date = datetime.date(year, month, day)
+            return datetime.datetime.combine(date, datetime.datetime.min.time())
         
         raise ValueError('Unrecognised date unit: [{}]'.format(unit))
     

@@ -50,6 +50,7 @@ The supported relative date units are:
 * d: days.
 * m: months.
 * w: weeks.
+* y: years.
 
 ## Examples
 
