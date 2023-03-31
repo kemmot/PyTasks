@@ -1,3 +1,4 @@
+import calendar
 import datetime
 import re
 
@@ -46,7 +47,7 @@ class DateTimeParser:
         return date
 
     def parse_relative_date(self, date_time_string):
-        regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[dw])', re.IGNORECASE)
+        regex = re.compile('(?P<direction>[+-])(?P<value>\d+)(?P<unit>[dmw])', re.IGNORECASE)
         match = regex.search(date_time_string)
         if not match:
             return None
@@ -60,6 +61,21 @@ class DateTimeParser:
             if direction == '-':
                 day_count *= -1
             return self.__add_days(self.start_date, day_count)
+        
+        if unit.upper() == 'M':
+            month_count = int(match.group('value'))
+            year = self.start_date.year
+            month = self.start_date.month
+            day = self.start_date.day
+            month += month_count
+            while month > 12:
+                year += 1
+                month -= 12
+            first_weekday,days_in_month = calendar.monthrange(year, month)
+            if day > days_in_month:
+                day = days_in_month
+            date = datetime.date(year, month, day)
+            return datetime.datetime.combine(date, datetime.datetime.min.time())
         
         if unit.upper() == 'W':
             week_count = int(match.group('value'))
