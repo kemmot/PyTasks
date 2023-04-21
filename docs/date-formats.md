@@ -26,6 +26,13 @@ This format allows a fixed set of strings to be specified that are used to calcu
 
 The following are supported:
 
+* mon
+* tue
+* wed
+* thu
+* fri
+* sat
+* sun
 * today
 * tomorrow
 

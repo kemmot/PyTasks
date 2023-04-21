@@ -20,6 +20,10 @@ class DateTimeParser:
         if date:
             return date
 
+        date = self.parse_day_of_week(date_time_string)
+        if date:
+            return date
+
         date = self.parse_absolute_date(date_time_string)
         if date:
             return date
@@ -35,8 +39,29 @@ class DateTimeParser:
             return datetime.datetime.today()
         elif date_time_string == 'tomorrow':
             return datetime.datetime.today() + datetime.timedelta(days=1)
+        elif date_time_string.startswith('mon'):
+            return self.__parse_day_of_week(1)
+        elif date_time_string.startswith('tue'):
+            return self.__parse_day_of_week(2)
+        elif date_time_string.startswith('wed'):
+            return self.__parse_day_of_week(3)
+        elif date_time_string.startswith('thu'):
+            return self.__parse_day_of_week(4)
+        elif date_time_string.startswith('fri'):
+            return self.__parse_day_of_week(5)
+        elif date_time_string.startswith('sat'):
+            return self.__parse_day_of_week(6)
+        elif date_time_string.startswith('sun'):
+            return self.__parse_day_of_week(7)
         else:
             return None
+    
+    def __parse_day_of_week(self, new_day):
+        today = datetime.datetime.today().isoweekday()
+        if new_day <= today:
+            new_day += 7
+        difference = new_day - today
+        return datetime.datetime.today() + datetime.timedelta(days=difference)
 
     def parse_absolute_date(self, date_time_string):
         match = re.search('\d{4}-\d{2}-\d{2}', date_time_string)
