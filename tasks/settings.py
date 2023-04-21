@@ -287,11 +287,12 @@ class SettingsFacade:
 
 
 class SettingsProviderConfigurator:
-	def get_settings_provider(self, user_path, program_path):
-		defaults = DefaultSettingsProvider()
+	def get_settings_provider(self, override_context, user_path, program_path):
+		overrides = OverrideSettingsProvider(override_context)
 		user = IniSettingsProvider(user_path)
 		program = IniSettingsProvider(program_path)
-		return SettingsFacade(LayeredSettingsProvider([user, program, defaults]))
+		defaults = DefaultSettingsProvider()
+		return SettingsFacade(LayeredSettingsProvider([overrides, user, program, defaults]))
 
 
 class SettingsProviderBase:
@@ -537,3 +538,19 @@ class IniSettingsProvider(SettingsProviderBase):
 	def __str__(self):
 		return '{}({})'.format(self.__class__.__name__, self.__path)
 
+
+class OverrideSettingsProvider(SettingsProviderBase):
+	def __init__(self, values):
+		self.__values = values
+
+	def get_value(self, key):
+		return self.__values[key]
+
+	def has_value(self, key):
+		return key in self.__values
+
+	def read(self):
+		pass
+
+	def save_if_needed(self):
+		pass

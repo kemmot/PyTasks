@@ -24,7 +24,7 @@ class CommandFactory(typefactory.TypeFactory):
         for report in self._command_context.settings.get_reports():
             self.register_type(report.name, reportscommand.ReportsCommandParser(report))
 
-    def get_command(self, args):
+    def get_command(self, args, override_context):
         if not args:
             args = self._command_context.settings.command_default.split()
 
@@ -34,6 +34,8 @@ class CommandFactory(typefactory.TypeFactory):
         self._logger.debug('Parsed command: %s', parsed_command)
 
         batch_filter = self.get_filters(parsed_command)
+        self._populate_overrides(parsed_command, override_context)
+        self._expand_overrides(override_context)
 
         verb_argument = parsed_command.get_verb_value()
         if verb_argument:
@@ -82,6 +84,17 @@ class CommandFactory(typefactory.TypeFactory):
                 filter_group_batch.add_filter(filter)
             batch_filter.add_filter(filter_group_batch)
         return batch_filter
+    
+    def _populate_overrides(self, parsed_command, override_context):
+        for override in parsed_command.get_override_values():
+            key,value = override.split(':')
+            override_context[key[3:]] = value # trim 'rc.' off the key
+    
+    def _expand_overrides(self, override_context):
+        for report in self._command_context.settings.get_reports():
+            if 'sort' in override_context:
+                self.types[report.name].report_config.sort = override_context['rc.sort']
+                override_context['rc.{}.sort'.format(report.name)] = override_context['rc.sort']
 
 
 class CommandParser:
@@ -104,6 +117,8 @@ class CommandParser:
                 arg_type = ArgumentType.verb
             elif arg_index < verb_index:
                 arg_type = ArgumentType.filter
+            elif arg.startswith('rc.') and ':' in arg:
+                arg_type = ArgumentType.override
             else:
                 arg_type = ArgumentType.command_argument
             parsed_argument = ParsedArgument(arg_index, arg, arg_type)
@@ -141,6 +156,9 @@ class ParsedCommand:
     def get_filter_argument_values(self):
         return self._get_argument_values_by_type(ArgumentType.filter)
 
+    def get_override_values(self):
+        return self._get_argument_values_by_type(ArgumentType.override)
+
     def _get_argument_values_by_type(self, argument_type):
         return [a.text for a in self._get_arguments_by_type(argument_type)]
 
@@ -172,4 +190,5 @@ class ParsedArgument:
 class ArgumentType:
     command_argument = 'command argument'
     filter = 'filter'
+    override = 'override'
     verb = 'verb'

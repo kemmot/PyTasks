@@ -11,7 +11,7 @@ The application offers multiple operations as sub commands of the application wi
 The following shows the general usage of the application.
 
 ```bash
-./tasks.sh [filter] <command> [command options]
+./tasks.sh [filter] <command> [command options] [overrides]
 ```
 
 -----------------------------------------------------------------------------------------------------
@@ -57,6 +57,7 @@ The following additional information is available.
 * See [here](docs/columns.md) for supported columns.
 * See [here](docs/date-formats.md) for date formats.
 * See [here](docs/exit-codes.md) for exit codes.
+* See [here](docs/overrides.md) for settings.
 * See [here](docs/reports.md) for reports.
 * See [here](docs/settings.md) for settings.
 * See [here](docs/virtual-tags.md) for supported virtual tags.

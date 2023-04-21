@@ -91,7 +91,8 @@ try:
     SETTINGS_FILENAME = 'tasks.ini'
     USER_SETTINGS_FILENAME = os.path.join(os.path.expanduser('~'), SETTINGS_FILENAME)
     PROGRAM_SETTINGS_FILENAME = os.path.join(os.path.dirname(os.path.abspath(__file__)), SETTINGS_FILENAME)
-    SETTINGS = settings.SettingsProviderConfigurator().get_settings_provider(USER_SETTINGS_FILENAME, PROGRAM_SETTINGS_FILENAME)
+    OVERRIDE_CONTEXT = {}
+    SETTINGS = settings.SettingsProviderConfigurator().get_settings_provider(OVERRIDE_CONTEXT, USER_SETTINGS_FILENAME, PROGRAM_SETTINGS_FILENAME)
     SETTINGS.read()
 
     FILTER_FACTORY = filterfactory.FilterFactory()
@@ -111,7 +112,7 @@ try:
     CONTEXT.command_factory = COMMAND_FACTORY
 
     try:
-        COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:])
+        COMMAND = COMMAND_FACTORY.get_command(sys.argv[1:], OVERRIDE_CONTEXT)
     except cli.ExitCodeException:
         raise
     except Exception as ex:

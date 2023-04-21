@@ -113,6 +113,10 @@ class ReportsCommandParser(commandbase.FilterCommandParserBase):
             super().__init__(ReportsCommandParser.COMMAND_NAME)
         self.__report_config = report_config
 
+    @property
+    def report_config(self):
+        return self.__report_config
+
     def parse(self, context, args):
         if self.__report_config:
             return ReportCommand(context, self.__report_config)
