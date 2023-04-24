@@ -21,6 +21,7 @@ import commands.shellcommand
 import commands.startcommand
 import commands.stopcommand
 import commands.tagscommand
+import commands.undocommand
 
 import logging
 import logging.config

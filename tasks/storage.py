@@ -297,10 +297,11 @@ class TextFileStorage:
 
 
 class TaskWarriorStorage:
-    def __init__(self, pending_storage, done_storage):
+    def __init__(self, pending_storage, done_storage, undo_log):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._pending_storage = pending_storage
         self._done_storage = done_storage
+        self._undo_log = undo_log
 
     @property
     def done_storage(self):
@@ -309,6 +310,10 @@ class TaskWarriorStorage:
     @property
     def pending_storage(self):
         return self._pending_storage
+
+    @property
+    def undo_log(self):
+        return self._undo_log
 
     def garbage_collect(self):
         done_tasks = []
@@ -351,6 +356,17 @@ class TaskWarriorStorage:
 class UndoLog:
     def __init__(self, storage):
         self._storage = storage
+    
+    def recent_sort(t):
+        return t.attributes['__change_date__']
+    
+    def get_most_recent_change(self):
+        changes = self._storage.read_all()
+        if not changes:
+            return None
+        changes.sort(key = UndoLog.recent_sort)
+        changes.reverse()
+        return changes[0]
 
     def log_addition(self, task):
         self._log_change('NEW', task)
@@ -395,4 +411,4 @@ class TaskWarriorStorageCreator:
         done_path = os.path.join(data_location, done_filename)
         done_storage = TextFileStorage(done_path, TaskWarriorFormatter())
 
-        return TaskWarriorStorage(pending_storage, done_storage)
+        return TaskWarriorStorage(pending_storage, done_storage, undo_log)

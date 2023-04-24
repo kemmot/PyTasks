@@ -25,6 +25,7 @@ class SettingNames:
 	command_modify_summary = 'command.modify.summary'
 	command_start_confirm = 'command.start.confirm'
 	command_stop_confirm = 'command.stop.confirm'
+	command_undo_confirm = 'command.undo.confirm'
 	context = 'context'
 	data_done_filename = 'data.done.filename'
 	data_location = 'data.location'
@@ -159,6 +160,10 @@ class SettingsFacade:
 	@property
 	def command_stop_confirm(self):
 		return self.__settings_provider.get_value_boolean(SettingNames.command_stop_confirm)
+
+	@property
+	def command_undo_confirm(self):
+		return self.__settings_provider.get_value_boolean(SettingNames.command_undo_confirm)
 
 	@property
 	def context(self):
@@ -371,6 +376,8 @@ class DefaultSettingsProvider(SettingsProviderBase):
 		elif key == SettingNames.command_start_confirm:
 			return 'True'
 		elif key == SettingNames.command_stop_confirm:
+			return 'True'
+		elif key == SettingNames.command_undo_confirm:
 			return 'True'
 		elif key == SettingNames.context:
 			return 'none'

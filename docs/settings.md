@@ -14,6 +14,7 @@ The following settings are available:
 * [command.modify.summary](#commandmodifysummary)
 * [command.start.confirm](#commandstartconfirm)
 * [command.stop.confirm](#commandstopconfirm)
+* [command.undo.confirm](#commandundoconfirm)
 * [context](#context)
 * [data.location](#datalocation)
 * [data.done.filename](#datadonefilename)
@@ -145,6 +146,17 @@ Default value: True
 ## command.stop.confirm
 
 Whether the stop command should request confirmation before making changes.
+
+Possible values
+
+* False
+* True
+
+Default value: True
+
+## command.undo.confirm
+
+Whether the undo command should request confirmation before making changes.
 
 Possible values
 

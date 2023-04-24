@@ -36,6 +36,7 @@ The following commands are available:
 * [start](docs/command-start.md)
 * [stop](docs/command-stop.md)
 * [tags](docs/command-tags.md)
+* [tags](docs/command-undo.md)
 
 -----------------------------------------------------------------------------------------------------
 

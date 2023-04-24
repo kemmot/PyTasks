@@ -134,6 +134,8 @@ class TaskAttributeRetriever:
             return task.status
         elif attribute_name == TaskAttributeName.TAGS:
             return ','.join(task.tags)
+        elif attribute_name == TaskAttributeName.UUID:
+            return task.id_number
         elif attribute_name == TaskAttributeName.VTAGS:
             return ','.join(task.virtual_tags)
         elif attribute_name == TaskAttributeName.WAIT:
