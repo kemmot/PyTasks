@@ -29,6 +29,7 @@ class SettingNames:
 	data_done_filename = 'data.done.filename'
 	data_location = 'data.location'
 	data_pending_filename = 'data.pending.filename'
+	data_undo_filename = 'data.undo.filename'
 	filter_attribute_case_sensitive = 'filter.attribute.case_sensitive'
 	report_list_columns = 'report.list.columns'
 	report_list_max_annotation_count = 'report.list.max_annotation_count'
@@ -178,6 +179,10 @@ class SettingsFacade:
 	@property
 	def data_pending_filename(self):
 		return self.__settings_provider.get_value(SettingNames.data_pending_filename)
+	
+	@property
+	def data_undo_filename(self):
+		return self.__settings_provider.get_value(SettingNames.data_undo_filename)
 
 	@property
 	def filter_attribute_case_sensitive(self):
@@ -375,6 +380,8 @@ class DefaultSettingsProvider(SettingsProviderBase):
 			return '~\.task'
 		elif key == SettingNames.data_pending_filename:
 			return 'pending.data'
+		elif key == SettingNames.data_undo_filename:
+			return 'undo.data'
 		elif key == SettingNames.filter_attribute_case_sensitive:
 			return 'True'
 		elif key == SettingNames.report_list_columns:
@@ -536,4 +543,3 @@ class IniSettingsProvider(SettingsProviderBase):
 	
 	def __str__(self):
 		return '{}({})'.format(self.__class__.__name__, self.__path)
-

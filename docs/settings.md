@@ -18,6 +18,7 @@ The following settings are available:
 * [data.location](#datalocation)
 * [data.done.filename](#datadonefilename)
 * [data.pending.filename](#datapendingfilename)
+* [data.undo.filename](#dataundofilename)
 * [filter.attribute.case_sensitive](#filterattributecase_sensitive)
 * [report.list.columns](#reportlistcolumns)
 * [report.list.max_annotation_count](#reportlistmax_annotation_count)
@@ -178,6 +179,12 @@ Default value: done.txt
 The filename to use for in-progress tasks.  Appended to data.location.
 
 Default value: todo.txt
+
+## data.undo.filename
+
+The filename to use for undo data.  Appended to data.location.
+
+Default value: undo.data
 
 ## filter.attribute.case_sensitive
 

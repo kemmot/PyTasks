@@ -3,6 +3,7 @@ A module containing task formatter classes.
 '''
 
 import calendar
+import copy
 import datetime
 import logging
 import re
@@ -213,10 +214,11 @@ class TaskWarriorFormatter:
 
 
 class TextFileStorage:
-    def __init__(self, path, formatter):
+    def __init__(self, path, formatter, undo_log=None):
         self._logger = logging.getLogger(self.__class__.__name__)
         self._path = path
         self._formatter = formatter
+        self._undo_log = undo_log
 
     @property
     def formatter(self):
@@ -259,6 +261,8 @@ class TextFileStorage:
         existing_tasks = self.read_all()
         for task in tasks:
             existing_tasks.append(task)
+            if self._undo_log:
+                self._undo_log.log_addition(task)
         self._replace_all(existing_tasks)
 
     def update(self, tasks):
@@ -269,6 +273,8 @@ class TextFileStorage:
             for task_to_update in tasks:
                 if original_task.id_number == task_to_update.id_number:
                     task_to_keep = task_to_update
+                    if self._undo_log:
+                        self._undo_log.log_update(original_task)
                     break
             tasks_to_keep.append(task_to_keep)
         self._replace_all(tasks_to_keep)
@@ -342,6 +348,25 @@ class TaskWarriorStorage:
         self._pending_storage.write(tasks)
 
 
+class UndoLog:
+    def __init__(self, storage):
+        self._storage = storage
+
+    def log_addition(self, task):
+        self._log_change('NEW', task)
+
+    def log_update(self, task):
+        self._log_change('UPDATE', task)
+
+    def _log_change(self, change_type, task):
+        clone = copy.deepcopy(task)
+        clone.attributes['__change_date__'] = datetime.datetime.now()
+        clone.attributes['__change_type__'] = change_type
+        tasks = []
+        tasks.append(clone)
+        self._storage.write(tasks)
+
+
 class TaskWarriorStorageCreator:
     def __init__(self):
         self._logger = logging.getLogger(self.__class__.__name__)
@@ -356,10 +381,15 @@ class TaskWarriorStorageCreator:
             data_location = os.path.abspath(data_location)
             message = 'Converted relative data location [%s] to: [%s]'
             self._logger.debug(message, settings.data_location, data_location)
+        
+        undo_filename = settings.data_undo_filename
+        undo_path = os.path.join(data_location, undo_filename)
+        undo_storage = TextFileStorage(undo_path, TaskWarriorFormatter())
+        undo_log = UndoLog(undo_storage)
 
         pending_filename = settings.data_pending_filename
         pending_path = os.path.join(data_location, pending_filename)
-        pending_storage = TextFileStorage(pending_path, TaskWarriorFormatter())
+        pending_storage = TextFileStorage(pending_path, TaskWarriorFormatter(), undo_log)
 
         done_filename = settings.data_done_filename
         done_path = os.path.join(data_location, done_filename)
