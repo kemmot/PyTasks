@@ -61,3 +61,4 @@ The following additional information is available.
 * See [here](docs/reports.md) for reports.
 * See [here](docs/settings.md) for settings.
 * See [here](docs/virtual-tags.md) for supported virtual tags.
+* See [here](docs/development-guide.md) for development guide.
