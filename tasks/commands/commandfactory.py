@@ -88,13 +88,17 @@ class CommandFactory(typefactory.TypeFactory):
     def _populate_overrides(self, parsed_command, override_context):
         for override in parsed_command.get_override_values():
             key,value = override.split(':')
-            override_context[key[3:]] = value # trim 'rc.' off the key
+            key = key[3:] # trim 'rc.' off the key
+            override_context[key] = value
     
     def _expand_overrides(self, override_context):
         for report in self._command_context.settings.get_reports():
             if 'sort' in override_context:
-                self.types[report.name].report_config.sort = override_context['rc.sort']
-                override_context['rc.{}.sort'.format(report.name)] = override_context['rc.sort']
+                key = 'sort'
+                value = override_context[key]
+                self.types[report.name].report_config.sort = value
+                override_context['rc.{}.sort'.format(report.name)] = value
+                print('override context: {}'.format(value))
 
 
 class CommandParser:
